@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllPosts } from "../services/posts.service";
+import { getAllPosts } from "../services/post.service";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function AllPosts() {

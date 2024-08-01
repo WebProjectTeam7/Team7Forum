@@ -13,6 +13,8 @@ import Header from "./components/Header";
 import NotFound from "./views/NotFound";
 import Home from "./views/Home";
 import MyProfile from "./views/MyProfile";
+import CreatePost from "./views/CreatePost";
+import AllPosts from "./views/AllPost";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -29,7 +31,6 @@ function App() {
     if (!user) return;
     getUserData(appState.user.uid)
       .then((data) => {
-        console.log(data);
         const userData = data[Object.keys(data)[0]];
         setAppState({ ...appState, userData });
       })
@@ -44,7 +45,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/my-profile" element={<MyProfile />}></Route>
           <Route path="/login" element={<Login />} />
-          <Route path='/post-create' element={<CreateTweet />} />
+          <Route path="/post-create" element={<CreatePost />} />
+          <Route path="/all-posts" element={<AllPosts />}></Route>
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

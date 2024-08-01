@@ -1,8 +1,5 @@
-
-
-
 import { useContext, useState } from "react";
-import { createPost } from "../services/posts.service"; // Import the service for creating posts
+import { createPost } from "../services/post.service"; // Import the service for creating posts
 import { AppContext } from '../state/app.context'; // Import context for global state
 
 export default function CreatePost() {

@@ -19,10 +19,13 @@ export default function Header() {
       <h1>Forum App</h1>
       <nav>
         <Search />
-        {user && <NavLink to="/my-profile">My Profile</NavLink>}
+
         <NavLink to="/">Home</NavLink>
         {!user && <NavLink to="/login">Login</NavLink>}
         {!user && <NavLink to="/register">Register</NavLink>}
+        {user && <NavLink to="/all-posts">All Posts</NavLink>}
+        {user && <NavLink to="/post-create">Create Poste</NavLink>}
+        {user && <NavLink to="/my-profile">My Profile</NavLink>}
         {user && <button onClick={logout}>Logout</button>}
         {userData && <span>Welcome, {userData.handle}</span>}
       </nav>
