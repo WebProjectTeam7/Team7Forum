@@ -28,9 +28,7 @@ export default function Search() {
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
       />
-      <button onClick={handleSearch} style={{ padding: "5px" }}>
-        Search
-      </button>
+      <button onClick={handleSearch}>Search</button>
     </div>
   );
 }
