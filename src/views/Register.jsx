@@ -3,12 +3,14 @@ import { registerUser } from "../services/auth.service";
 import { AppContext } from "../state/app.context";
 import { useNavigate } from "react-router-dom";
 import { createUserHandle, getUserByHandle } from "../services/users.service";
-import { EMAIL_REGEX, PASSWORD_REGEX, USER_REGEX } from "../common/constants";
+import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, USER_REGEX } from "../common/constants";
 
 export default function Register() {
     const [user, setUser] = useState({
         username: '',
         email: '',
+        firstName: '',
+        lastName: '',
         password: '',
         confirmPassword: '',
         role: 'user',
@@ -16,6 +18,7 @@ export default function Register() {
 
     const [hidePassword, setHidePassword] = useState(true);
     const [alertMessage, setAlertMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
@@ -47,6 +50,14 @@ export default function Register() {
             alertArr.push('Invalid Email address!');
         }
 
+        if (!NAME_REGEX.test(user.firstName)) {
+            alertArr.push('Invalid Fist name!');
+        }
+
+        if (!NAME_REGEX.test(user.lastName)) {
+            alertArr.push('Invalid Last name!');
+        }
+
         if (!PASSWORD_REGEX.test(user.password)) {
             alertArr.push('Invalid Password!');
         }
@@ -67,7 +78,7 @@ export default function Register() {
                 return alert(`User {${user.username}} already exists!`);
             }
             const credential = await registerUser(user.email, user.password);
-            await createUserHandle(user.username, credential.user.uid, user.email, user.role);
+            await createUserHandle(user.username, credential.user.uid, user.email, user.firstName, user.lastName, user.role);
             setAppState({ user: credential.user, userData: null });
             navigate('/');
         } catch (error) {
@@ -102,6 +113,25 @@ export default function Register() {
                     id="email" />
                 <br /><br />
 
+                {/*FIRST NAME*/}
+                <label htmlFor="firstName">First Name: </label>
+                <input
+                    value={user.firstName}
+                    onChange={updateUser('firstName')}
+                    type="text"
+                    name="firstName"
+                    id="lastName" />
+                <br /><br />
+
+                {/*LAST NAME*/}
+                <label htmlFor="lastName">Last Name: </label>
+                <input
+                    value={user.lastName}
+                    onChange={updateUser('lastName')}
+                    type="text"
+                    name="lastName"
+                    id="lastName" />
+                <br /><br />
                 {/*PASSWORD*/}
                 <label htmlFor="password">Password: </label>
                 <input
