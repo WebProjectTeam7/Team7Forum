@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
-import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { AppContext } from './state/app.context';
-import Login from './views/Login';
-import Register from './views/Register';
-import { auth } from './config/firebase-config';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { getUserData } from './services/users.service';
-import Header from './components/Header';
-import NotFound from './views/NotFound';
+import { useEffect, useState } from "react";
+import "./App.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AppContext } from "./state/app.context";
+import Login from "./views/Login";
+import Register from "./views/Register";
+import { auth } from "./config/firebase-config";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getUserData } from "./services/users.service";
+import Header from "./components/Header";
+import NotFound from "./views/NotFound";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -24,11 +24,10 @@ function App() {
   useEffect(() => {
     if (!user) return;
 
-    getUserData(appState.user.uid)
-      .then(data => {
-        const userData = data[Object.keys(data)[0]];
-        setAppState({ ...appState, userData });
-      });
+    getUserData(appState.user.uid).then((data) => {
+      const userData = data[Object.keys(data)[0]];
+      setAppState({ ...appState, userData });
+    });
   }, [user]);
 
   return (
@@ -36,14 +35,14 @@ function App() {
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <Header />
         <Routes>
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='*' element={<NotFound />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
-        <footer>&copy;</footer>
+        <footer>&copy;Team7Forum</footer>
       </AppContext.Provider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

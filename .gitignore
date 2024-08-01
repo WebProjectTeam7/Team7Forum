@@ -25,5 +25,5 @@ dist-ssr
 
 
 # Api 
-firebase-congig.js
+src/config/firebase-congig.js
 .env
