@@ -6,8 +6,8 @@ export const getUserByHandle = async (username) => {
   return snapshot.val();
 };
 
-export const createUserHandle = async (username, uid, email, role) => {
-  const user = { username, uid, email, role, createdOn: new Date().toString() };
+export const createUserHandle = async (username, uid, email, firstName, lastName, role) => {
+  const user = { username, uid, email, firstName, lastName, role, createdOn: new Date().toString() };
   await set(ref(db, `users/${username}`), user);
 };
 
