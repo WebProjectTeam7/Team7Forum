@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/jsx-no-undef */
 import { useEffect, useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -9,6 +11,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { getUserData } from "./services/users.service";
 import Header from "./components/Header";
 import NotFound from "./views/NotFound";
+import Home from "./views/Home";
 import MyProfile from "./views/MyProfile";
 
 function App() {
@@ -38,8 +41,10 @@ function App() {
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <Header />
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/my-profile" element={<MyProfile />}></Route>
           <Route path="/login" element={<Login />} />
+          <Route path='/post-create' element={<CreateTweet />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
