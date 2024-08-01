@@ -9,6 +9,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { getUserData } from "./services/users.service";
 import Header from "./components/Header";
 import NotFound from "./views/NotFound";
+import Home from "./views/Home";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -35,6 +36,7 @@ function App() {
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <Header />
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
