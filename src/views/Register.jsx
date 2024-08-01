@@ -6,6 +6,7 @@ import { createUserHandle, getUserByHandle } from "../services/users.service";
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, USER_REGEX } from "../common/constants";
 
 export default function Register() {
+    const { setAppState } = useContext(AppContext);
     const [user, setUser] = useState({
         username: '',
         email: '',
@@ -24,7 +25,6 @@ export default function Register() {
         setHidePassword(!hidePassword);
     }
 
-    const { setAppState } = useContext(AppContext);
     const navigate = useNavigate();
 
     const updateUser = prop => e => {
@@ -120,7 +120,7 @@ export default function Register() {
                     onChange={updateUser('firstName')}
                     type="text"
                     name="firstName"
-                    id="lastName" />
+                    id="firstName" />
                 <br /><br />
 
                 {/*LAST NAME*/}

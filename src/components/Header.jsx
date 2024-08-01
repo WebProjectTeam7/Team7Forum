@@ -19,7 +19,7 @@ export default function Header() {
       <h1>Forum App</h1>
       <nav>
         <Search />
-        {user && <></>}
+        {user && <NavLink to="/my-profile">My Profile</NavLink>}
         {!user && <NavLink to="/login">Login</NavLink>}
         {!user && <NavLink to="/register">Register</NavLink>}
         {user && <button onClick={logout}>Logout</button>}
