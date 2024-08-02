@@ -6,7 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AppContext } from "./state/app.context";
 import Login from "./views/Login";
 import Register from "./views/Register";
-import { app, auth } from "./config/firebase-config";
+import { auth } from "./config/firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getUserData } from "./services/users.service";
 import Header from "./components/Header";
@@ -34,7 +34,9 @@ function App() {
         const userData = data[Object.keys(data)[0]];
         setAppState({ ...appState, userData });
       })
-      .catch((e) => { alert(e.message) });
+      .catch((e) => {
+        alert(e.message);
+      });
   }, [user]);
 
   return (
