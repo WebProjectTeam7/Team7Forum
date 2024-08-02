@@ -15,6 +15,7 @@ import Home from "./views/Home";
 import MyProfile from "./views/MyProfile";
 import CreatePost from "./views/CreatePost";
 import AllPosts from "./views/AllPost";
+import AdminPage from "./views/AdminPage";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -50,6 +51,7 @@ function App() {
           <Route path="/post-create" element={<CreatePost />} />
           <Route path="/all-posts" element={<AllPosts />}></Route>
           <Route path="/register" element={<Register />} />
+          <Route path="/admin-page" element={<AdminPage />}></Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
         <footer>&copy;Team7Forum</footer>

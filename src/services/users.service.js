@@ -22,3 +22,12 @@ export const updateUserHandle = async (uid, updatedData) => {
   const userId = Object.keys(snapshot.val())[0];
   await update(ref(db, `users/${userId}`), updatedData);
 };
+
+export const getAllUsers = async (role = null) => {
+  const usersRef = role ? query(ref(db, 'users'), orderByChild('role'), equalTo(role)) : ref(db, 'users');
+  const snapshot = await get(usersRef);
+  if (!snapshot) {
+    return [];
+  }
+  return Object.values(snapshot.val());
+}
