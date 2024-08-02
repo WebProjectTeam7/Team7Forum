@@ -6,6 +6,7 @@ import Search from "./Search";
 import "./CSS/Header.css";
 
 import UserRoleEnum from "../common/role.enum";
+
 export default function Header() {
   const { user, userData, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export default function Header() {
   return (
     <header>
       <h1>Forum App</h1>
+      {userData && <span>Welcome, {userData.username}</span>}
       <nav>
         <Search />
         <NavLink to="/">Home</NavLink>
@@ -26,17 +28,15 @@ export default function Header() {
         {!user && <NavLink to="/register">Register</NavLink>}
         {user && <NavLink to="/all-posts">All Posts</NavLink>}
         {user && <NavLink to="/surveys">Surveys</NavLink>}
+        {user && <NavLink to="/my-profile">My Profile</NavLink>}
         {userData &&
           (userData.role === UserRoleEnum.ADMIN || userData.role === UserRoleEnum.MODERATOR) && (
             <NavLink to="/add-survey">Add Survey</NavLink>
           )}
-        {user && <NavLink to="/my-profile">My Profile</NavLink>}
         {userData && userData.role === UserRoleEnum.ADMIN && (
           <NavLink to="/admin-page">Admin Page</NavLink>
-        )}{" "}
-        {/*TODO change 'user' to 'admin' after testing*/}
+        )}
         {user && <button onClick={logout}>Logout</button>}
-        {userData && <span>Welcome, {userData.username}</span>}
       </nav>
     </header>
   );
