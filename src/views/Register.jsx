@@ -133,6 +133,7 @@ export default function Register() {
                     name="lastName"
                     id="lastName" />
                 <br /><br />
+                
                 {/*PASSWORD*/}
                 <label htmlFor="password">Password: </label>
                 <input
