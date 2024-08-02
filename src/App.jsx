@@ -16,6 +16,7 @@ import MyProfile from "./views/MyProfile";
 import CreatePost from "./views/CreatePost";
 import AllPosts from "./views/AllPost";
 import AdminPage from "./views/AdminPage";
+import UserProfile from "./views/UserProfile";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -47,6 +48,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/my-profile" element={<MyProfile />}></Route>
+          <Route path="/user-profile/:id" element={<UserProfile />}></Route>
           <Route path="/login" element={<Login />} />
           <Route path="/post-create" element={<CreatePost />} />
           <Route path="/all-posts" element={<AllPosts />}></Route>

@@ -30,4 +30,4 @@ export const getAllUsers = async (role = null) => {
     return [];
   }
   return Object.values(snapshot.val());
-}
+};

@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { getAllUsers } from "../services/users.service";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getAllUsers()
             .then(u => {
                 setUsers(u);
-            }).catch(error => {
-                alert(error.message);
+            }).catch(e => {
+                alert(e.message);
             });
     }, []);
 
@@ -34,6 +36,7 @@ export default function AdminPage() {
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
                             <td>{user.role}</td>
+                            <button onClick={() => navigate(`/user-profile/${user.uid}`)}>See profile</button>
                         </tr>
                     ))}
                 </tbody>
