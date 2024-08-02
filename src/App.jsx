@@ -16,6 +16,9 @@ import MyProfile from "./views/MyProfile";
 import CreatePost from "./views/CreatePost";
 import AllPosts from "./views/AllPost";
 import AdminPage from "./views/AdminPage";
+import Survey from "./views/Survey";
+import AddSurvey from "./views/AddSurvey";
+import SurveyList from "./views/SurveyList";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -50,6 +53,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/post-create" element={<CreatePost />} />
           <Route path="/all-posts" element={<AllPosts />}></Route>
+          <Route path="/surveys" element={<SurveyList />} />
+          <Route path="/survey/:id" element={<Survey />} />
+          <Route path="/add-survey" element={<AddSurvey />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin-page" element={<AdminPage />}></Route>
           <Route path="*" element={<NotFound />} />

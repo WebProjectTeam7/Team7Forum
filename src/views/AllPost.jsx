@@ -6,14 +6,12 @@ export default function AllPosts() {
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const search = searchParams.get('search') ?? '';
-
-  console.log(posts);
+  const search = searchParams.get("search") ?? "";
 
   useEffect(() => {
     getAllPosts(search)
-      .then(posts => setPosts(posts))
-      .catch(error => alert(error.message));
+      .then((posts) => setPosts(posts))
+      .catch((error) => alert(error.message));
   }, [search]);
 
   const setSearch = (value) => {
@@ -28,22 +26,23 @@ export default function AllPosts() {
       <label htmlFor="search">Search Posts:</label>
       <input
         value={search}
-        onChange={e => setSearch(e.target.value)}
+        onChange={(e) => setSearch(e.target.value)}
         type="text"
         name="search"
         id="search"
       />
-      <br /><br />
-      {posts.length > 0 ? (
-        posts.map(p => (
-          <p key={p.id}>
-            {p.title.slice(0, 5)}...{" "}
-            <button onClick={() => navigate(`/posts/${p.id}`)}>See more</button>
-          </p>
-        ))
-      ) : (
-        'No posts'
-      )}
+      <br />
+      <br />
+      {posts.length > 0
+        ? posts.map((p) => (
+            <p key={p.id}>
+              {p.title.slice(0, 5)}...{" "}
+              <button onClick={() => navigate(`/posts/${p.id}`)}>
+                See more
+              </button>
+            </p>
+          ))
+        : "No posts"}
     </div>
   );
 }
