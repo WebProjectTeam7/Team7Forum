@@ -15,6 +15,11 @@
 
 .profile-field {
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eaeaea;
 }
 
 .profile-field label {
@@ -40,7 +45,7 @@
     box-sizing: border-box;
 }
 
-.profile-field button {
+.edit-button {
     background-color: #4CAF50;
     color: white;
     padding: 8px 12px;
@@ -50,7 +55,7 @@
     cursor: pointer;
 }
 
-.profile-field button:hover {
+.edit-button:hover {
     background-color: #45a049;
 }
 

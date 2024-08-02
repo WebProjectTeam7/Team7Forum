@@ -21,7 +21,7 @@ export default function Login() {
     };
 
     const login = async (e) => {
-        e.preventDefault();  // Prevents the default form submission behavior
+        e.preventDefault();  
         if (!user.email || !user.password) {
             return alert('No credentials provided!');
         }

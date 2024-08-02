@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { updateUserHandle } from "../services/users.service";
 import { AppContext } from "../state/app.context";
-import './CSS/MyProfile.css'; // Import the CSS file
+import './CSS/MyProfile.css';
 
 export default function MyProfile() {
     const { user, userData, setAppState } = useContext(AppContext);
@@ -61,8 +61,9 @@ export default function MyProfile() {
                 ) : (
                     <span>{userData.firstName}</span>
                 )}
-                <button onClick={() => toggleEditMode('firstName')}>Edit</button>
+
             </div>
+            <button className="edit-button" onClick={() => toggleEditMode('firstName')}>Edit First Name</button>
             <div className="profile-field">
                 <label>Last Name: </label>
                 {editMode.lastName ? (
@@ -75,8 +76,8 @@ export default function MyProfile() {
                 ) : (
                     <span>{userData.lastName}</span>
                 )}
-                <button onClick={() => toggleEditMode('lastName')}>Edit</button>
             </div>
+            <button className="edit-button" onClick={() => toggleEditMode('lastName')}>Edit Last Name</button>
             <div className="profile-field">
                 <label>Role: </label>
                 <span>{userData.role}</span>
