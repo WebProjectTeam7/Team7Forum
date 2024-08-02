@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getUserData } from "../services/users.service";
+import './CSS/UserProfile.css';
 
 export default function UserProfile() {
     const [user, setUser] = useState(null);
@@ -13,10 +14,10 @@ export default function UserProfile() {
     }, [id]);
 
     return (
-        <div>
+        <div className="user-profile-container">
             <h1>User Profile</h1>
             {user ? (
-                <>
+                <div className="user-profile-details">
                     <div>
                         <label>Username:</label>
                         <span>{user.username}</span>
@@ -37,9 +38,9 @@ export default function UserProfile() {
                         <label>Role: </label>
                         <span>{user.role}</span>
                     </div>
-                </>
+                </div>
             ) : (
-                <div>User not found</div>
+                <div className="user-not-found">User not found</div>
             )}
         </div>
     );

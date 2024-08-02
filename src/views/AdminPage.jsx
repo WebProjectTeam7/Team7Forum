@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getAllUsers, switchUserRole } from "../services/users.service";
 import { useNavigate } from "react-router-dom";
 import UserRoleEnum from "../common/role.enum";
+import './CSS/AdminPage.css';
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
@@ -28,7 +29,7 @@ export default function AdminPage() {
     };
 
     return (
-        <div>
+        <div className="admin-page-container">
             <h1>All Users</h1>
             <table>
                 <thead>
@@ -57,7 +58,9 @@ export default function AdminPage() {
                                     <option value={UserRoleEnum.ADMIN}>Admin</option>
                                 </select>
                             </td>
-                            <button onClick={() => navigate(`/user-profile/${user.uid}`)}>See profile</button>
+                            <td>
+                                <button onClick={() => navigate(`/user-profile/${user.uid}`)}>See profile</button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

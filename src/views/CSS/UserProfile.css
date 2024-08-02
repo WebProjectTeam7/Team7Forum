@@ -1,0 +1,46 @@
+/* UserProfile.css */
+
+.user-profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.user-profile-container h1 {
+    text-align: center;
+    color: #333;
+}
+
+.user-profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.user-profile-details div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.user-profile-details label {
+    font-weight: bold;
+    color: #555;
+}
+
+.user-profile-details span {
+    color: #666;
+    word-break: break-all;
+}
+
+.user-not-found {
+    text-align: center;
+    color: red;
+    margin-top: 20px;
+}

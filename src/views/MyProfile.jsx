@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { updateUserHandle } from "../services/users.service";
 import { AppContext } from "../state/app.context";
-
+import './CSS/MyProfile.css'; // Import the CSS file
 
 export default function MyProfile() {
     const { user, userData, setAppState } = useContext(AppContext);
@@ -38,21 +38,19 @@ export default function MyProfile() {
         });
     };
 
-
-
     return (
-        <div>
+        <div className="profile-container">
             <h1>My Profile</h1>
-            <div>
+            <div className="profile-field">
                 <label>Username:</label>
                 <span>{userData.username}</span>
             </div>
-            <div>
+            <div className="profile-field">
                 <label>Email:</label>
                 <span>{userData.email}</span>
             </div>
-            <div>
-                <label>Fist Name:</label>
+            <div className="profile-field">
+                <label>First Name:</label>
                 {editMode.firstName ? (
                     <input
                         value={userData.firstName}
@@ -65,7 +63,7 @@ export default function MyProfile() {
                 )}
                 <button onClick={() => toggleEditMode('firstName')}>Edit</button>
             </div>
-            <div>
+            <div className="profile-field">
                 <label>Last Name: </label>
                 {editMode.lastName ? (
                     <input
@@ -79,11 +77,11 @@ export default function MyProfile() {
                 )}
                 <button onClick={() => toggleEditMode('lastName')}>Edit</button>
             </div>
-            <div>
+            <div className="profile-field">
                 <label>Role: </label>
                 <span>{userData.role}</span>
             </div>
-            <button onClick={saveChanges}>Save Changes</button>
+            <button className="save-button" onClick={saveChanges}>Save Changes</button>
         </div>
-    )
+    );
 }
