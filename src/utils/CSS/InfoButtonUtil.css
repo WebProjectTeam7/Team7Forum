@@ -1,0 +1,43 @@
+.infoButtonContainer {
+    display: inline-block;
+    position: relative;
+}
+
+.infoButton {
+    color: black;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.infoIcon {
+    margin-right: 400px;
+}
+
+.infoBox {
+    position: absolute;
+    top: 0;
+    left: calc(8% + 0px);
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 10px;
+    max-width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    overflow: hidden;
+    transform-origin: top left;
+    transform: scaleX(0) scaleY(0);
+    transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.infoText {
+    margin: 0;
+}
+
+.infoButtonContainer:hover .infoBox {
+    opacity: 1;
+    max-height: 1000px;
+    transform: scaleX(1) scaleY(1);
+}

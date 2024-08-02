@@ -28,11 +28,11 @@ export default function Header() {
         {!user && <NavLink to="/register">Register</NavLink>}
         {user && <NavLink to="/all-posts">All Posts</NavLink>}
         {user && <NavLink to="/surveys">Surveys</NavLink>}
-        {user && <NavLink to="/my-profile">My Profile</NavLink>}
         {userData &&
           (userData.role === UserRoleEnum.ADMIN || userData.role === UserRoleEnum.MODERATOR) && (
             <NavLink to="/add-survey">Add Survey</NavLink>
           )}
+        {user && <NavLink to="/my-profile">My Profile</NavLink>}
         {userData && userData.role === UserRoleEnum.ADMIN && (
           <NavLink to="/admin-page">Admin Page</NavLink>
         )}
