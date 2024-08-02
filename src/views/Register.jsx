@@ -4,7 +4,10 @@ import { AppContext } from "../state/app.context";
 import { useNavigate } from "react-router-dom";
 import { createUserHandle, getUserByHandle } from "../services/users.service";
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, USER_REGEX } from "../common/regex";
+import { PasswordStrengthIndicator } from "../utils/password.strength.util";
 import RoleEnum from "../common/role.enum";
+import './CSS/Register.css';
+
 
 export default function Register() {
     const { setAppState } = useContext(AppContext);
@@ -20,7 +23,6 @@ export default function Register() {
 
     const [hidePassword, setHidePassword] = useState(true);
     const [alertMessage, setAlertMessage] = useState('');
-    const [loading, setLoading] = useState(false);
 
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
@@ -38,7 +40,6 @@ export default function Register() {
     const register = async (e) => {
         e.preventDefault();
 
-        setLoading(true);
         setAlertMessage('');
 
         const alertArr = [];
@@ -69,7 +70,6 @@ export default function Register() {
 
         if (alertArr.length > 0) {
             setAlertMessage(alertArr.join('\n'));
-            setLoading(false);
             return alert(alertMessage);
         }
 
@@ -84,8 +84,6 @@ export default function Register() {
             navigate('/');
         } catch (error) {
             alert(error.message);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -133,7 +131,7 @@ export default function Register() {
                     name="lastName"
                     id="lastName" />
                 <br /><br />
-                
+
                 {/*PASSWORD*/}
                 <label htmlFor="password">Password: </label>
                 <input
@@ -143,6 +141,7 @@ export default function Register() {
                     name="password"
                     id="password" />
                 <a onClick={togglePasswordVisibility}>{hidePassword ? 'Show Passwords' : 'Hide Passwords'}</a>
+                <PasswordStrengthIndicator password={user.password} />
                 <br />
 
                 {/*CONFIRM PASSWORD*/}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAllUsers, switchUserRole } from "../services/users.service";
 import { useNavigate } from "react-router-dom";
+import UserRoleEnum from "../common/role.enum";
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
@@ -51,9 +52,9 @@ export default function AdminPage() {
                                     value={user.role}
                                     onChange={(e) => handleRoleChange(user.uid, e.target.value)}
                                 >
-                                    <option value="user">User</option>
-                                    <option value="moderator">Moderator</option>
-                                    <option value="admin">Admin</option>
+                                    <option value={UserRoleEnum.USER}>User</option>
+                                    <option value={UserRoleEnum.MODERATOR}>Moderator</option>
+                                    <option value={UserRoleEnum.ADMIN}>Admin</option>
                                 </select>
                             </td>
                             <button onClick={() => navigate(`/user-profile/${user.uid}`)}>See profile</button>

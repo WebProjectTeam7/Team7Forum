@@ -2,17 +2,20 @@ import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/da
 import { db } from '../config/firebase-config';
 
 export const getUserByHandle = async (username) => {
-  const snapshot = await get(ref(db, `users/${username}`));
+  const userRef = ref(db, `users/${username}`);
+  const snapshot = await get(userRef);
   return snapshot.val();
 };
 
 export const createUserHandle = async (username, uid, email, firstName, lastName, role) => {
   const user = { username, uid, email, firstName, lastName, role, createdOn: new Date().toString() };
-  await set(ref(db, `users/${username}`), user);
+  const userRef = ref(db, `users/${username}`);
+  await set(userRef, user);
 };
 
 export const getUserData = async (uid) => {
-  const snapshot = await get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
+  const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid))
+  const snapshot = await get(userRef);
   return snapshot.val();
 };
 
@@ -35,10 +38,6 @@ export const getAllUsers = async (role = null) => {
 export const switchUserRole = async (uid, newRole) => {
   const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
   const snapshot = await get(userRef);
-  if (snapshot.exists()) {
-    const userKey = Object.keys(snapshot.val())[0];
-    await update(ref(db, `users/${userKey}`), { role: newRole });
-  } else {
-    throw new Error('User not found');
-  }
+  const userId = Object.keys(snapshot.val())[0];
+  await update(ref(db, `users/${userId}`), { role: newRole });
 } 
