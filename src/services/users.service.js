@@ -31,3 +31,14 @@ export const getAllUsers = async (role = null) => {
   }
   return Object.values(snapshot.val());
 };
+
+export const switchUserRole = async (uid, newRole) => {
+  const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
+  const snapshot = await get(userRef);
+  if (snapshot.exists()) {
+    const userKey = Object.keys(snapshot.val())[0];
+    await update(ref(db, `users/${userKey}`), { role: newRole });
+  } else {
+    throw new Error('User not found');
+  }
+} 

@@ -28,7 +28,7 @@ export default function Header() {
         {user && <NavLink to="/my-profile">My Profile</NavLink>}
         {userData && userData.role === 'user' && <NavLink to="/admin-page">Admin Page</NavLink>} {/*TODO change 'user' to 'admin' after testing*/}
         {user && <button onClick={logout}>Logout</button>}
-        {userData && <span>Welcome, {userData.handle}</span>}
+        {userData && <span>Welcome, {userData.username}</span>}
       </nav>
     </header>
   );
