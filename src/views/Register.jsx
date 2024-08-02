@@ -1,13 +1,11 @@
-import { useContext, useState } from "react"
+import { useContext, useState } from "react";
 import { registerUser } from "../services/auth.service";
 import { AppContext } from "../state/app.context";
 import { useNavigate } from "react-router-dom";
 import { createUserHandle, getUserByHandle } from "../services/users.service";
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, USER_REGEX } from "../common/regex";
-import { PasswordStrengthIndicator } from "../utils/password.strength.util";
+import PasswordStrengthIndicator from "../utils/password.strength.util";
 import RoleEnum from "../common/role.enum";
-import './CSS/Register.css';
-
 
 export default function Register() {
     const { setAppState } = useContext(AppContext);
@@ -23,6 +21,7 @@ export default function Register() {
 
     const [hidePassword, setHidePassword] = useState(true);
     const [alertMessage, setAlertMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
@@ -40,6 +39,7 @@ export default function Register() {
     const register = async (e) => {
         e.preventDefault();
 
+        setLoading(true);
         setAlertMessage('');
 
         const alertArr = [];
@@ -53,7 +53,7 @@ export default function Register() {
         }
 
         if (!NAME_REGEX.test(user.firstName)) {
-            alertArr.push('Invalid Fist name!');
+            alertArr.push('Invalid First name!');
         }
 
         if (!NAME_REGEX.test(user.lastName)) {
@@ -65,11 +65,12 @@ export default function Register() {
         }
 
         if (user.password !== user.confirmPassword) {
-            alertArr.push('Passwords don\'t  match!');
+            alertArr.push('Passwords don\'t match!');
         }
 
         if (alertArr.length > 0) {
             setAlertMessage(alertArr.join('\n'));
+            setLoading(false);
             return alert(alertMessage);
         }
 
@@ -84,12 +85,14 @@ export default function Register() {
             navigate('/');
         } catch (error) {
             alert(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <>
-            <form onSubmit={register} >
+            <form onSubmit={register}>
                 <h1>Register</h1>
 
                 {/*USERNAME*/}
@@ -99,8 +102,8 @@ export default function Register() {
                     onChange={updateUser('username')}
                     type="text"
                     name="username"
-                    id="username" />
-                <br /><br />
+                    id="username"
+                /><br /><br />
 
                 {/*EMAIL*/}
                 <label htmlFor="email">Email: </label>
@@ -109,8 +112,8 @@ export default function Register() {
                     onChange={updateUser('email')}
                     type="text"
                     name="email"
-                    id="email" />
-                <br /><br />
+                    id="email"
+                /><br /><br />
 
                 {/*FIRST NAME*/}
                 <label htmlFor="firstName">First Name: </label>
@@ -119,8 +122,8 @@ export default function Register() {
                     onChange={updateUser('firstName')}
                     type="text"
                     name="firstName"
-                    id="firstName" />
-                <br /><br />
+                    id="firstName"
+                /><br /><br />
 
                 {/*LAST NAME*/}
                 <label htmlFor="lastName">Last Name: </label>
@@ -129,8 +132,8 @@ export default function Register() {
                     onChange={updateUser('lastName')}
                     type="text"
                     name="lastName"
-                    id="lastName" />
-                <br /><br />
+                    id="lastName"
+                /><br /><br />
 
                 {/*PASSWORD*/}
                 <label htmlFor="password">Password: </label>
@@ -139,8 +142,11 @@ export default function Register() {
                     onChange={updateUser('password')}
                     type={hidePassword ? "password" : "text"}
                     name="password"
-                    id="password" />
-                <a onClick={togglePasswordVisibility}>{hidePassword ? 'Show Passwords' : 'Hide Passwords'}</a>
+                    id="password"
+                />
+                <a onClick={togglePasswordVisibility}>
+                    {hidePassword ? 'Show Passwords' : 'Hide Passwords'}
+                </a>
                 <PasswordStrengthIndicator password={user.password} />
                 <br />
 
@@ -151,8 +157,8 @@ export default function Register() {
                     onChange={updateUser('confirmPassword')}
                     type={hidePassword ? "password" : "text"}
                     name="confirmPassword"
-                    id="confirmPassword" />
-                <br />
+                    id="confirmPassword"
+                /><br />
 
                 {/*SUBMIT*/}
                 <button>Register</button>

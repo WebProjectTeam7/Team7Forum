@@ -1,8 +1,7 @@
 import { HAS_UPPERCASE, HAS_LOWERCASE, HAS_DIGIT, HAS_SPECIAL_CHAR } from "../common/regex";
 import { PASSWORD_STRENGTH_LOW_LENGTH, PASSWORD_STRENGTH_STRONG_LENGTH, WEAK_COLOR, MEDIUM_COLOR, STRONG_COLOR, DEFAULT_COLOR } from "../common/constants";
 
-
-export default function PasswordStrengthIndicator({ password }) {
+const PasswordStrengthIndicator = ({ password }) => {
     const handlePasswordStrength = (password) => {
         const strengthCheck = {
             lengthLow: password.length >= PASSWORD_STRENGTH_LOW_LENGTH,
@@ -14,8 +13,7 @@ export default function PasswordStrengthIndicator({ password }) {
         };
 
         let points = Object.values(strengthCheck).filter((value) => value).length;
-        let strength = points > 4 ? "Strong"
-            : points > 2 ? "Medium" : "Weak";
+        let strength = points > 4 ? "Strong" : points > 2 ? "Medium" : "Weak";
 
         return {
             points,
@@ -25,15 +23,14 @@ export default function PasswordStrengthIndicator({ password }) {
     };
 
     const getActiveColor = (strength) => {
-        return strength === "Strong" ? STRONG_COLOR
-            : strength === "Medium" ? MEDIUM_COLOR
-                : WEAK_COLOR;
+        return strength === "Strong" ? STRONG_COLOR : strength === "Medium" ? MEDIUM_COLOR : WEAK_COLOR;
     };
 
     let stats = handlePasswordStrength(password);
 
-    const element = (color) =>
+    const element = (color, key) => (
         <hr
+            key={key}
             style={{
                 flex: 1,
                 border: "none",
@@ -41,16 +38,18 @@ export default function PasswordStrengthIndicator({ password }) {
                 borderRadius: "2px",
                 margin: "0 5px",
                 marginTop: "8px",
-                color: color,
+                borderTopColor: color,
             }}
-        />;
+        />
+    );
+
     const barElement = [];
 
     for (let i = 0; i < stats.points; i++) {
-        barElement.push(element(stats.activeColor));
+        barElement.push(element(stats.activeColor, i));
     }
     for (let i = 0; i < 6 - stats.points; i++) {
-        barElement.push(element(DEFAULT_COLOR));
+        barElement.push(element(DEFAULT_COLOR, i + stats.points));
     }
 
     return (
@@ -60,8 +59,11 @@ export default function PasswordStrengthIndicator({ password }) {
             </div>
             {password && (
                 <p style={{ color: stats.activeColor, fontSize: "smaller" }}>
-                    Your password has {stats.strength.toLowerCase()}  strength
-                </p>)}
+                    Your password has {stats.strength.toLowerCase()} strength
+                </p>
+            )}
         </>
     );
-}
+};
+
+export default PasswordStrengthIndicator;
