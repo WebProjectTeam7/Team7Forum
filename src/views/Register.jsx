@@ -3,7 +3,8 @@ import { registerUser } from "../services/auth.service";
 import { AppContext } from "../state/app.context";
 import { useNavigate } from "react-router-dom";
 import { createUserHandle, getUserByHandle } from "../services/users.service";
-import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, USER_REGEX } from "../common/constants";
+import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, USER_REGEX } from "../common/regex";
+import RoleEnum from "../common/role.enum";
 
 export default function Register() {
     const { setAppState } = useContext(AppContext);
@@ -14,7 +15,7 @@ export default function Register() {
         lastName: '',
         password: '',
         confirmPassword: '',
-        role: 'user',
+        role: RoleEnum.USER,
     });
 
     const [hidePassword, setHidePassword] = useState(true);
