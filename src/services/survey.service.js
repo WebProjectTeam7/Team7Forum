@@ -1,57 +1,57 @@
-import { ref, push, get, update, set } from "firebase/database";
-import { db } from "../config/firebase-config";
+import { ref, push, get, update, set } from 'firebase/database';
+import { db } from '../config/firebase-config';
 
 export const addSurvey = async (survey) => {
-  const surveyRef = ref(db, "surveys");
-  const newSurveyRef = push(surveyRef);
-  await update(newSurveyRef, { ...survey, id: newSurveyRef.key });
+    const surveyRef = ref(db, 'surveys');
+    const newSurveyRef = push(surveyRef);
+    await update(newSurveyRef, { ...survey, id: newSurveyRef.key });
 };
 
 export const getAllSurveys = async () => {
-  const snapshot = await get(ref(db, "surveys"));
-  if (!snapshot.exists()) return [];
-  return Object.values(snapshot.val());
+    const snapshot = await get(ref(db, 'surveys'));
+    if (!snapshot.exists()) return [];
+    return Object.values(snapshot.val());
 };
 
 export const getSurvey = async (id) => {
-  const snapshot = await get(ref(db, `surveys/${id}`));
-  if (!snapshot.exists()) throw new Error("Survey not found");
-  return snapshot.val();
+    const snapshot = await get(ref(db, `surveys/${id}`));
+    if (!snapshot.exists()) throw new Error('Survey not found');
+    return snapshot.val();
 };
 
 export const rateChoice = async (surveyId, choiceId, userId, rating) => {
-  const ratingRef = ref(
-    db,
-    `surveys/${surveyId}/choices/${choiceId}/ratings/${userId}`
-  );
-  await update(ratingRef, { rating });
+    const ratingRef = ref(
+        db,
+        `surveys/${surveyId}/choices/${choiceId}/ratings/${userId}`
+    );
+    await update(ratingRef, { rating });
 
-  const choiceRef = ref(db, `surveys/${surveyId}/choices/${choiceId}`);
-  const snapshot = await get(choiceRef);
-  const choice = snapshot.val();
+    const choiceRef = ref(db, `surveys/${surveyId}/choices/${choiceId}`);
+    const snapshot = await get(choiceRef);
+    const choice = snapshot.val();
 
-  const ratings = Object.values(choice.ratings ?? {});
-  const averageRating =
+    const ratings = Object.values(choice.ratings ?? {});
+    const averageRating =
     ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
 
-  await update(choiceRef, { averageRating });
+    await update(choiceRef, { averageRating });
 };
 
 export const getAverageRating = async (surveyId, choiceId) => {
-  const snapshot = await get(
-    ref(db, `surveys/${surveyId}/choices/${choiceId}/ratings`)
-  );
-  const ratings = snapshot.val();
+    const snapshot = await get(
+        ref(db, `surveys/${surveyId}/choices/${choiceId}/ratings`)
+    );
+    const ratings = snapshot.val();
 
-  if (!ratings) return 0;
+    if (!ratings) return 0;
 
-  const total = Object.values(ratings).reduce((acc, score) => acc + score, 0);
-  return total / Object.values(ratings).length;
+    const total = Object.values(ratings).reduce((acc, score) => acc + score, 0);
+    return total / Object.values(ratings).length;
 };
 
 export const addRating = async (surveyId, choiceId, userId, rating) => {
-  await set(
-    ref(db, `surveys/${surveyId}/choices/${choiceId}/ratings/${userId}`),
-    rating
-  );
+    await set(
+        ref(db, `surveys/${surveyId}/choices/${choiceId}/ratings/${userId}`),
+        rating
+    );
 };
