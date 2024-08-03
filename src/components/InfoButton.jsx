@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSpring, animated } from '@react-spring/web';
 import { FaInfoCircle } from 'react-icons/fa';
-import './CSS/InfoButtonUtil.css';
+import './CSS/InfoButton.css';
 import PropTypes from "prop-types";
 
 export default function InfoButton({ text }) {

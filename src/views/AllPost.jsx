@@ -36,8 +36,8 @@ export default function AllPosts() {
       {posts.length > 0
         ? posts.map((p) => (
             <p key={p.id}>
-              {p.title.slice(0, 5)}...{" "}
-              <button onClick={() => navigate(`/posts/${p.id}`)}>
+              {p.title}
+              <button onClick={() => navigate(`/single-post/${p.id}`)}>
                 See more
               </button>
             </p>

@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/jsx-no-undef */
 import { useEffect, useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -20,6 +18,7 @@ import UserProfile from "./views/UserProfile";
 import Survey from "./views/Survey";
 import AddSurvey from "./views/AddSurvey";
 import SurveyList from "./views/SurveyList";
+import SinglePost from "./views/SinglePost";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -54,6 +53,7 @@ function App() {
           <Route path="/user-profile/:id" element={<UserProfile />}></Route>
           <Route path="/login" element={<Login />} />
           <Route path="/post-create" element={<CreatePost />} />
+          <Route path="/single-post/:id" element={<SinglePost />}></Route>
           <Route path="/all-posts" element={<AllPosts />}></Route>
           <Route path="/surveys" element={<SurveyList />} />
           <Route path="/survey/:id" element={<Survey />} />
