@@ -1,99 +1,68 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getSurvey } from '../services/survey.service';
-import BeerRating from '../components/BeerRating';
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import {
+  addRating,
+  getAverageRating,
+  getSurvey,
+} from "../services/survey.service";
+import BeerRating from "../components/BeerRating";
+import { AppContext } from "../state/app.context";
 
 export default function Survey() {
-    const { id } = useParams();
-    const [survey, setSurvey] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [survey, setSurvey] = useState(null);
+  const [ratings, setRatings] = useState({});
+  const { id } = useParams();
+  const { user } = useContext(AppContext);
 
-    useEffect(() => {
-        getSurvey(id)
-            .then((data) => {
-                setSurvey(data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-    }, [id]);
+  useEffect(() => {
+    async function fetchSurvey() {
+      try {
+        const surveyData = await getSurvey(id);
+        setSurvey(surveyData);
+        const ratings = {};
+        for (const choiceId in surveyData.choices) {
+          const avgRating = await getAverageRating(id, choiceId);
+          ratings[choiceId] = avgRating;
+        }
+        setRatings(ratings);
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
-    if (!survey) return <div>Survey not found</div>;
+    fetchSurvey();
+  }, [id]);
 
-    return (
-        <div>
-            <h1>{survey.title}</h1>
-            <p>{survey.description}</p>
-            <div>
-                {Array.isArray(survey.choices) ? (
-                    survey.choices.map((choice) => (
-                        <div key={choice.id}>
-                            <h3>{choice.text}</h3>
-                            <BeerRating
-                                choiceId={choice.id}
-                                surveyId={survey.id}
-                                rating={choice.rating || 0}
-                            />
-                        </div>
-                    ))
-                ) : (
-                    <p>No choices available</p>
-                )}
-            </div>
+  const handleRate = async (choiceId, rating) => {
+    if (!user) {
+      alert("You must be logged in to rate!");
+      return;
+    }
+
+    try {
+      await addRating(id, choiceId, user.uid, rating);
+      const avgRating = await getAverageRating(id, choiceId);
+      setRatings({ ...ratings, [choiceId]: avgRating });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (!survey) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <h1>{survey.question}</h1>
+      {Object.entries(survey.choices).map(([choiceId, choice]) => (
+        <div key={choiceId}>
+          <p>{choice.text}</p>
+          <BeerRating
+            rating={ratings[choiceId]}
+            onRate={(rating) => handleRate(choiceId, rating)}
+          />
+          <p>Average Rating: {ratings[choiceId] ?? 0} 🍺</p>
         </div>
-    );
+      ))}
+    </div>
+  );
 }
-
-// import { useContext, useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import { AppContext } from "../state/app.context";
-// import { getSurvey, rateChoice } from "../services/survey.service";
-// import BeerRating from "../components/BeerRating";
-
-// export default function Survey() {
-//   const { id } = useParams();
-//   const { user } = useContext(AppContext);
-//   const [survey, setSurvey] = useState(null);
-
-//   useEffect(() => {
-//     if (id) {
-//       getSurvey(id)
-//         .then((data) => setSurvey(data))
-//         .catch((e) => alert(e.message));
-//     }
-//   }, [id]);
-//   const handleRate = (choiceId, rating) => {
-//     if (user) {
-//       rateChoice(id, choiceId, user.uid, rating)
-//         .then(() => alert("Rating submitted!"))
-//         .catch((error) => alert(error.message));
-//     } else {
-//       alert("You must be logged in to rate.");
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h1>{survey?.title}</h1>
-//       <p>{survey?.description}</p>
-//       {survey?.choices &&
-//         survey.choices.map((choice) => (
-//           <div key={choice.id}>
-//             <h3>{choice.text}</h3>
-//             <p>Average Rating: {choice.averageRating ?? "No ratings yet"}</p>
-//             {user && (
-//               <BeerRating
-//                 rating={choice.userRating ?? 0}
-//                 onRate={(rating) => handleRate(choice.id, rating)}
-//               />
-//             )}
-//           </div>
-//         ))}
-//     </div>
-//   );
-// }
