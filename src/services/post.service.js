@@ -13,9 +13,7 @@ export const createPost = async (author, title, content) => {
 export const getAllPosts = async (search = "") => {
   const snapshot = await get(ref(db, "posts"));
   if (!snapshot.exists()) return [];
-
   const posts = Object.values(snapshot.val());
-
   if (search) {
     return posts.filter((p) =>
       p.title.toLowerCase().includes(search.toLowerCase())

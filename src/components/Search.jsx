@@ -10,7 +10,7 @@ export default function Search() {
     };
 
     const handleSearch = (e) => {
-        setSearchQuery(e.target.value);
+        setSearchQuery(inputValue);
     };
 
     const handleKeyPress = (e) => {
