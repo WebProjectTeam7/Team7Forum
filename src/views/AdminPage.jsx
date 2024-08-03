@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { getAllUsers, switchUserRole } from "../services/users.service";
-import { useNavigate } from "react-router-dom";
-import UserRoleEnum from "../common/role.enum";
+import { useState, useEffect } from 'react';
+import { getAllUsers, switchUserRole } from '../services/users.service';
+import { useNavigate } from 'react-router-dom';
+import UserRoleEnum from '../common/role.enum';
 import './CSS/AdminPage.css';
 
 export default function AdminPage() {

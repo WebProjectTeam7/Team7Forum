@@ -1,7 +1,7 @@
-import { useContext, useState } from "react";
-import { AppContext } from "../state/app.context";
-import { useLocation, useNavigate } from "react-router-dom";
-import { loginUser } from "../services/auth.service";
+import { useContext, useState } from 'react';
+import { AppContext } from '../state/app.context';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { loginUser } from '../services/auth.service';
 import './CSS/Register.css';
 
 export default function Login() {
@@ -17,11 +17,11 @@ export default function Login() {
         setUser({
             ...user,
             [prop]: e.target.value,
-        })
+        });
     };
 
     const login = async (e) => {
-        e.preventDefault();  
+        e.preventDefault();
         if (!user.email || !user.password) {
             return alert('No credentials provided!');
         }
@@ -36,7 +36,7 @@ export default function Login() {
         } catch (error) {
             alert(error.message);
         }
-    }
+    };
 
     return (
         <form onSubmit={login}>
@@ -47,5 +47,5 @@ export default function Login() {
             <input value={user.password} onChange={updateUser('password')} type="password" name="password" id="password" /><br />
             <button type="submit">Login</button>
         </form>
-    )
+    );
 }

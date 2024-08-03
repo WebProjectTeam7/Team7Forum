@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { AppContext } from "../state/app.context"; // Ensure correct import
+import { useContext } from 'react';
+import { AppContext } from '../state/app.context'; // Ensure correct import
 
 export default function Post({ post }) {
     const { userData } = useContext(AppContext);

@@ -63,3 +63,7 @@ form .strength-indicator {
     margin-top: -10px;
     margin-bottom: 10px;
 }
+
+form .infoButton{
+    margin-left: auto; 
+}

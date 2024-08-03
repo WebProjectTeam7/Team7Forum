@@ -1,52 +1,52 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getSurvey } from "../services/survey.service";
-import BeerRating from "../components/BeerRating";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getSurvey } from '../services/survey.service';
+import BeerRating from '../components/BeerRating';
 
 export default function Survey() {
-  const { id } = useParams();
-  const [survey, setSurvey] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+    const { id } = useParams();
+    const [survey, setSurvey] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    getSurvey(id)
-      .then((data) => {
-        setSurvey(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [id]);
+    useEffect(() => {
+        getSurvey(id)
+            .then((data) => {
+                setSurvey(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [id]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!survey) return <div>Survey not found</div>;
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+    if (!survey) return <div>Survey not found</div>;
 
-  return (
-    <div>
-      <h1>{survey.title}</h1>
-      <p>{survey.description}</p>
-      <div>
-        {Array.isArray(survey.choices) ? (
-          survey.choices.map((choice) => (
-            <div key={choice.id}>
-              <h3>{choice.text}</h3>
-              <BeerRating
-                choiceId={choice.id}
-                surveyId={survey.id}
-                rating={choice.rating || 0}
-              />
+    return (
+        <div>
+            <h1>{survey.title}</h1>
+            <p>{survey.description}</p>
+            <div>
+                {Array.isArray(survey.choices) ? (
+                    survey.choices.map((choice) => (
+                        <div key={choice.id}>
+                            <h3>{choice.text}</h3>
+                            <BeerRating
+                                choiceId={choice.id}
+                                surveyId={survey.id}
+                                rating={choice.rating || 0}
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <p>No choices available</p>
+                )}
             </div>
-          ))
-        ) : (
-          <p>No choices available</p>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    );
 }
 
 // import { useContext, useEffect, useState } from "react";

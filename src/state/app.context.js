@@ -1,9 +1,9 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 export const AppContext = createContext({
-  user: null,
-  userData: null,
-  setAppState: () => {},
-  searchQuery: "",
-  setSearchQuery: () => {},
+    user: null,
+    userData: null,
+    setAppState: () => {},
+    searchQuery: '',
+    setSearchQuery: () => {},
 });

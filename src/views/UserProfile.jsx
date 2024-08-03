@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getUserData } from "../services/users.service";
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { getUserData } from '../services/users.service';
 import './CSS/UserProfile.css';
 
 export default function UserProfile() {

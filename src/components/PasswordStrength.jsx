@@ -1,6 +1,6 @@
-import { HAS_UPPERCASE, HAS_LOWERCASE, HAS_DIGIT, HAS_SPECIAL_CHAR } from "../common/regex";
-import { PASSWORD_STRENGTH_LOW_LENGTH, PASSWORD_STRENGTH_STRONG_LENGTH, WEAK_COLOR, MEDIUM_COLOR, STRONG_COLOR, DEFAULT_COLOR } from "../common/constants";
-import PropTypes from "prop-types";
+import { HAS_UPPERCASE, HAS_LOWERCASE, HAS_DIGIT, HAS_SPECIAL_CHAR } from '../common/regex';
+import { PASSWORD_STRENGTH_LOW_LENGTH, PASSWORD_STRENGTH_STRONG_LENGTH, WEAK_COLOR, MEDIUM_COLOR, STRONG_COLOR, DEFAULT_COLOR } from '../common/constants';
+import PropTypes from 'prop-types';
 
 export default function PasswordStrengthIndicator({ password }) {
     const handlePasswordStrength = (password) => {
@@ -14,7 +14,7 @@ export default function PasswordStrengthIndicator({ password }) {
         };
 
         let points = Object.values(strengthCheck).filter((value) => value).length;
-        let strength = points > 4 ? "Strong" : points > 2 ? "Medium" : "Weak";
+        let strength = points > 4 ? 'Strong' : points > 2 ? 'Medium' : 'Weak';
 
         return {
             points,
@@ -24,7 +24,7 @@ export default function PasswordStrengthIndicator({ password }) {
     };
 
     const getActiveColor = (strength) => {
-        return strength === "Strong" ? STRONG_COLOR : strength === "Medium" ? MEDIUM_COLOR : WEAK_COLOR;
+        return strength === 'Strong' ? STRONG_COLOR : strength === 'Medium' ? MEDIUM_COLOR : WEAK_COLOR;
     };
 
     let stats = handlePasswordStrength(password);
@@ -34,11 +34,11 @@ export default function PasswordStrengthIndicator({ password }) {
             key={key}
             style={{
                 flex: 1,
-                border: "none",
-                borderTop: "8px solid",
-                borderRadius: "2px",
-                margin: "0 5px",
-                marginTop: "8px",
+                border: 'none',
+                borderTop: '8px solid',
+                borderRadius: '2px',
+                margin: '0 5px',
+                marginTop: '8px',
                 borderTopColor: color,
             }}
         />
@@ -55,11 +55,11 @@ export default function PasswordStrengthIndicator({ password }) {
 
     return (
         <>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 {barElement}
             </div>
             {password && (
-                <p style={{ color: stats.activeColor, fontSize: "smaller" }}>
+                <p style={{ color: stats.activeColor, fontSize: 'smaller' }}>
                     Your password has {stats.strength.toLowerCase()} strength
                 </p>
             )}
