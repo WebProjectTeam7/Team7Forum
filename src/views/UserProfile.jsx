@@ -18,22 +18,32 @@ export default function UserProfile() {
             <h1>User Profile</h1>
             {user ? (
                 <div className="user-profile-details">
+
+                    {/* USERNAME */}
                     <div>
                         <label>Username:</label>
                         <span>{user.username}</span>
                     </div>
+
+                    {/* EMAIL */}
                     <div>
                         <label>Email:</label>
                         <span>{user.email}</span>
                     </div>
+
+                    {/* FIRST NAME */}
                     <div>
                         <label>First Name:</label>
                         <span>{user.firstName}</span>
                     </div>
+
+                    {/* LAST NAME */}
                     <div>
                         <label>Last Name: </label>
                         <span>{user.lastName}</span>
                     </div>
+
+                    {/* ROLE */}
                     <div>
                         <label>Role: </label>
                         <span>{user.role}</span>

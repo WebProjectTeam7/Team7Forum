@@ -41,14 +41,20 @@ export default function MyProfile() {
     return (
         <div className="profile-container">
             <h1>My Profile</h1>
+
+            {/* USERNAME */}
             <div className="profile-field">
                 <label>Username:</label>
                 <span>{userData.username}</span>
             </div>
+
+            {/* EMAIL */}
             <div className="profile-field">
                 <label>Email:</label>
                 <span>{userData.email}</span>
             </div>
+
+            {/* FIRST NAME */}
             <div className="profile-field">
                 <label>First Name:</label>
                 {editMode.firstName ? (
@@ -64,6 +70,8 @@ export default function MyProfile() {
 
             </div>
             <button className="edit-button" onClick={() => toggleEditMode('firstName')}>Edit First Name</button>
+
+            {/* LAST NAME */}
             <div className="profile-field">
                 <label>Last Name: </label>
                 {editMode.lastName ? (
@@ -78,6 +86,8 @@ export default function MyProfile() {
                 )}
             </div>
             <button className="edit-button" onClick={() => toggleEditMode('lastName')}>Edit Last Name</button>
+
+            {/* ROLE */}
             <div className="profile-field">
                 <label>Role: </label>
                 <span>{userData.role}</span>

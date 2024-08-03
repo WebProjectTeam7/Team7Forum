@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { AppContext } from '../state/app.context'; // Ensure correct import
+import { AppContext } from '../state/app.context';
+import PropTypes from 'prop-types';
 
 export default function Post({ post }) {
     const { userData } = useContext(AppContext);
@@ -14,3 +15,11 @@ export default function Post({ post }) {
         </div>
     );
 }
+
+Post.propTypes = {
+    post: PropTypes.shape({
+        title: PropTypes.string,
+        createdOn: PropTypes.string,
+        content: PropTypes.string,
+    }),
+};

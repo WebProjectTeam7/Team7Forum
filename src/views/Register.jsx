@@ -97,7 +97,7 @@ export default function Register() {
             <form onSubmit={register}>
                 <h1>Register</h1>
 
-                {/* USERNAME*/}
+                {/* USERNAME */}
                 <label htmlFor="username">Username: </label>
                 <InfoButton text=" Username must be:
                                         between 4 to 32 characters,
@@ -113,7 +113,7 @@ export default function Register() {
 
                 <br /><br />
 
-                {/* EMAIL*/}
+                {/* EMAIL */}
                 <label htmlFor="email">Email: </label>
                 <InfoButton text=" Must be a valid email address." />
                 <input
@@ -125,7 +125,7 @@ export default function Register() {
                 />
                 <br /><br />
 
-                {/* FIRST NAME*/}
+                {/* FIRST NAME */}
                 <label htmlFor="firstName">First Name: </label>
                 <InfoButton text="First name must be:
                                         between 4 to 32 characters,"/>
@@ -138,7 +138,7 @@ export default function Register() {
                 />
                 <br /><br />
 
-                {/* LAST NAME*/}
+                {/* LAST NAME */}
                 <label htmlFor="lastName">Last Name: </label>
                 <InfoButton text="Last name must be:
                                         between 4 to 32 characters,"/>
@@ -152,7 +152,7 @@ export default function Register() {
 
                 <br /><br />
 
-                {/* PASSWORD*/}
+                {/* PASSWORD */}
                 <label htmlFor="password">Password: </label>
                 <InfoButton text="Password must be between 5 to 30 characters.
                                     Include uppercase and lowercase letters, numbers, and special characters
@@ -170,7 +170,7 @@ export default function Register() {
                 <PasswordStrengthIndicator password={user.password} />
                 <br />
 
-                {/* CONFIRM PASSWORD*/}
+                {/* CONFIRM PASSWORD */}
                 <label htmlFor="confirmPassword">Confirm Password: </label>
                 <input
                     value={user.confirmPassword}
@@ -180,7 +180,7 @@ export default function Register() {
                     id="confirmPassword"
                 /><br />
 
-                {/* SUBMIT*/}
+                {/* SUBMIT */}
                 <button>Register</button>
             </form>
         </>
