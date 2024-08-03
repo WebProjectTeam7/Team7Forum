@@ -4,9 +4,9 @@ import { AppContext } from "../state/app.context";
 import { useNavigate } from "react-router-dom";
 import { createUserHandle, getUserByHandle } from "../services/users.service";
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, USER_REGEX } from "../common/regex";
-import PasswordStrengthIndicator from "../utils/PasswordStrengthUtil";
+import { PasswordStrengthIndicator } from "../utils/PasswordStrengthUtil";
 import RoleEnum from "../common/role.enum";
-import InfoButton from "../utils/InfoButtonUtil";
+import { InfoButton }  from "../utils/InfoButtonUtil";
 import { FaEye } from "react-icons/fa";
 
 export default function Register() {

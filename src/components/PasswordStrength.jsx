@@ -1,7 +1,8 @@
 import { HAS_UPPERCASE, HAS_LOWERCASE, HAS_DIGIT, HAS_SPECIAL_CHAR } from "../common/regex";
 import { PASSWORD_STRENGTH_LOW_LENGTH, PASSWORD_STRENGTH_STRONG_LENGTH, WEAK_COLOR, MEDIUM_COLOR, STRONG_COLOR, DEFAULT_COLOR } from "../common/constants";
+import PropTypes from "prop-types";
 
-const PasswordStrengthIndicator = ({ password }) => {
+export default function PasswordStrengthIndicator({ password }) {
     const handlePasswordStrength = (password) => {
         const strengthCheck = {
             lengthLow: password.length >= PASSWORD_STRENGTH_LOW_LENGTH,
@@ -64,6 +65,8 @@ const PasswordStrengthIndicator = ({ password }) => {
             )}
         </>
     );
-};
+}
 
-export default PasswordStrengthIndicator;
+PasswordStrengthIndicator.propTypes = {
+    password: PropTypes.string.isRequired,
+};
