@@ -1,54 +1,70 @@
-import { ref, push, get, update } from 'firebase/database';
-import { db } from '../config/firebase-config';
+import { ref, push, get, update } from "firebase/database";
+import { db } from "../config/firebase-config";
 
 export const createPost = async (author, title, content) => {
-    const post = { author, title, content, createdOn: new Date().toString() };
-    const result = await push(ref(db, 'posts'), post);
-    const id = result.key;
-    await update(ref(db), {
-        [`posts/${id}/id`]: id,
-    });
+  const post = { author, title, content, createdOn: new Date().toString() };
+  const result = await push(ref(db, "posts"), post);
+  const id = result.key;
+  await update(ref(db), {
+    [`posts/${id}/id`]: id,
+  });
 };
 
-export const getAllPosts = async (search = '') => {
-    const snapshot = await get(ref(db, 'posts'));
-    if (!snapshot.exists()) return [];
+export const getAllPosts = async (search = "") => {
+  const snapshot = await get(ref(db, "posts"));
+  if (!snapshot.exists()) return [];
 
-    const posts = Object.values(snapshot.val());
+  const posts = Object.values(snapshot.val());
 
-    if (search) {
-        return posts.filter(p => p.title.toLowerCase().includes(search.toLowerCase()));
-    }
+  if (search) {
+    return posts.filter((p) =>
+      p.title.toLowerCase().includes(search.toLowerCase())
+    );
+  }
 
-    return posts;
+  return posts;
 };
 
 export const getPostById = async (id) => {
-    const snapshot = await get(ref(db, `posts/${id}`));
-    if (!snapshot.exists()) {
-        throw new Error('Post not found!');
-    }
+  const snapshot = await get(ref(db, `posts/${id}`));
+  if (!snapshot.exists()) {
+    throw new Error("Post not found!");
+  }
 
-    return {
-        ...snapshot.val(),
-        likedBy: Object.keys(snapshot.val().likedBy ?? {}),
-    };
+  const postData = snapshot.val();
+  return {
+    ...postData,
+    likedBy: postData.likedBy ?? {},
+    dislikedBy: postData.dislikedBy ?? {},
+  };
 };
 
-export const likePost = (handle, postId) => {
-    const updateObject = {
-        [`posts/${postId}/likedBy/${handle}`]: true,
-        [`users/${handle}/likedPosts/${postId}`]: true,
-    };
+export const likePost = async (userId, postId) => {
+  if (!userId || !postId) {
+    throw new Error("Invalid parameters.");
+  }
 
-    return update(ref(db), updateObject);
+  const updateObject = {
+    [`posts/${postId}/likedBy/${userId}`]: true,
+    [`posts/${postId}/dislikedBy/${userId}`]: null,
+    [`users/${userId}/likedPosts/${postId}`]: true,
+    [`users/${userId}/dislikedPosts/${postId}`]: null,
+  };
+
+  return update(ref(db), updateObject);
 };
 
-export const dislikePost = (handle, postId) => {
-    const updateObject = {
-        [`posts/${postId}/likedBy/${handle}`]: null,
-        [`users/${handle}/likedPosts/${postId}`]: null,
-    };
+export const dislikePost = async (userId, postId) => {
+  if (!userId || !postId) {
+    throw new Error("Invalid parameters.");
+  }
 
-    return update(ref(db), updateObject);
+  const updateObject = {
+    [`posts/${postId}/likedBy/${userId}`]: null,
+    [`posts/${postId}/dislikedBy/${userId}`]: true,
+    [`users/${userId}/likedPosts/${postId}`]: null,
+    [`users/${userId}/dislikedPosts/${postId}`]: true,
+  };
+
+  return update(ref(db), updateObject);
 };

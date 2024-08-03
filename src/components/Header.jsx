@@ -27,6 +27,7 @@ export default function Header() {
         {!user && <NavLink to="/login">Login</NavLink>}
         {!user && <NavLink to="/register">Register</NavLink>}
         {user && <NavLink to="/all-posts">All Posts</NavLink>}
+        {user && <NavLink to="/post-create">Create Post</NavLink>}
         {user && <NavLink to="/surveys">Surveys</NavLink>}
         {userData &&
           (userData.role === UserRoleEnum.ADMIN ||
