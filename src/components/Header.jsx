@@ -25,6 +25,7 @@ export default function Header() {
             <nav>
                 <Search />
                 <NavLink to="/">Home</NavLink>
+                <NavLink to="/forum">Forum</NavLink>
                 {!user && <NavLink to="/login">Login</NavLink>}
                 {!user && <NavLink to="/register">Register</NavLink>}
                 {user && <NavLink to="/all-posts">All Posts</NavLink>}
