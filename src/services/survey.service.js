@@ -55,3 +55,9 @@ export const addRating = async (surveyId, choiceId, userId, rating) => {
         rating
     );
 };
+
+
+export const updateSurvey = async (id, updatedSurvey) => {
+    const surveyRef = ref(db, `surveys/${id}`);
+    await update(surveyRef, updatedSurvey);
+};

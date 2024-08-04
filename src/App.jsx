@@ -19,6 +19,7 @@ import Survey from './views/Survey';
 import AddSurvey from './views/AddSurvey';
 import SurveyList from './views/SurveyList';
 import SinglePost from './views/SinglePost';
+import EditSurvey from './components/EditSurvey';
 
 export default function App() {
     const [appState, setAppState] = useState({
@@ -60,6 +61,7 @@ export default function App() {
                     <Route path="/all-posts" element={<AllPosts />}></Route>
                     <Route path="/surveys" element={<SurveyList />} />
                     <Route path="/survey/:id" element={<Survey />} />
+                    <Route path="/edit-survey/:id" element={<EditSurvey />} />
                     <Route path="/add-survey" element={<AddSurvey />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/admin-page" element={<AdminPage />}></Route>

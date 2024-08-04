@@ -1,6 +1,6 @@
 /* eslint-disable func-style */
 import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
     addRating,
     getAverageRating,
@@ -13,7 +13,8 @@ export default function Survey() {
     const [survey, setSurvey] = useState(null);
     const [ratings, setRatings] = useState({});
     const { id } = useParams();
-    const { user } = useContext(AppContext);
+    const { user, userData } = useContext(AppContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchSurvey() {
@@ -51,8 +52,15 @@ export default function Survey() {
 
     if (!survey) return <div>Loading...</div>;
 
+    const isAdminOrModerator = userData && (userData.role === 'admin' || userData.role === 'moderator');
+
     return (
         <div>
+            <h1>{survey.title}</h1>
+            <p>{survey.description}</p>
+            {isAdminOrModerator && (
+                <button onClick={() => navigate(`/edit-survey/${id}`)}>Edit</button>
+            )}
             <h1>{survey.question}</h1>
             {Object.entries(survey.choices).map(([choiceId, choice]) => (
                 <div key={choiceId}>
