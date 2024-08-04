@@ -8,6 +8,7 @@ import { auth } from './config/firebase-config';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getUserData } from './services/users.service';
 import Header from './components/Header';
+import EditSurvey from './components/EditSurvey';
 import NotFound from './views/NotFound';
 import Home from './views/Home';
 import MyProfile from './views/MyProfile';
@@ -19,7 +20,9 @@ import Survey from './views/Survey';
 import AddSurvey from './views/AddSurvey';
 import SurveyList from './views/SurveyList';
 import SinglePost from './views/SinglePost';
-import EditSurvey from './components/EditSurvey';
+import Forum from './views/Forum';
+import Category from './views/Category';
+import Thread from './views/Thread';
 
 export default function App() {
     const [appState, setAppState] = useState({
@@ -53,18 +56,21 @@ export default function App() {
                 <Header />
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/my-profile" element={<MyProfile />}></Route>
-                    <Route path="/user-profile/:id" element={<UserProfile />}></Route>
+                    <Route path="/my-profile" element={<MyProfile />} />
+                    <Route path="/user-profile/:id" element={<UserProfile />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/post-create" element={<CreatePost />} />
-                    <Route path="/single-post/:id" element={<SinglePost />}></Route>
-                    <Route path="/all-posts" element={<AllPosts />}></Route>
+                    <Route path="/single-post/:id" element={<SinglePost />} />
+                    <Route path="/all-posts" element={<AllPosts />} />
                     <Route path="/surveys" element={<SurveyList />} />
                     <Route path="/survey/:id" element={<Survey />} />
                     <Route path="/edit-survey/:id" element={<EditSurvey />} />
                     <Route path="/add-survey" element={<AddSurvey />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/admin-page" element={<AdminPage />}></Route>
+                    <Route path="/admin-page" element={<AdminPage />} />
+                    <Route path="/forum" element={<Forum />} />
+                    <Route path="/forum/category/:categoryId" element={<Category />} />
+                    <Route path="/forum/thread/:threadId" element={<Thread />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
                 <footer>&copy;Team7Forum</footer>
