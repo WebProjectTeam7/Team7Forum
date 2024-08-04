@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
+  position: relative;
 }
 
 .icon {
@@ -11,14 +12,16 @@
 }
 
 .light-beer-icon {
-  position: absolute;
-  left: 1115px; 
+  position: relative;
+  right: -20px;
 }
+
 .switch {
   position: relative;
   display: inline-block;
   width: 100px;
   height: 34px;
+  margin: 0 5px;
 }
 
 .switch input {
