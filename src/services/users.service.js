@@ -1,29 +1,32 @@
 import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
 import { db } from '../config/firebase-config';
 
-export const getUserByHandle = async (username) => {
-    const userRef = ref(db, `users/${username}`);
-    const snapshot = await get(userRef);
-    return snapshot.val();
-};
 
-export const createUserHandle = async (username, uid, email, firstName, lastName, role) => {
+// CREATE
+
+export const createUser = async (username, uid, email, firstName, lastName, role) => {
     const user = { username, uid, email, firstName, lastName, role, createdOn: new Date().toString() };
     const userRef = ref(db, `users/${username}`);
     await set(userRef, user);
+    return user;
+};
+
+
+// RETRIEVE
+
+export const getUserByUsername = async (username) => {
+    const userRef = ref(db, `users/${username}`);
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+        return snapshot.val();
+    }
+    return null;
 };
 
 export const getUserData = async (uid) => {
     const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
     const snapshot = await get(userRef);
     return snapshot.val();
-};
-
-export const updateUserHandle = async (uid, updatedData) => {
-    const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
-    const snapshot = await get(userRef);
-    const userId = Object.keys(snapshot.val())[0];
-    await update(ref(db, `users/${userId}`), updatedData);
 };
 
 export const getAllUsers = async (role = null) => {
@@ -35,9 +38,22 @@ export const getAllUsers = async (role = null) => {
     return Object.values(snapshot.val());
 };
 
+
+// UPDATE
+
+export const updateUser = async (uid, updatedData) => {
+    const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
+    const snapshot = await get(userRef);
+    const userId = Object.keys(snapshot.val())[0];
+    await update(ref(db, `users/${userId}`), updatedData);
+};
+
 export const switchUserRole = async (uid, newRole) => {
     const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
     const snapshot = await get(userRef);
     const userId = Object.keys(snapshot.val())[0];
     await update(ref(db, `users/${userId}`), { role: newRole });
 };
+
+
+// DELETE

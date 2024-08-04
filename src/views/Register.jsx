@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { registerUser } from '../services/auth.service';
 import { AppContext } from '../state/app.context';
 import { useNavigate } from 'react-router-dom';
-import { createUserHandle, getUserByHandle } from '../services/users.service';
+import { createUser, getUserByUsername } from '../services/users.service';
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, USER_REGEX } from '../common/regex';
 import PasswordStrengthIndicator from '../components/PasswordStrength';
 import RoleEnum from '../common/role.enum';
@@ -77,12 +77,13 @@ export default function Register() {
         }
 
         try {
-            const userFromDB = await getUserByHandle(user.username);
-            if (userFromDB) {
-                return alert(`User {${user.username}} already exists!`);
-            }
+            // TODO
+            // const userFromDB = await getUserByUsername(user.username);
+            // if (userFromDB) {
+            //     return alert(`User {${user.username}} already exists!`);
+            // }
             const credential = await registerUser(user.email, user.password);
-            await createUserHandle(user.username, credential.user.uid, user.email, user.firstName, user.lastName, user.role);
+            await createUser(user.username, credential.user.uid, user.email, user.firstName, user.lastName, user.role);
             setAppState({ user: credential.user, userData: null });
             navigate('/');
         } catch (error) {
