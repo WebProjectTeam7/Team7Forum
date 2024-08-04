@@ -7,13 +7,15 @@ import PropTypes from 'prop-types';
 export default function InfoButton({ text }) {
     const ref = useRef(null);
     const [toggle, setToggle] = useState(true);
-    const [style, animate] = useSpring(() => ({ height: '0px' }));
+    const [style, api] = useSpring(() => ({ height: '0px' }));
 
     useEffect(() => {
-        animate({
-            height: `${ref.current.offsetHeight}px`,
-        });
-    }, [animate, ref]);
+        if (ref.current) {
+            api.start({
+                height: toggle ? `${ref.current.offsetHeight}px` : '0px',
+            });
+        }
+    }, [api, toggle, ref]);
 
     return (
         <div className="infoButtonContainer">
