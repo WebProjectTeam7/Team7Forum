@@ -4,7 +4,7 @@ import { getCategories, createCategory, updateCategory, deleteCategory } from '.
 import { AppContext } from '../state/app.context';
 import { getThreadsByCategoryId } from '../services/thread.service';
 import UserRoleEnum from '../common/role.enum';
-
+import './CSS/Forum.css';
 
 const THREADS_LIMIT_BY_CATEGORY = 3;
 
@@ -16,7 +16,6 @@ export default function Forum() {
     const [newCategoryTitle, setNewCategoryTitle] = useState('');
     const [editCategoryId, setEditCategoryId] = useState(null);
     const [editCategoryTitle, setEditCategoryTitle] = useState('');
-
 
     useEffect(() => {
         getCategories()
@@ -73,12 +72,11 @@ export default function Forum() {
         }
     };
 
-
     return (
-        <div>
+        <div className="forum-container">
             <h1>Forum</h1>
             {isAdmin && (
-                <div>
+                <div className="admin-actions">
                     <input
                         type="text"
                         value={newCategoryTitle}
@@ -89,36 +87,33 @@ export default function Forum() {
                 </div>
             )}
             {categories.map((category) => (
-                <div key={category.id}>
-                    <h2>
+                <div key={category.id} className="category">
+                    <h2 className="category-title">
                         <Link to={`/forum/category/${category.id}`}>{category.title}</Link>
                     </h2>
                     {editCategoryId === category.id ? (
-                        <div>
+                        <div className="edit-category">
                             <input
                                 type="text"
                                 value={editCategoryTitle}
                                 onChange={(e) => setEditCategoryTitle(e.target.value)}
                                 placeholder="Edit category title"
-
                             />
                             <button onClick={() => handleEditCategory(category.id)}>Save</button>
-                            <button onClick={() => setEditCategoryId(null)}>Cancel</button>
+                            <button className="cancel-button" onClick={() => setEditCategoryId(null)}>Cancel</button>
                         </div>
                     ) : (
-                        <div>
-
+                        <div className="category-buttons">
                             {isAdmin && (
                                 <>
                                     <button onClick={() => {
                                         setEditCategoryId(category.id);
-                                        setEditCategoryTitle(category.name);
+                                        setEditCategoryTitle(category.title);
                                     }}>Edit</button>
-                                    <button onClick={() => handleDeleteCategory(category.id)}>Delete</button>
+                                    <button className="delete-button"
+                                        onClick={() => handleDeleteCategory(category.id)}>Delete</button>
                                 </>
                             )}
-
-
                         </div>
                     )}
                     <div>

@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { getThreadsByCategoryId, createThread, deleteThread } from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
+import './CSS/Category.css';
+import { getCategoryById } from '../services/category.service';
 
 export default function Category() {
     const { categoryId } = useParams();
@@ -10,12 +12,15 @@ export default function Category() {
     const isAdmin = userData && userData.role === UserRoleEnum.ADMIN;
 
     const [threads, setThreads] = useState([]);
+    const [category, setCategory] = useState(null);
     const [newThreadTitle, setNewThreadTitle] = useState('');
     const [newThreadContent, setNewThreadContent] = useState('');
 
     useEffect(() => {
         const fetchThreads = async () => {
             try {
+                const fetchedCategory = await getCategoryById(categoryId);
+                setCategory(fetchedCategory);
                 const fetchedThreads = await getThreadsByCategoryId(categoryId);
                 setThreads(fetchedThreads);
             } catch (error) {
@@ -49,10 +54,10 @@ export default function Category() {
     };
 
     return (
-        <div>
-            <h1>Category {categoryId}</h1>
+        <div className="category-container">
+            <h1>Category {category?.title || 'Loading...'}</h1>
             {isAdmin && (
-                <div>
+                <div className="admin-actions">
                     <input
                         type="text"
                         value={newThreadTitle}
@@ -67,7 +72,7 @@ export default function Category() {
                     <button onClick={handleCreateThread}>Create Thread</button>
                 </div>
             )}
-            <ul>
+            <ul className="threads">
                 {threads.length > 0 ? (
                     threads.map((thread) => (
                         <li key={thread.id}>

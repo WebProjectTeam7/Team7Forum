@@ -1,4 +1,4 @@
-import { ref, get, query, orderByChild, push, update, set, remove } from 'firebase/database';
+import { ref, get, query, orderByChild, push, update, set, remove, equalTo } from 'firebase/database';
 import { db } from '../config/firebase-config';
 
 
@@ -23,8 +23,8 @@ export const createCategory = async (title) => {
 // RETRIEVE
 
 export const getCategories = async () => {
-    const categoriesRef = query(ref(db, 'categories'), orderByChild('createdAt'));
     try {
+        const categoriesRef = query(ref(db, 'categories'), orderByChild('createdAt'));
         const snapshot = await get(categoriesRef);
         if (!snapshot.exists()) {
             return [];
@@ -36,6 +36,20 @@ export const getCategories = async () => {
     }
 };
 
+export const getCategoryById = async (categoryId) => {
+    try {
+        const categoryRef = query(ref(db, 'categories'), orderByChild('id'), equalTo(categoryId));
+        const snapshot = await get(categoryRef);
+        if (!snapshot.exists()) {
+            return null;
+        }
+        const data = snapshot.val();
+        return data ? Object.values(data)[0] : null;
+    } catch (error) {
+        console.error('Error fetching category:', error);
+        throw error;
+    }
+};
 
 // UPDATE
 

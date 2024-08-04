@@ -49,9 +49,9 @@ export const getThreadsByCategoryId = async (categoryId, limit = 100, orderBy = 
     }
 };
 
-export const getThreadById = async (uid) => {
+export const getThreadById = async (threadId) => {
     try {
-        const threadRef = query(ref(db, 'threads'), orderByChild('uid'), equalTo(uid));
+        const threadRef = query(ref(db, 'threads'), orderByChild('id'), equalTo(threadId));
         const snapshot = await get(threadRef);
         if (!snapshot.exists()) {
             return null;
