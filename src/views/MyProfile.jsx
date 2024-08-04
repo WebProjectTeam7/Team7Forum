@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { updateUserHandle } from '../services/users.service';
+import { updateUser } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 import './CSS/MyProfile.css';
 
@@ -24,7 +24,7 @@ export default function MyProfile() {
 
     const saveChanges = async () => {
         try {
-            await updateUserHandle(user.uid, userData);
+            await updateUser(user.uid, userData);
             alert('Profile updated successfully');
         } catch (error) {
             alert('Error updating profile: ' + error.message);
