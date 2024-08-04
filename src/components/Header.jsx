@@ -6,6 +6,7 @@ import Search from './Search';
 import './CSS/Header.css';
 
 import UserRoleEnum from '../common/role.enum';
+import BeerSwitch from './BeerSwitch';
 
 export default function Header() {
     const { user, userData, setAppState } = useContext(AppContext);
@@ -39,6 +40,7 @@ export default function Header() {
                     <NavLink to="/admin-page">Admin Page</NavLink>
                 )}
                 {user && <button onClick={logout}>Logout</button>}
+                <BeerSwitch />
             </nav>
         </header>
     );
