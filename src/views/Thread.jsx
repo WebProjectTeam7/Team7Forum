@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getThreadById, updateThread, deleteThread } from '../services/thread.service';
+import { getThreadById, updateThread, deleteThread, handleThreadVote } from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/Thread.css';
+import UpvoteDownvote from '../components/UpvoteDownvote';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -71,6 +72,7 @@ export default function Thread() {
             </div>
             <div className="thread-content">
                 <p>{thread.content}</p>
+                <UpvoteDownvote parentComponentId={threadId} handleVote={handleThreadVote} />
             </div>
 
             {(userData.role === UserRoleEnum.ADMIN || userData.username === thread.author) && editMode && (

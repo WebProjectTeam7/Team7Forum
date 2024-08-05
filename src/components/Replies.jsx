@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
-import { createReply, getRepliesByThreadId, editReply, deleteReply } from '../services/reply.service';
+import { createReply, getRepliesByThreadId, updateReply, deleteReply, handleReplyVote } from '../services/reply.service';
 import { AppContext } from '../state/app.context';
 import './CSS/Replies.css';
+import UpvoteDownvote from './UpvoteDownvote';
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);
@@ -37,7 +38,7 @@ export default function Replies({ threadId }) {
 
     const handleEditReply = async (replyId) => {
         try {
-            await editReply(threadId, replyId, { content: editReplyContent });
+            await updateReply(replyId, { content: editReplyContent });
             setReplies(replies.map(reply => reply.id === replyId ? { ...reply, content: editReplyContent } : reply));
             setEditReplyId(null);
             setEditReplyContent('');
@@ -77,6 +78,7 @@ export default function Replies({ threadId }) {
                             ) : (
                                 <div>
                                     <p>{reply.content}</p>
+                                    <UpvoteDownvote parentComponentId={reply.id} handleVote={handleReplyVote} />
                                     <button onClick={() => {
                                         setEditReplyId(reply.id);
                                         setEditReplyContent(reply.content);

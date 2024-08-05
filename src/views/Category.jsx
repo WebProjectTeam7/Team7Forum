@@ -29,7 +29,7 @@ export default function Category() {
         };
 
         fetchThreads();
-    }, [categoryId]);
+    }, [categoryId, category]);
 
     const handleCreateThread = () => {
         if (newThreadTitle.trim() && newThreadContent.trim()) {

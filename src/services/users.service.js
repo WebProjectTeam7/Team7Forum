@@ -55,8 +55,17 @@ export const switchUserRole = async (uid, newRole) => {
     await update(ref(db, `users/${userId}`), { role: newRole });
 };
 
+export const handleVoteThread = async () => {
+    // TODO
+};
+
+export const handleVoteReply = async () => {
+    // TODO
+};
+
 
 // DELETE
+
 export const deleteUser = async (uid) => {
     try {
         const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));

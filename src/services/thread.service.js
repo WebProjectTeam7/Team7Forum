@@ -81,6 +81,10 @@ export const updateThread = async (threadId, updatedData) => {
     }
 };
 
+export const handleThreadVote = async() => {
+
+};
+
 
 // DELETE
 

@@ -35,7 +35,7 @@ export default function Forum() {
             .catch((error) => {
                 console.error('Error fetching categories:', error);
             });
-    }, []);
+    }, [categories]);
 
     const handleCreateCategory = () => {
         if (newCategoryTitle.trim()) {

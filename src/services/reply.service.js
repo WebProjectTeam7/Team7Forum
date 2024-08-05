@@ -54,16 +54,47 @@ export const getRepliesByUserId = async (userId) => {
     }
 };
 
-
 // UPDATE
 
-export const editReply = async (threadId, replyId, updatedData) => {
+export const updateReply = async (replyId, updatedData) => {
     try {
-        const replyRef = ref(db, `threads/${threadId}/replies/${replyId}`);
+        const replyRef = ref(db, `replies/${replyId}`);
         await update(replyRef, updatedData);
     } catch (error) {
         console.error('Error editing reply:', error);
         throw new Error('Failed to edit reply');
+    }
+};
+
+
+export const handleReplyVote = async (replyId, vote, username) => {
+    try {
+        const replyRef = ref(db, `replies/${replyId}`);
+        const snapshot = await get(replyRef);
+        if (!snapshot.exists()) {
+            throw new Error('Reply not found');
+        }
+        const replyData = snapshot.val();
+        let upvotes = replyData.upvotes || [];
+        let downvotes = replyData.downvotes || [];
+
+        if (vote === 1) {
+            if (!upvotes.includes(username)) {
+                upvotes.push(username);
+                downvotes = downvotes.filter(user => user !== username);
+            }
+        } else if (vote === -1) {
+            if (!downvotes.includes(username)) {
+                downvotes.push(username);
+                upvotes = upvotes.filter(user => user !== username);
+            }
+        } else {
+            throw new Error('Invalid vote value');
+        }
+        await update(replyRef, { upvotes, downvotes });
+    } catch (error) {
+        console.error('Error handling vote:', error);
+        throw new Error('Failed to handle vote');
     }
 };
 
