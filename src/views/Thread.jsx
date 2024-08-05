@@ -1,12 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getThreadById, editThread, deleteThread } from '../services/thread.service';
+import { useState, useEffect, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getThreadById, updateThread, deleteThread } from '../services/thread.service';
 import { createReply, getRepliesByThreadId, editReply, deleteReply } from '../services/reply.service';
+import { AppContext } from '../state/app.context';
 import './CSS/Thread.css';
 
 export default function Thread() {
     const { threadId } = useParams();
+    const { userData } = useContext(AppContext);
+    const navigate = useNavigate();
+
     const [thread, setThread] = useState(null);
+    const [editMode, setEditMode] = useState(false);
+    const [editThreadTitle, setEditThreadTitle] = useState('');
+    const [editThreadContent, setEditThreadContent] = useState('');
+
     const [replies, setReplies] = useState([]);
     const [replyContent, setReplyContent] = useState('');
     const [editReplyId, setEditReplyId] = useState(null);
@@ -17,6 +25,8 @@ export default function Thread() {
             try {
                 const fetchedThread = await getThreadById(threadId);
                 setThread(fetchedThread);
+                setEditThreadTitle(fetchedThread.title);
+                setEditThreadContent(fetchedThread.content);
                 const fetchedReplies = await getRepliesByThreadId(threadId);
                 setReplies(fetchedReplies);
             } catch (error) {
@@ -29,7 +39,7 @@ export default function Thread() {
 
     const handleCreateReply = async () => {
         try {
-            const userId = 'exampleUserId'; // Replace with actual user ID
+            const userId = userData.uid;
             const newReplyId = await createReply(threadId, userId, replyContent);
             setReplies([...replies, { id: newReplyId, content: replyContent }]);
             setReplyContent('');
@@ -50,30 +60,36 @@ export default function Thread() {
     };
 
     const handleDeleteReply = async (replyId) => {
-        try {
-            await deleteReply(threadId, replyId);
-            setReplies(replies.filter(reply => reply.id !== replyId));
-        } catch (error) {
-            console.error('Error deleting reply:', error);
+        if (window.confirm('Are you sure you want to delete this reply?')) {
+            try {
+                await deleteReply(threadId, replyId);
+                setReplies(replies.filter(reply => reply.id !== replyId));
+            } catch (error) {
+                console.error('Error deleting reply:', error);
+            }
         }
     };
 
     const handleEditThread = async () => {
         try {
-            const updatedData = { title: 'New Title', content: 'Updated content' }; // Modify as needed
-            await editThread(threadId, updatedData);
+            const updatedData = { title: editThreadTitle, content: editThreadContent };
+            await updateThread(threadId, updatedData);
             setThread({ ...thread, ...updatedData });
+            setEditMode(false);
         } catch (error) {
             console.error('Error editing thread:', error);
         }
     };
 
     const handleDeleteThread = async () => {
-        try {
-            await deleteThread(threadId);
-            console.log(`Thread with ID ${threadId} deleted successfully.`);
-        } catch (error) {
-            console.error('Error deleting thread:', error);
+        if (window.confirm('Are you sure you want to delete this category?')) {
+            try {
+                await deleteThread(threadId);
+                console.log(`Thread with ID ${threadId} deleted successfully.`);
+                navigate('/forum');
+            } catch (error) {
+                console.error('Error deleting thread:', error);
+            }
         }
     };
 
@@ -86,13 +102,31 @@ export default function Thread() {
             <div className="thread-header">
                 <h1>{thread.title}</h1>
                 <div>
-                    <button onClick={handleEditThread}>Edit Thread</button>
+                    <button onClick={() => setEditMode(true)}>Edit Thread</button>
                     <button onClick={handleDeleteThread}>Delete Thread</button>
                 </div>
             </div>
             <div className="thread-content">
                 <p>{thread.content}</p>
             </div>
+
+            {editMode && (
+                <div className="thread-edit">
+                    <input
+                        type="text"
+                        value={editThreadTitle}
+                        onChange={(e) => setEditThreadTitle(e.target.value)}
+                        placeholder="Edit thread title"
+                    />
+                    <textarea
+                        value={editThreadContent}
+                        onChange={(e) => setEditThreadContent(e.target.value)}
+                        placeholder="Edit thread content"
+                    />
+                    <button onClick={handleEditThread}>Save Changes</button>
+                    <button onClick={() => setEditMode(false)}>Cancel</button>
+                </div>
+            )}
 
             <div>
                 <h2>Replies</h2>

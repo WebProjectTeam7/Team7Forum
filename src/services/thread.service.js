@@ -67,7 +67,7 @@ export const getThreadById = async (threadId) => {
 
 // UPDATE
 
-export const editThread = async (threadId, updatedData) => {
+export const updateThread = async (threadId, updatedData) => {
     try {
         const threadRef = ref(db, `threads/${threadId}`);
         const snapshot = await get(threadRef);
