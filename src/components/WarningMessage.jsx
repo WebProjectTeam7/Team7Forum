@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import errorGif from '../image/error.gif';
 import { PASSWORD_STRENGTH_LOW_LENGTH } from '../common/constants';
 import './CSS/ErrorMessage.css';
@@ -15,25 +15,29 @@ const ErrorComponent = () => {
     confirmPassword: ''
   });
 
-  const validate = () => {
-    let newErrors = {};
+  useEffect(() => {
+    const validate = () => {
+      let newErrors = {};
 
-    if (!data.username) newErrors.username = 'Username is required';
-    if (!data.email) newErrors.email = 'Email is required';
-    if (data.email && !/\S+@\S+\.\S+/.test(data.email)) newErrors.email = 'Email is invalid';
-    if (!data.firstName) newErrors.firstName = 'First name is required';
-    if (!data.lastName) newErrors.lastName = 'Last name is required';
-    if (!data.password) newErrors.password = 'Password is required';
-    // eslint-disable-next-line max-len
-    if (data.password && data.password.length < PASSWORD_STRENGTH_LOW_LENGTH) newErrors.password = `Password must be at least ${PASSWORD_STRENGTH_LOW_LENGTH} characters`;
+      if (!data.username) newErrors.username = 'Username is required';
+      if (!data.email) newErrors.email = 'Email is required';
+      if (data.email && !/\S+@\S+\.\S+/.test(data.email)) newErrors.email = 'Email is invalid';
+      if (!data.firstName) newErrors.firstName = 'First name is required';
+      if (!data.lastName) newErrors.lastName = 'Last name is required';
+      if (!data.password) newErrors.password = 'Password is required';
+      // eslint-disable-next-line max-len
+      if (data.password && data.password.length < PASSWORD_STRENGTH_LOW_LENGTH) newErrors.password = `Password must be at least ${PASSWORD_STRENGTH_LOW_LENGTH} characters`;
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+      setErrors(newErrors);
+    };
+
+    validate();
+  }, [data]);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validate()) {
+    if (Object.keys(errors).length === 0) {
       console.log('Form is valid, submit data');
     } else {
       console.log('Form has errors');
