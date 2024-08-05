@@ -1,14 +1,16 @@
 import { ref, push, set, query, get, orderByChild, equalTo, update, remove } from 'firebase/database';
 import { db } from '../config/firebase-config';
 
+
 // CREATE
 
 export const createReply = async (threadId, userId, replyContent) => {
     try {
-        const repliesRef = ref(db, `threads/${threadId}/replies`);
+        const repliesRef = ref(db, 'replies');
         const newReplyRef = push(repliesRef);
         await set(newReplyRef, {
             userId,
+            threadId,
             content: replyContent,
             createdAt: new Date().toISOString(),
         });
@@ -24,12 +26,12 @@ export const createReply = async (threadId, userId, replyContent) => {
 
 export const getRepliesByThreadId = async (threadId) => {
     try {
-        const repliesRef = query(ref(db, `threads/${threadId}/replies`), orderByChild('createdAt'));
+        const repliesRef = query(ref(db, 'replies'), orderByChild('threadId'), equalTo(threadId));
         const snapshot = await get(repliesRef);
         if (!snapshot.exists()) {
             return [];
         }
-        return Object.values(snapshot.val());
+        return Object.values(snapshot.val()).sort((a, b) => new Date(a.createdAt) - new DataTransfer(b.createdAt));
     } catch (error) {
         console.error('Error retrieving replies by thread ID:', error);
         throw new Error('Failed to retrieve replies');
@@ -49,6 +51,7 @@ export const getRepliesByUserId = async (userId) => {
         throw new Error('Failed to retrieve replies');
     }
 };
+
 
 // UPDATE
 
