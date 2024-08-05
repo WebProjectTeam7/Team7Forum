@@ -1,32 +1,33 @@
-import { ref, push, get, update, set } from 'firebase/database';
-import { db } from '../config/firebase-config';
+import { ref as dbRef, push, get, update, set } from 'firebase/database';
+import { db, storage } from '../config/firebase-config';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-export const addSurvey = async (survey) => {
-    const surveyRef = ref(db, 'surveys');
-    const newSurveyRef = push(surveyRef);
-    await update(newSurveyRef, { ...survey, id: newSurveyRef.key });
-};
+// export const addSurvey = async (survey) => {
+//     const surveyRef = ref(db, 'surveys');
+//     const newSurveyRef = push(surveyRef);
+//     await update(newSurveyRef, { ...survey, id: newSurveyRef.key });
+// };
 
 export const getAllSurveys = async () => {
-    const snapshot = await get(ref(db, 'surveys'));
+    const snapshot = await get(dbRef(db, 'surveys'));
     if (!snapshot.exists()) return [];
     return Object.values(snapshot.val());
 };
 
 export const getSurvey = async (id) => {
-    const snapshot = await get(ref(db, `surveys/${id}`));
+    const snapshot = await get(dbRef(db, `surveys/${id}`));
     if (!snapshot.exists()) throw new Error('Survey not found');
     return snapshot.val();
 };
 
 export const rateChoice = async (surveyId, choiceId, userId, rating) => {
-    const ratingRef = ref(
+    const ratingRef = dbRef(
         db,
         `surveys/${surveyId}/choices/${choiceId}/ratings/${userId}`
     );
     await update(ratingRef, { rating });
 
-    const choiceRef = ref(db, `surveys/${surveyId}/choices/${choiceId}`);
+    const choiceRef = dbRef(db, `surveys/${surveyId}/choices/${choiceId}`);
     const snapshot = await get(choiceRef);
     const choice = snapshot.val();
 
@@ -39,7 +40,7 @@ export const rateChoice = async (surveyId, choiceId, userId, rating) => {
 
 export const getAverageRating = async (surveyId, choiceId) => {
     const snapshot = await get(
-        ref(db, `surveys/${surveyId}/choices/${choiceId}/ratings`)
+        dbRef(db, `surveys/${surveyId}/choices/${choiceId}/ratings`)
     );
     const ratings = snapshot.val();
 
@@ -51,13 +52,33 @@ export const getAverageRating = async (surveyId, choiceId) => {
 
 export const addRating = async (surveyId, choiceId, userId, rating) => {
     await set(
-        ref(db, `surveys/${surveyId}/choices/${choiceId}/ratings/${userId}`),
+        dbRef(db, `surveys/${surveyId}/choices/${choiceId}/ratings/${userId}`),
         rating
     );
 };
 
 
 export const updateSurvey = async (id, updatedSurvey) => {
-    const surveyRef = ref(db, `surveys/${id}`);
+    const surveyRef = dbRef(db, `surveys/${id}`);
     await update(surveyRef, updatedSurvey);
+};
+
+export const uploadImage = async (file) => {
+    const fileRef = storageRef(storage, `survey-images/${file.name}`);
+    await uploadBytes(fileRef, file);
+    return await getDownloadURL(fileRef);
+};
+
+export const addSurvey = async (survey) => {
+    const surveyRef = dbRef(db, 'surveys');
+    const newSurveyRef = push(surveyRef);
+
+    const choicesWithImageUrls = await Promise.all(
+        survey.choices.map(async (choice) => {
+            const imageUrl = await uploadImage(choice.image);
+            return { ...choice, image: imageUrl };
+        })
+    );
+
+    await update(newSurveyRef, { ...survey, choices: choicesWithImageUrls, id: newSurveyRef.key });
 };

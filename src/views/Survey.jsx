@@ -65,6 +65,7 @@ export default function Survey() {
             {Object.entries(survey.choices).map(([choiceId, choice]) => (
                 <div key={choiceId}>
                     <p>{choice.text}</p>
+                    {choice.image && <img src={choice.image} alt={choice.text} style={{  width: '50px', height: '50px' }} />}
                     <BeerRating
                         rating={ratings[choiceId]}
                         onRate={(rating) => handleRate(choiceId, rating)}
