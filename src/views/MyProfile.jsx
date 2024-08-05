@@ -1,11 +1,32 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { updateUser, deleteUser } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 import './CSS/MyProfile.css';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../config/firebase-config';
+import { auth, storage } from '../config/firebase-config';
 import { signOut } from 'firebase/auth';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import LoadingComponent from '../components/Loading';
 
+const useDefaultAvatarUrl = () => {
+    const [defaultAvatarUrl, setDefaultAvatarUrl] = useState(null);
+
+    useEffect(() => {
+        const fetchDefaultAvatarUrl = async () => {
+            try {
+                const defaultAvatarRef = storageRef(storage, 'istockphoto-1366922968-612x612.jpg'); // Add the url form firebase here
+                const url = await getDownloadURL(defaultAvatarRef);
+                setDefaultAvatarUrl(url);
+            } catch (error) {
+                console.error('Error fetching default avatar URL:', error);
+            }
+        };
+
+        fetchDefaultAvatarUrl();
+    }, []);
+
+    return defaultAvatarUrl;
+};
 
 export default function MyProfile() {
     const navigate = useNavigate();
@@ -16,6 +37,11 @@ export default function MyProfile() {
         lastName: false,
         avatar: false,
     });
+
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const defaultAvatarUrl = useDefaultAvatarUrl();
 
     const updateUserData = (prop) => (e) => {
         setAppState((prev) => ({
@@ -29,9 +55,26 @@ export default function MyProfile() {
 
     const saveChanges = async () => {
         try {
-            await updateUser(user.uid, userData);
+            let avatarURL = userData.avatar;
+            if (avatarFile) {
+                avatarURL = await uploadAvatar();
+            }
+
+            const updatedData = { ...userData };
+            if (avatarURL) {
+                updatedData.avatar = avatarURL;
+            } else if (!avatarFile && !userData.avatar) {
+                updatedData.avatar = defaultAvatarUrl;
+            }
+
+            await updateUser(user.uid, updatedData);
+            setAppState((prev) => ({
+                ...prev,
+                userData: updatedData,
+            }));
             alert('Profile updated successfully');
         } catch (error) {
+            console.error('Error updating profile:', error);
             alert('Error updating profile: ' + error.message);
         }
     };
@@ -61,9 +104,61 @@ export default function MyProfile() {
         });
     };
 
+    const handleAvatarChange = (e) => {
+        if (e.target.files[0]) {
+            setAvatarFile(e.target.files[0]);
+        }
+    };
+
+    const uploadAvatar = async () => {
+        try {
+            setIsUploading(true);
+            if (avatarFile) {
+                const avatarRef = storageRef(storage, `avatars/${user.uid}`);
+                await uploadBytes(avatarRef, avatarFile);
+                const avatarURL = await getDownloadURL(avatarRef);
+
+                setAppState((prev) => ({
+                    ...prev,
+                    userData: {
+                        ...prev.userData,
+                        avatar: avatarURL,
+                    },
+                }));
+
+                return avatarURL;
+            }
+
+            return null;
+        } catch (error) {
+            console.error('Error uploading avatar:', error);
+            alert('Error uploading avatar: ' + error.message);
+            return null;
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    if (!userData) return <div>Loading...</div>;
+
     return (
         <div className="profile-container">
             <h1>My Profile</h1>
+            {isUploading && <LoadingComponent />}
+
+            {/* AVATAR */}
+            <div className="profile-field avatar-container">
+                <label>Avatar:</label>
+                <img
+                    src={userData.avatar || defaultAvatarUrl}
+                    alt="Avatar"
+                    className="avatar-img"
+                />
+                <input type="file" accept="image/*" onChange={handleAvatarChange} />
+                <button className="upload-avatar-button" onClick={uploadAvatar} disabled={!avatarFile || isUploading}>
+                    Upload Avatar
+                </button>
+            </div>
 
             {/* USERNAME */}
             <div className="profile-field">
