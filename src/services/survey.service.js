@@ -2,12 +2,6 @@ import { ref as dbRef, push, get, update, set } from 'firebase/database';
 import { db, storage } from '../config/firebase-config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-// export const addSurvey = async (survey) => {
-//     const surveyRef = ref(db, 'surveys');
-//     const newSurveyRef = push(surveyRef);
-//     await update(newSurveyRef, { ...survey, id: newSurveyRef.key });
-// };
-
 export const getAllSurveys = async () => {
     const snapshot = await get(dbRef(db, 'surveys'));
     if (!snapshot.exists()) return [];

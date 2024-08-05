@@ -20,6 +20,8 @@ import SurveyList from './views/SurveyList';
 import Forum from './views/Forum';
 import Category from './views/Category';
 import Thread from './views/Thread';
+import Light from './image/light.jpg';
+import Dark from './image/Dark.jpg';
 
 export default function App() {
     const [appState, setAppState] = useState({
