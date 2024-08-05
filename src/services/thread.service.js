@@ -81,8 +81,36 @@ export const updateThread = async (threadId, updatedData) => {
     }
 };
 
-export const handleThreadVote = async() => {
+export const handleThreadVote = async (threadId, vote, username) => {
+    try {
+        const threadRef = ref(db, `threads/${threadId}`);
+        const snapshot = await get(threadRef);
+        if (!snapshot.exists()) {
+            throw new Error('Thread not found');
+        }
+        const threadData = snapshot.val();
+        let upvotes = threadData.upvotes || [];
+        let downvotes = threadData.downvotes || [];
 
+        if (vote === 1) {
+            if (!upvotes.includes(username)) {
+                upvotes.push(username);
+                downvotes = downvotes.filter(user => user !== username);
+            }
+        } else if (vote === -1) {
+            if (!downvotes.includes(username)) {
+                downvotes.push(username);
+                upvotes = upvotes.filter(user => user !== username);
+            }
+        } else {
+            upvotes = upvotes.filter(user => user !== username);
+            downvotes = downvotes.filter(user => user !== username);
+        }
+        await update(threadRef, { upvotes, downvotes });
+    } catch (error) {
+        console.error('Error handling vote:', error);
+        throw new Error('Failed to handle vote');
+    }
 };
 
 

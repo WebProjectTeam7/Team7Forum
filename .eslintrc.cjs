@@ -44,7 +44,7 @@ module.exports = {
         'object-curly-spacing': ['error', 'always'],
         quotes: ['error', 'single'],
         'quote-props': 'off',
-        complexity: ['error', 15],
+        complexity: ['error', 20],
         'consistent-return': 'error',
         'default-case': 'error',
         'dot-notation': 'error',

@@ -5,7 +5,7 @@ import { AppContext } from '../state/app.context';
 import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/Thread.css';
-import UpvoteDownvote from '../components/UpvoteDownvote';
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -16,6 +16,7 @@ export default function Thread() {
     const [editMode, setEditMode] = useState(false);
     const [editThreadTitle, setEditThreadTitle] = useState('');
     const [editThreadContent, setEditThreadContent] = useState('');
+    const [userVote, setUserVote] = useState(0);
 
     useEffect(() => {
         const fetchThread = async () => {
@@ -24,13 +25,17 @@ export default function Thread() {
                 setThread(fetchedThread);
                 setEditThreadTitle(fetchedThread.title);
                 setEditThreadContent(fetchedThread.content);
+
+                const vote = fetchedThread.upvotes?.includes(userData.username) ? 1 :
+                    fetchedThread.downvotes?.includes(userData.username) ? -1 : 0;
+                setUserVote(vote);
             } catch (error) {
                 console.error('Error fetching thread:', error);
             }
         };
 
         fetchThread();
-    }, [threadId]);
+    }, [threadId, thread]);
 
     const handleEditThread = async () => {
         try {
@@ -44,7 +49,7 @@ export default function Thread() {
     };
 
     const handleDeleteThread = async () => {
-        if (window.confirm('Are you sure you want to delete this category?')) {
+        if (window.confirm('Are you sure you want to delete this thread?')) {
             try {
                 await deleteThread(threadId);
                 console.log(`Thread with ID ${threadId} deleted successfully.`);
@@ -55,6 +60,16 @@ export default function Thread() {
         }
     };
 
+    const handleUpvote = async (replyId, username, currentVote) => {
+        const newVote = currentVote === 1 ? 0 : 1;
+        await handleThreadVote(replyId, newVote, username);
+    };
+
+    const handleDownvote = async (replyId, username, currentVote) => {
+        const newVote = currentVote === -1 ? 0 : -1;
+        await handleThreadVote(replyId, newVote, username);
+    };
+
     if (!thread) {
         return <div>Loading...</div>;
     }
@@ -63,7 +78,7 @@ export default function Thread() {
         <div className="thread-container">
             <div className="thread-header">
                 <h1>{thread.title}</h1>
-                {(userData.role === UserRoleEnum.ADMIN || userData.username === thread.author) && (
+                {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && (
                     <div>
                         <button onClick={() => setEditMode(true)}>Edit Thread</button>
                         <button onClick={handleDeleteThread}>Delete Thread</button>
@@ -72,10 +87,17 @@ export default function Thread() {
             </div>
             <div className="thread-content">
                 <p>{thread.content}</p>
-                <UpvoteDownvote parentComponentId={threadId} handleVote={handleThreadVote} />
+                <button onClick={() => handleUpvote(threadId, userData.username, userVote)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                    <FaArrowAltCircleUp />
+                </button>
+                <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
+                <button onClick={() => handleDownvote(threadId, userData.username, userVote)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                    <FaArrowAltCircleDown />
+                </button>
+                <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
             </div>
 
-            {(userData.role === UserRoleEnum.ADMIN || userData.username === thread.author) && editMode && (
+            {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && editMode && (
                 <div className="thread-edit">
                     <input
                         type="text"

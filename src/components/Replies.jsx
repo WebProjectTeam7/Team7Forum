@@ -1,7 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import { createReply, getRepliesByThreadId, updateReply, deleteReply, handleReplyVote } from '../services/reply.service';
 import { AppContext } from '../state/app.context';
+import PropTypes from 'prop-types';
 import './CSS/Replies.css';
+import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);
@@ -93,11 +95,11 @@ export default function Replies({ threadId }) {
                                         <p>{reply.content}</p>
                                         <div className="upvote-downvote">
                                             <button onClick={() => handleUpvote(reply.id, userData.username, userVote)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
-                                                Upvote
+                                                <FaArrowAltCircleUp />
                                             </button>
                                             <span>Upvotes: {reply.upvotes ? reply.upvotes.length : 0}</span>
                                             <button onClick={() => handleDownvote(reply.id, userData.username, userVote)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
-                                                Downvote
+                                                <FaArrowAltCircleDown />
                                             </button>
                                             <span>Downvotes: {reply.downvotes ? reply.downvotes.length : 0}</span>
                                         </div>
@@ -125,3 +127,7 @@ export default function Replies({ threadId }) {
         </div>
     );
 }
+
+Replies.propTypes = {
+    threadId: PropTypes.string.isRequired,
+};
