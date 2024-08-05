@@ -1,0 +1,32 @@
+/* Notification.css */
+.gift-animation {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  width: 80%;
+  max-width: 500px;
+  height: auto;
+}
+
+.gift-animation.show {
+  display: block;
+}
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}

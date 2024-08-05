@@ -8,6 +8,7 @@ import PasswordStrengthIndicator from '../components/PasswordStrength';
 import RoleEnum from '../common/role.enum';
 import InfoButton from '../components/InfoButton';
 import { FaEye } from 'react-icons/fa';
+import WelcomeGifNotification  from '../components/NotificationAfterRegister';
 
 export default function Register() {
     const { setAppState } = useContext(AppContext);
@@ -24,6 +25,7 @@ export default function Register() {
     const [hidePassword, setHidePassword] = useState(true);
     const [alertMessage, setAlertMessage] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showGift, setShowGift] = useState(false);
 
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
@@ -85,12 +87,20 @@ export default function Register() {
             const credential = await registerUser(user.email, user.password);
             await createUser(user.username, credential.user.uid, user.email, user.firstName, user.lastName, user.role);
             setAppState({ user: credential.user, userData: null });
-            navigate('/');
+            setShowGift(true);
+            setTimeout(() => {
+                setShowGift(false);
+                navigate('/');
+            },7000);
         } catch (error) {
             alert(error.message);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleCloseNotification = () => {
+        setShowGift(false);
     };
 
     return (
@@ -184,6 +194,7 @@ export default function Register() {
                 {/* SUBMIT */}
                 <button>Register</button>
             </form>
+            <WelcomeGifNotification show={showGift} onClose={handleCloseNotification} />
         </>
     );
 }
