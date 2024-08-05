@@ -49,10 +49,18 @@ body {
 .light-mode {
   background-color: rgb(228, 228, 17);
   color: #000000;
+  background-image: url('/src/image/Light.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Dark mode styles */
 .dark-mode {
   background-color: rgb(66, 48, 48);
   color: #ffffff;
+  background-image: url('/src/image/Dark.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
