@@ -8,6 +8,7 @@ import {
 } from '../services/survey.service';
 import BeerRating from '../components/BeerRating';
 import { AppContext } from '../state/app.context';
+import './CSS/Survey.css';
 
 export default function Survey() {
     const [survey, setSurvey] = useState(null);
@@ -55,22 +56,22 @@ export default function Survey() {
     const isAdminOrModerator = userData && (userData.role === 'admin' || userData.role === 'moderator');
 
     return (
-        <div>
-            <h1>{survey.title}</h1>
-            <p>{survey.description}</p>
+        <div className="survey-container">
+            <h1 className="survey-title">{survey.title}</h1>
+            <p className="survey-description">{survey.description}</p>
             {isAdminOrModerator && (
-                <button onClick={() => navigate(`/edit-survey/${id}`)}>Edit</button>
+                <button className="survey-button" onClick={() => navigate(`/edit-survey/${id}`)}>Edit</button>
             )}
-            <h1>{survey.question}</h1>
+            <h1 className="survey-question">{survey.question}</h1>
             {Object.entries(survey.choices).map(([choiceId, choice]) => (
-                <div key={choiceId}>
-                    <p>{choice.text}</p>
+                <div className="survey-choice" key={choiceId}>
                     {choice.image && <img src={choice.image} alt={choice.text} style={{  width: '50px', height: '50px' }} />}
+                    <p>{choice.text}</p>
                     <BeerRating
                         rating={ratings[choiceId]}
                         onRate={(rating) => handleRate(choiceId, rating)}
                     />
-                    <p>Average Rating: {ratings[choiceId] ?? 0} 🍺</p>
+                    <p className="average-rating">Average Rating: {ratings[choiceId] ?? 0} 🍺</p>
                 </div>
             ))}
         </div>

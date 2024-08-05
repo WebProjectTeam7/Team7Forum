@@ -40,6 +40,6 @@ export default function BeerRating({ rating = 0, onRate = () => {} }) {
 }
 
 BeerRating.propTypes = {
-    rating: PropTypes.number.isRequired,
+    rating: PropTypes.number,
     onRate: PropTypes.func,
 };
