@@ -6,14 +6,16 @@ import { db } from '../config/firebase-config';
 
 export const createReply = async (threadId, userId, replyContent) => {
     try {
-        const repliesRef = ref(db, 'replies');
-        const newReplyRef = push(repliesRef);
-        await set(newReplyRef, {
+        const newReply = {
             userId,
             threadId,
             content: replyContent,
             createdAt: new Date().toISOString(),
-        });
+        };
+
+        const repliesRef = ref(db, 'replies');
+        const newReplyRef = push(repliesRef);
+        await set(newReplyRef, { ...newReply, id: newReplyRef.key });
         return newReplyRef.key;
     } catch (error) {
         console.error('Error creating reply:', error);
