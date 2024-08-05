@@ -12,14 +12,11 @@ import EditSurvey from './components/EditSurvey';
 import NotFound from './views/NotFound';
 import Home from './views/Home';
 import MyProfile from './views/MyProfile';
-import CreatePost from './views/CreatePost';
-import AllPosts from './views/AllPost';
 import AdminPage from './views/AdminPage';
 import UserProfile from './views/UserProfile';
 import Survey from './views/Survey';
 import AddSurvey from './views/AddSurvey';
 import SurveyList from './views/SurveyList';
-import SinglePost from './views/SinglePost';
 import Forum from './views/Forum';
 import Category from './views/Category';
 import Thread from './views/Thread';
@@ -56,17 +53,14 @@ export default function App() {
                 <Header />
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login />} />
                     <Route path="/my-profile" element={<MyProfile />} />
                     <Route path="/user-profile/:id" element={<UserProfile />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/post-create" element={<CreatePost />} />
-                    <Route path="/single-post/:id" element={<SinglePost />} />
-                    <Route path="/all-posts" element={<AllPosts />} />
-                    <Route path="/surveys" element={<SurveyList />} />
-                    <Route path="/survey/:id" element={<Survey />} />
-                    <Route path="/edit-survey/:id" element={<EditSurvey />} />
                     <Route path="/add-survey" element={<AddSurvey />} />
-                    <Route path="/register" element={<Register />} />
+                    <Route path="/survey/:id" element={<Survey />} />
+                    <Route path="/surveys" element={<SurveyList />} />
+                    <Route path="/edit-survey/:id" element={<EditSurvey />} />
                     <Route path="/admin-page" element={<AdminPage />} />
                     <Route path="/forum" element={<Forum />} />
                     <Route path="/forum/category/:categoryId" element={<Category />} />
