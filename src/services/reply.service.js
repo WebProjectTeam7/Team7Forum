@@ -54,6 +54,7 @@ export const getRepliesByUserId = async (userId) => {
     }
 };
 
+
 // UPDATE
 
 export const updateReply = async (replyId, updatedData) => {
@@ -65,7 +66,6 @@ export const updateReply = async (replyId, updatedData) => {
         throw new Error('Failed to edit reply');
     }
 };
-
 
 export const handleReplyVote = async (replyId, vote, username) => {
     try {
@@ -89,7 +89,8 @@ export const handleReplyVote = async (replyId, vote, username) => {
                 upvotes = upvotes.filter(user => user !== username);
             }
         } else {
-            throw new Error('Invalid vote value');
+            upvotes = upvotes.filter(user => user !== username);
+            downvotes = downvotes.filter(user => user !== username);
         }
         await update(replyRef, { upvotes, downvotes });
     } catch (error) {
