@@ -1,9 +1,14 @@
 import { useState, useContext } from 'react';
-import { updateUser } from '../services/users.service';
+import { updateUser, deleteUser } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 import './CSS/MyProfile.css';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../config/firebase-config';
+import { signOut } from 'firebase/auth';
+
 
 export default function MyProfile() {
+    const navigate = useNavigate();
     const { user, userData, setAppState } = useContext(AppContext);
 
     const [editMode, setEditMode] = useState({
@@ -28,6 +33,24 @@ export default function MyProfile() {
             alert('Profile updated successfully');
         } catch (error) {
             alert('Error updating profile: ' + error.message);
+        }
+    };
+
+    const deleteAccount = async () => {
+        if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+            try {
+                await deleteUser(user.uid);
+                await signOut(auth);
+                alert('Account deleted successfully');
+                setAppState((prev) => ({
+                    ...prev,
+                    user: null,
+                    userData: {},
+                }));
+                navigate('/register');
+            } catch (error) {
+                alert('Error deleting account: ' + error.message);
+            }
         }
     };
 
@@ -93,6 +116,7 @@ export default function MyProfile() {
                 <span>{userData.role}</span>
             </div>
             <button className="save-button" onClick={saveChanges}>Save Changes</button>
+            <button className="delete-button" onClick={deleteAccount}>Delete Account</button>
         </div>
     );
 }
