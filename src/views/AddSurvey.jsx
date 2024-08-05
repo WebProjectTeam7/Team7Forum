@@ -10,7 +10,7 @@ export default function AddSurvey() {
         description: '',
         choices: [],
     });
-    const [choice, setChoice] = useState('');
+    const [choice, setChoice] = useState({ text: '', image: null });
     const navigate = useNavigate();
 
     if (userData?.role !== 'admin' && userData?.role !== 'moderator') {
@@ -18,11 +18,20 @@ export default function AddSurvey() {
     }
 
     const addChoice = () => {
-        setSurvey((prev) => ({
-            ...prev,
-            choices: [...prev.choices, { id: Date.now(), text: choice }],
-        }));
-        setChoice('');
+        if (choice.text && choice.image) {
+            setSurvey((prev) => ({
+                ...prev,
+                choices: [...prev.choices, { id: Date.now(), ...choice }],
+            }));
+            setChoice({ text: '', image: null });
+        }
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setChoice((prev) => ({ ...prev, image: file }));
+        }
     };
 
     const handleSubmit = async () => {
@@ -34,7 +43,7 @@ export default function AddSurvey() {
         <div>
             <h1>Add Survey</h1>
             <label>
-        Title:
+                Title:
                 <input
                     type="text"
                     value={survey.title}
@@ -43,7 +52,7 @@ export default function AddSurvey() {
             </label>
             <br />
             <label>
-        Description:
+                Description:
                 <textarea
                     value={survey.description}
                     onChange={(e) =>
@@ -53,12 +62,13 @@ export default function AddSurvey() {
             </label>
             <br />
             <label>
-        New Choice:
+                New Choice:
                 <input
                     type="text"
-                    value={choice}
-                    onChange={(e) => setChoice(e.target.value)}
+                    value={choice.text}
+                    onChange={(e) => setChoice({ ...choice, text: e.target.value })}
                 />
+                <input type="file" onChange={handleImageChange} />
             </label>
             <button onClick={addChoice}>Add Choice</button>
             <br />

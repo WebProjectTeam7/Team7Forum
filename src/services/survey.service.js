@@ -1,11 +1,12 @@
 import { ref, push, get, update, set } from 'firebase/database';
 import { db } from '../config/firebase-config';
+import { storage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-export const addSurvey = async (survey) => {
-    const surveyRef = ref(db, 'surveys');
-    const newSurveyRef = push(surveyRef);
-    await update(newSurveyRef, { ...survey, id: newSurveyRef.key });
-};
+// export const addSurvey = async (survey) => {
+//     const surveyRef = ref(db, 'surveys');
+//     const newSurveyRef = push(surveyRef);
+//     await update(newSurveyRef, { ...survey, id: newSurveyRef.key });
+// };
 
 export const getAllSurveys = async () => {
     const snapshot = await get(ref(db, 'surveys'));
@@ -60,4 +61,24 @@ export const addRating = async (surveyId, choiceId, userId, rating) => {
 export const updateSurvey = async (id, updatedSurvey) => {
     const surveyRef = ref(db, `surveys/${id}`);
     await update(surveyRef, updatedSurvey);
+};
+
+export const uploadImage = async (file) => {
+    const fileRef = storageRef(storage, `survey-images/${file.name}`);
+    await uploadBytes(fileRef, file);
+    return await getDownloadURL(fileRef);
+};
+
+export const addSurvey = async (survey) => {
+    const surveyRef = ref(db, 'surveys');
+    const newSurveyRef = push(surveyRef);
+
+    const choicesWithImageUrls = await Promise.all(
+        survey.choices.map(async (choice) => {
+            const imageUrl = await uploadImage(choice.image);
+            return { ...choice, image: imageUrl };
+        })
+    );
+
+    await update(newSurveyRef, { ...survey, choices: choicesWithImageUrls, id: newSurveyRef.key });
 };
