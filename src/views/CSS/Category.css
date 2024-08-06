@@ -86,3 +86,61 @@ h1, h2 {
 .admin-actions button:hover {
     background-color: #0056b3;
 }
+
+/* Dark Mode */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode h1, body.dark-mode h2 {
+    color: #e0e0e0;
+}
+
+body.dark-mode .category-container {
+    background: #1e1e1e;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .threads {
+    padding: 0 0 0 20px;
+}
+
+body.dark-mode .threads li {
+    margin: 10px 0;
+}
+
+body.dark-mode .threads li a {
+    color: #90caf9;
+}
+
+body.dark-mode .threads li a:hover {
+    text-decoration: underline;
+}
+
+body.dark-mode .threads li button {
+    background-color: #e57373;
+}
+
+body.dark-mode .threads li button:hover {
+    background-color: #ef5350;
+}
+
+body.dark-mode .admin-actions {
+    color: #e0e0e0;
+}
+
+body.dark-mode .admin-actions input[type="text"],
+body.dark-mode .admin-actions textarea {
+    background-color: #424242;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+body.dark-mode .admin-actions button {
+    background-color: #007bff;
+}
+
+body.dark-mode .admin-actions button:hover {
+    background-color: #0056b3;
+}

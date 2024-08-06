@@ -115,3 +115,80 @@
 .reply-input button:hover {
     background-color: #0056b3;
 }
+
+/* Dark Mode */
+body.dark-mode .replies-container {
+    background-color: #1e1e1e;
+}
+
+body.dark-mode .reply-item {
+    border: 1px solid #333;
+    background-color: #2c2c2c;
+}
+
+body.dark-mode .reply-info {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .author-avatar {
+    border: 2px solid #e0e0e0;
+}
+
+body.dark-mode .reply-author-date p {
+    color: #e0e0e0;
+}
+
+body.dark-mode .reply-content {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .reply-actions {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+body.dark-mode .reply-actions button {
+    background-color: #444;
+    color: #e0e0e0;
+}
+
+body.dark-mode .reply-actions button:hover {
+    background-color: #555;
+}
+
+body.dark-mode .upvote-button.active,
+body.dark-mode .downvote-button.active {
+    color: #81c784; /* Lighter green for active state */
+}
+
+body.dark-mode .edit-delete-buttons button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+body.dark-mode .edit-delete-buttons button:hover {
+    background-color: #0056b3;
+}
+
+body.dark-mode .reply-input input {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+body.dark-mode .reply-input button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+body.dark-mode .reply-input button:hover {
+    background-color: #0056b3;
+}
+

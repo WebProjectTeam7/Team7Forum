@@ -24,6 +24,7 @@ export default function Forum() {
         fetchCategories();
     }, [fetchTrigger]);
 
+
     const fetchCategories = async () => {
         try {
             const fetchedCategories = await getCategories();

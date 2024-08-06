@@ -27,13 +27,12 @@ export const createThread = async (categoryId, title, content, authorId, authorN
 
 // RETRIEVE
 
-export const getThreadsByCategoryId = async (categoryId, limit = 100, orderBy = 'createdAt', order = 'desc') => {
+export const getThreadsByCategoryId = async (categoryId, limit = 100, order = 'desc') => {
     try {
         const threadsRef = query(
             ref(db, 'threads'),
             orderByChild('categoryId'),
             equalTo(categoryId),
-            // orderByChild(orderBy),
             order === 'desc' ? limitToLast(limit) : limitToFirst(limit),
         );
 
@@ -47,6 +46,7 @@ export const getThreadsByCategoryId = async (categoryId, limit = 100, orderBy = 
         throw error;
     }
 };
+
 
 export const getThreadById = async (threadId) => {
     try {
