@@ -4,8 +4,8 @@ import { getThreadById, updateThread, deleteThread, handleThreadVote, incrementT
 import { AppContext } from '../state/app.context';
 import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
-import './CSS/Thread.css';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
+import './CSS/Thread.css';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -17,33 +17,46 @@ export default function Thread() {
     const [editThreadTitle, setEditThreadTitle] = useState('');
     const [editThreadContent, setEditThreadContent] = useState('');
     const [userVote, setUserVote] = useState(0);
+    const [fetchTrigger, setFetchTrigger] = useState(false);
 
     useEffect(() => {
-        const fetchThread = async () => {
-            try {
-                await incrementThreadViews(threadId);
-                const fetchedThread = await getThreadById(threadId);
-                setThread(fetchedThread);
-                setEditThreadTitle(fetchedThread.title);
-                setEditThreadContent(fetchedThread.content);
+        incrementViews();
+    }, []);
 
-                const vote = fetchedThread.upvotes?.includes(userData.username) ? 1 :
-                    fetchedThread.downvotes?.includes(userData.username) ? -1 : 0;
-                setUserVote(vote);
-            } catch (error) {
-                console.error('Error fetching thread:', error);
-            }
-        };
-
+    useEffect(() => {
         fetchThread();
-    }, [threadId, userData]);
+    }, [fetchTrigger]);
+
+
+    const incrementViews = async () => {
+        try {
+            await incrementThreadViews(threadId);
+        } catch (error) {
+            console.error('Error incrementing thread views:', error);
+        }
+    };
+
+    const fetchThread = async () => {
+        try {
+            const fetchedThread = await getThreadById(threadId);
+            setThread(fetchedThread);
+            setEditThreadTitle(fetchedThread.title);
+            setEditThreadContent(fetchedThread.content);
+
+            const vote = fetchedThread.upvotes?.includes(userData.username) ? 1 :
+                fetchedThread.downvotes?.includes(userData.username) ? -1 : 0;
+            setUserVote(vote);
+        } catch (error) {
+            console.error('Error fetching thread:', error);
+        }
+    };
 
     const handleEditThread = async () => {
         try {
             const updatedData = { title: editThreadTitle, content: editThreadContent };
             await updateThread(threadId, updatedData);
-            setThread({ ...thread, ...updatedData });
             setEditMode(false);
+            setFetchTrigger(!fetchTrigger);
         } catch (error) {
             console.error('Error editing thread:', error);
         }
@@ -60,27 +73,14 @@ export default function Thread() {
         }
     };
 
-    const handleUpvote = async () => {
-        const newVote = userVote === 1 ? 0 : 1;
+    const handleVote = async (vote) => {
+        const newVote = userVote === vote ? 0 : vote;
         try {
             await handleThreadVote(threadId, newVote, userData.username);
-            const updatedThread = await getThreadById(threadId);
-            setThread(updatedThread);
             setUserVote(newVote);
+            setFetchTrigger(!fetchTrigger);
         } catch (error) {
-            console.error('Error handling upvote:', error);
-        }
-    };
-
-    const handleDownvote = async () => {
-        const newVote = userVote === -1 ? 0 : -1;
-        try {
-            await handleThreadVote(threadId, newVote, userData.username);
-            const updatedThread = await getThreadById(threadId);
-            setThread(updatedThread);
-            setUserVote(newVote);
-        } catch (error) {
-            console.error('Error handling downvote:', error);
+            console.error(`Error handling ${vote === 1 ? 'upvote' : 'downvote'}`, error);
         }
     };
 
@@ -113,11 +113,11 @@ export default function Thread() {
                 </div>
             </div>
             <div className="thread-actions">
-                <button onClick={handleUpvote} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                <button onClick={() => handleVote(1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
                     <FaArrowAltCircleUp />
                 </button>
                 <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
-                <button onClick={handleDownvote} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                <button onClick={() => handleVote(-1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
                     <FaArrowAltCircleDown />
                 </button>
                 <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>

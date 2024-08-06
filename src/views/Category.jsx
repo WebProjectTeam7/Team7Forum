@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getThreadsByCategoryId, createThread, deleteThread } from '../services/thread.service';
+import { getThreadsByCategoryId, createThread } from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
-import './CSS/Category.css';
 import { getCategoryById } from '../services/category.service';
+import './CSS/Category.css';
 
 export default function Category() {
     const { categoryId } = useParams();
@@ -16,34 +16,39 @@ export default function Category() {
     const [newThreadTitle, setNewThreadTitle] = useState('');
     const [newThreadContent, setNewThreadContent] = useState('');
     const [showCreateThread, setShowCreateThread] = useState(false);
+    const [fetchTrigger, setFetchTrigger] = useState(false);
 
     useEffect(() => {
-        const fetchThreads = async () => {
-            try {
-                const fetchedCategory = await getCategoryById(categoryId);
-                setCategory(fetchedCategory);
-                const fetchedThreads = await getThreadsByCategoryId(categoryId);
-                setThreads(fetchedThreads);
-            } catch (error) {
-                console.error('Error fetching threads:', error);
-            }
-        };
-
         fetchThreads();
-    }, [categoryId, setThreads]);
+    }, [fetchTrigger]);
 
-    const handleCreateThread = () => {
-        if (newThreadTitle.trim() && newThreadContent.trim()) {
-            createThread(categoryId, newThreadTitle, newThreadContent, user.uid, userData.username)
-                .then(() => {
-                    setThreads([...threads, { title: newThreadTitle, content: newThreadContent }]);
-                    setNewThreadTitle('');
-                    setNewThreadContent('');
-                    setShowCreateThread(false);
-                })
-                .catch((error) => console.error('Error creating thread:', error));
+    const fetchThreads = async () => {
+        try {
+            const fetchedCategory = await getCategoryById(categoryId);
+            setCategory(fetchedCategory);
+            const fetchedThreads = await getThreadsByCategoryId(categoryId);
+            setThreads(fetchedThreads);
+        } catch (error) {
+            console.error('Error fetching threads:', error);
         }
     };
+
+
+    const handleCreateThread = async () => {
+        if (newThreadTitle.trim() && newThreadContent.trim()) {
+            try {
+                await createThread(categoryId, newThreadTitle, newThreadContent, user.uid, userData.username);
+                setThreads([...threads, { title: newThreadTitle, content: newThreadContent }]);
+                setNewThreadTitle('');
+                setNewThreadContent('');
+                setShowCreateThread(false);
+                setFetchTrigger(!fetchTrigger);
+            } catch (error) {
+                console.error('Error creating thread:', error);
+            }
+        }
+    };
+
 
     return (
         <div className="category-container">
@@ -65,9 +70,9 @@ export default function Category() {
                                 </h3>
                                 <p>{thread.content.substring(0, 100)}...</p>
                                 <div className="thread-stats">
-                                    <span>Replies: {thread.replies && thread.replies.length}</span>
-                                    <span>Upvotes: {thread.upvotes && thread.upvotes.length}</span>
-                                    <span>Downvotes: {threads.downvotes && thread.downvotes.length}</span>
+                                    <span>Replies: {thread.replies && thread.replies.length || 0} </span>
+                                    <span>Upvotes: {thread.upvotes && thread.upvotes.length || 0}</span>
+                                    <span>Downvotes: {threads.downvotes && thread.downvotes.length || 0}</span>
                                     <span>Views: {thread.views}</span>
                                 </div>
                             </div>

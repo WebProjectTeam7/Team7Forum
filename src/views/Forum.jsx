@@ -20,7 +20,6 @@ export default function Forum() {
     const [fetchTrigger, setFetchTrigger] = useState(false);
 
     useEffect(() => {
-        console.log(1);
         fetchCategories();
     }, [fetchTrigger]);
 
@@ -130,9 +129,9 @@ export default function Forum() {
                                             </h3>
                                             <p>{thread.content.substring(0, 100)}...</p>
                                             <div className="thread-stats">
-                                                <span>Replies: {thread.replies && thread.replies.length}</span>
-                                                <span>Upvotes: {thread.upvotes && thread.upvotes.length}</span>
-                                                <span>Downvotes: {thread.downvotes && thread.downvotes.length}</span>
+                                                <span>Replies: {thread.replies && thread.replies.length || 0}</span>
+                                                <span>Upvotes: {thread.upvotes && thread.upvotes.length || 0}</span>
+                                                <span>Downvotes: {thread.downvotes && thread.downvotes.length || 0}</span>
                                                 <span>Views: {thread.views}</span>
                                             </div>
                                         </div>

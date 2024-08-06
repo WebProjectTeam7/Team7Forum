@@ -102,9 +102,9 @@ export const handleReplyVote = async (replyId, vote, username) => {
 
 // DELETE
 
-export const deleteReply = async (threadId, replyId) => {
+export const deleteReply = async (replyId) => {
     try {
-        const replyRef = ref(db, `threads/${threadId}/replies/${replyId}`);
+        const replyRef = ref(db, `replies/${replyId}`);
         await remove(replyRef);
     } catch (error) {
         console.error('Error deleting reply:', error);

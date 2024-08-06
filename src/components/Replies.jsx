@@ -4,6 +4,7 @@ import { AppContext } from '../state/app.context';
 import PropTypes from 'prop-types';
 import './CSS/Replies.css';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
+import UserRoleEnum from '../common/role.enum';
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);
@@ -12,61 +13,66 @@ export default function Replies({ threadId }) {
     const [replyContent, setReplyContent] = useState('');
     const [editReplyId, setEditReplyId] = useState(null);
     const [editReplyContent, setEditReplyContent] = useState('');
+    const [fetchTrigger, setFetchTrigger] = useState(false);
 
     useEffect(() => {
-        const fetchReplies = async () => {
-            try {
-                const fetchedReplies = await getRepliesByThreadId(threadId);
-                setReplies(fetchedReplies);
-            } catch (error) {
-                console.error('Error fetching replies:', error);
-            }
-        };
-
         fetchReplies();
-    }, [threadId, replies]);
+    }, [fetchTrigger]);
+
+    const fetchReplies = async () => {
+        try {
+            const fetchedReplies = await getRepliesByThreadId(threadId);
+            setReplies(fetchedReplies);
+        } catch (error) {
+            console.error('Error fetching replies:', error);
+        }
+    };
 
     const handleCreateReply = async () => {
-        try {
-            const userId = userData.uid;
-            const newReplyId = await createReply(threadId, userId, replyContent);
-            setReplies([...replies, { id: newReplyId, content: replyContent, userId, createdAt: new Date().toISOString() }]);
-            setReplyContent('');
-        } catch (error) {
-            console.error('Error creating reply:', error);
+        if (replyContent.trim()) {
+            try {
+                const userId = userData.uid;
+                await createReply(threadId, userId, replyContent);
+                setReplyContent('');
+                setFetchTrigger((prev) => !prev);
+            } catch (error) {
+                console.error('Error creating reply:', error);
+            }
         }
     };
 
     const handleEditReply = async (replyId) => {
-        try {
-            await updateReply(replyId, { content: editReplyContent });
-            setReplies(replies.map(reply => reply.id === replyId ? { ...reply, content: editReplyContent } : reply));
-            setEditReplyId(null);
-            setEditReplyContent('');
-        } catch (error) {
-            console.error('Error editing reply:', error);
+        if (editReplyContent.trim()) {
+            try {
+                await updateReply(replyId, { content: editReplyContent });
+                setEditReplyId(null);
+                setEditReplyContent('');
+                setFetchTrigger((prev) => !prev);
+            } catch (error) {
+                console.error('Error editing reply:', error);
+            }
         }
     };
 
     const handleDeleteReply = async (replyId) => {
         if (window.confirm('Are you sure you want to delete this reply?')) {
             try {
-                await deleteReply(threadId, replyId);
-                setReplies(replies.filter(reply => reply.id !== replyId));
+                await deleteReply(replyId);
+                setFetchTrigger((prev) => !prev);
             } catch (error) {
                 console.error('Error deleting reply:', error);
             }
         }
     };
 
-    const handleUpvote = async (replyId, username, currentVote) => {
-        const newVote = currentVote === 1 ? 0 : 1;
-        await handleReplyVote(replyId, newVote, username);
-    };
-
-    const handleDownvote = async (replyId, username, currentVote) => {
-        const newVote = currentVote === -1 ? 0 : -1;
-        await handleReplyVote(replyId, newVote, username);
+    const handleVote = async (replyId, currentVote, voteType) => {
+        const newVote = currentVote === voteType ? 0 : voteType;
+        try {
+            await handleReplyVote(replyId, newVote, userData.username);
+            setFetchTrigger((prev) => !prev);
+        } catch (error) {
+            console.error(`Error handling ${voteType === 1 ? 'upvote' : 'downvote'}`, error);
+        }
     };
 
     return (
@@ -74,8 +80,8 @@ export default function Replies({ threadId }) {
             <h2>Replies</h2>
             <ul className="replies">
                 {replies.map((reply) => {
-                    const userVote = reply.upvotes && reply.upvotes.includes(userData.username) ?
-                        1 : reply.downvotes && (reply.downvotes.includes(userData.username) ? -1 : 0);
+                    const userVote = reply.upvotes?.includes(userData.username) ? 1 :
+                        reply.downvotes?.includes(userData.username) ? -1 : 0;
 
                     return (
                         <li key={reply.id} className="reply-item">
@@ -104,22 +110,24 @@ export default function Replies({ threadId }) {
                                             <p>{reply.content}</p>
                                             <div className="reply-actions">
                                                 <div className="upvote-downvote">
-                                                    <button onClick={() => handleUpvote(reply.id, userData.username, userVote)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                                                    <button onClick={() => handleVote(reply.id, userVote, 1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
                                                         <FaArrowAltCircleUp />
                                                     </button>
                                                     <span>Upvotes: {reply.upvotes ? reply.upvotes.length : 0}</span>
-                                                    <button onClick={() => handleDownvote(reply.id, userData.username, userVote)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                                                    <button onClick={() => handleVote(reply.id, userVote, -1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
                                                         <FaArrowAltCircleDown />
                                                     </button>
                                                     <span>Downvotes: {reply.downvotes ? reply.downvotes.length : 0}</span>
                                                 </div>
-                                                <div className="edit-delete-buttons">
-                                                    <button onClick={() => {
-                                                        setEditReplyId(reply.id);
-                                                        setEditReplyContent(reply.content);
-                                                    }}>Edit</button>
-                                                    <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>
-                                                </div>
+                                                {(userData.role === UserRoleEnum.ADMIN || userData.username === reply.author) && (
+                                                    <div className="edit-delete-buttons">
+                                                        <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>
+                                                        <button onClick={() => {
+                                                            setEditReplyId(reply.id);
+                                                            setEditReplyContent(reply.content);
+                                                        }}>Edit</button>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     )}
