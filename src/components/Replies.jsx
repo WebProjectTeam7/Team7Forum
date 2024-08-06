@@ -110,13 +110,13 @@ export default function Replies({ threadId }) {
                                             <p>{reply.content}</p>
                                             <div className="reply-actions">
                                                 <div className="upvote-downvote">
-                                                    <button onClick={() => handleVote(reply.id, userVote, 1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                                                    <div onClick={() => handleVote(reply.id, userVote, 1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
                                                         <FaArrowAltCircleUp />
-                                                    </button>
+                                                    </div>
                                                     <span>Upvotes: {reply.upvotes ? reply.upvotes.length : 0}</span>
-                                                    <button onClick={() => handleVote(reply.id, userVote, -1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                                                    <div onClick={() => handleVote(reply.id, userVote, -1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
                                                         <FaArrowAltCircleDown />
-                                                    </button>
+                                                    </div>
                                                     <span>Downvotes: {reply.downvotes ? reply.downvotes.length : 0}</span>
                                                 </div>
                                                 {(userData.role === UserRoleEnum.ADMIN || userData.username === reply.author) && (

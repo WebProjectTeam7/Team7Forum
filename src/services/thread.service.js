@@ -18,6 +18,7 @@ export const createThread = async (categoryId, title, content, authorId, authorN
         const threadsRef = ref(db, 'threads');
         const newThreadRef = await push(threadsRef);
         await set(newThreadRef, { ...newThread, id: newThreadRef.key });
+        return newThreadRef.key;
     } catch (error) {
         console.error('Error creating thread:', error);
         throw error;

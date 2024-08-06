@@ -69,5 +69,5 @@ body.dark-mode .user-profile-details span {
 }
 
 body.dark-mode .user-not-found {
-    color: #ff6b6b; /* Adjusted color for better visibility in dark mode */
+    color: #ff6b6b; 
 }

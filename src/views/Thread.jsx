@@ -113,13 +113,13 @@ export default function Thread() {
                 </div>
             </div>
             <div className="thread-actions">
-                <button onClick={() => handleVote(1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                <div onClick={() => handleVote(1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
                     <FaArrowAltCircleUp />
-                </button>
+                </div>
                 <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
-                <button onClick={() => handleVote(-1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                <div onClick={() => handleVote(-1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
                     <FaArrowAltCircleDown />
-                </button>
+                </div>
                 <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
                 <FaEye />
                 <span>Views: {thread.views || 0}</span>
