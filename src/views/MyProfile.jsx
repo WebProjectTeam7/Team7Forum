@@ -1,12 +1,12 @@
 import { useState, useContext, useEffect } from 'react';
-import { updateUser, deleteUser } from '../services/users.service';
+import { updateUser, deleteUser, getUserByUsername } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 import './CSS/MyProfile.css';
 import { useNavigate } from 'react-router-dom';
 import { auth, storage } from '../config/firebase-config';
 import { signOut } from 'firebase/auth';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import LoadingComponent from '../components/Loading';
+import { MAX_FILE_SIZE } from '../common/avatar-size.constants';
 
 const useDefaultAvatarUrl = () => {
     const [defaultAvatarUrl, setDefaultAvatarUrl] = useState(null);
@@ -40,6 +40,7 @@ export default function MyProfile() {
 
     const [avatarFile, setAvatarFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(null);
 
     const defaultAvatarUrl = useDefaultAvatarUrl();
 
@@ -105,9 +106,16 @@ export default function MyProfile() {
     };
 
     const handleAvatarChange = (e) => {
-        if (e.target.files[0]) {
-            setAvatarFile(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file.size > MAX_FILE_SIZE) {
+            alert('The selected file is too large. Please choose a file under 200KB.');
+            setAvatarFile(null);
+            setAvatarPreviewUrl(null);
+            return;
         }
+
+        setAvatarFile(file);
+        setAvatarPreviewUrl(URL.createObjectURL(file));
     };
 
     const uploadAvatar = async () => {
@@ -117,13 +125,11 @@ export default function MyProfile() {
                 const avatarRef = storageRef(storage, `avatars/${user.uid}`);
                 await uploadBytes(avatarRef, avatarFile);
                 const avatarURL = await getDownloadURL(avatarRef);
-
+                await updateUser(user.uid, { avatar: avatarURL });
+                const updatedUserData = await getUserByUsername(userData.username);
                 setAppState((prev) => ({
                     ...prev,
-                    userData: {
-                        ...prev.userData,
-                        avatar: avatarURL,
-                    },
+                    userData: updatedUserData,
                 }));
 
                 return avatarURL;
@@ -136,7 +142,12 @@ export default function MyProfile() {
             return null;
         } finally {
             setIsUploading(false);
+            if (avatarPreviewUrl) {
+                URL.revokeObjectURL(avatarPreviewUrl);
+            }
+            setAvatarPreviewUrl(null);
         }
+
     };
 
     if (!userData) return <div>Loading...</div>;
@@ -144,13 +155,12 @@ export default function MyProfile() {
     return (
         <div className="profile-container">
             <h1>My Profile</h1>
-            {isUploading && <LoadingComponent />}
 
             {/* AVATAR */}
             <div className="profile-field avatar-container">
                 <label>Avatar:</label>
                 <img
-                    src={userData.avatar || defaultAvatarUrl}
+                    src={avatarPreviewUrl || userData.avatar || defaultAvatarUrl}
                     alt="Avatar"
                     className="avatar-img"
                 />
