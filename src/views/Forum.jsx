@@ -16,6 +16,7 @@ export default function Forum() {
     const [newCategoryTitle, setNewCategoryTitle] = useState('');
     const [editCategoryId, setEditCategoryId] = useState(null);
     const [editCategoryTitle, setEditCategoryTitle] = useState('');
+    const [showCreateCategory, setShowCreateCategory] = useState(false);
 
     useEffect(() => {
         getCategories()
@@ -43,6 +44,7 @@ export default function Forum() {
                 .then((newCategoryId) => {
                     setCategories([...categories, { id: newCategoryId, title: newCategoryTitle, threads: [] }]);
                     setNewCategoryTitle('');
+                    setShowCreateCategory(false);
                 })
                 .catch((error) => console.error('Error creating category:', error));
         }
@@ -75,22 +77,26 @@ export default function Forum() {
     return (
         <div className="forum-container">
             <h1>Forum</h1>
-            {isAdmin && (
-                <div className="admin-actions">
-                    <input
-                        type="text"
-                        value={newCategoryTitle}
-                        onChange={(e) => setNewCategoryTitle(e.target.value)}
-                        placeholder="New category title"
-                    />
-                    <button onClick={handleCreateCategory}>Create Category</button>
-                </div>
-            )}
             {categories.map((category) => (
                 <div key={category.id} className="category">
-                    <h2 className="category-title">
-                        <Link to={`/forum/category/${category.id}`}>{category.title}</Link>
-                    </h2>
+                    <div className="category-title-row">
+                        <h2 className="category-title">
+                            <Link to={`/forum/category/${category.id}`}>{category.title}</Link>
+                        </h2>
+                        <div className="category-meta">
+                            <span>Number of Threads: {category.threads.length}</span>
+                            {isAdmin && (
+                                <div className="category-buttons">
+                                    <button onClick={() => {
+                                        setEditCategoryId(category.id);
+                                        setEditCategoryTitle(category.title);
+                                    }} className="small-button">Edit</button>
+                                    <button className="delete-button small-button"
+                                        onClick={() => handleDeleteCategory(category.id)}>Delete</button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                     {editCategoryId === category.id ? (
                         <div className="edit-category">
                             <input
@@ -103,30 +109,54 @@ export default function Forum() {
                             <button className="cancel-button" onClick={() => setEditCategoryId(null)}>Cancel</button>
                         </div>
                     ) : (
-                        <div className="category-buttons">
-                            {isAdmin && (
-                                <>
-                                    <button onClick={() => {
-                                        setEditCategoryId(category.id);
-                                        setEditCategoryTitle(category.title);
-                                    }}>Edit</button>
-                                    <button className="delete-button"
-                                        onClick={() => handleDeleteCategory(category.id)}>Delete</button>
-                                </>
-                            )}
+                        <div className="category-threads">
+                            <ul>
+                                {category.threads.map((thread) => (
+                                    <li key={thread.id} className="thread-item">
+                                        <div className="thread-info">
+                                            <img src="/path/to/category/image.jpg" alt="Category" className="category-image" />
+                                            <div>
+                                                <p className="thread-author">{thread.author}</p>
+                                                <p className="thread-date">Created on: {new Date(thread.createdAt).toLocaleDateString()}</p>
+                                            </div>
+                                        </div>
+                                        <div className="thread-content">
+                                            <h3>
+                                                <Link to={`/forum/thread/${thread.id}`}>{thread.title}</Link>
+                                            </h3>
+                                            <p>{thread.content.substring(0, 100)}...</p>
+                                            <div className="thread-stats">
+                                                <span>Replies: {thread.replies && thread.replies.length}</span>
+                                                <span>Upvotes: {thread.upvotes && thread.upvotes.length}</span>
+                                                <span>Downvotes: {thread.downvotes && thread.downvotes.length}</span>
+                                                <span>Views: {thread.views}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     )}
-                    <div>
-                        <ul>
-                            {category.threads.map((thread) => (
-                                <li key={thread.id}>
-                                    <Link to={`/forum/thread/${thread.id}`}>{thread.title}</Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
                 </div>
             ))}
+            {isAdmin && (
+                <div className="admin-actions">
+                    <button onClick={() => setShowCreateCategory(!showCreateCategory)}>
+                        {showCreateCategory ? 'Cancel' : 'Create Category'}
+                    </button>
+                    {showCreateCategory && (
+                        <div className="create-category">
+                            <input
+                                type="text"
+                                value={newCategoryTitle}
+                                onChange={(e) => setNewCategoryTitle(e.target.value)}
+                                placeholder="New category title"
+                            />
+                            <button onClick={handleCreateCategory}>Save Category</button>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
