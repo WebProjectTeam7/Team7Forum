@@ -24,9 +24,10 @@ header h1 {
 }
 
 header span {
-  font-size: 1.2em;
+  font-size: 3em;
   color: #d4eeff;
   margin-bottom: 10px;
+
 }
 
 nav {
@@ -69,6 +70,9 @@ nav .search {
   flex: 1;
   max-width: 500px;
   margin-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 30px;
 }
 
 nav .beer-switch {
@@ -94,4 +98,8 @@ input {
   height: 24px;
   flex: 1 0;
   margin: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 15px;
+  width: 300px;
 }
