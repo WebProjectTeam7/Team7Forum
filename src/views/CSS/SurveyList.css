@@ -18,7 +18,7 @@
   }
   
   /* Add Survey Button styling */
-  .add-survey-button {
+  /* .add-survey-button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,7 +51,8 @@
     width: 1.25rem;
     height: 1.25rem;
     fill: white;
-  }
+  } */
+   
   /* Survey list item styling */
   .survey-item {
     display: flex;
