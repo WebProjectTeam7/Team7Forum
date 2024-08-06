@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getThreadsByCategoryId, createThread } from '../services/thread.service';
+import { getRepliesCountByThreadId } from '../services/reply.service';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import { getCategoryById } from '../services/category.service';
@@ -27,28 +28,31 @@ export default function Category() {
             const fetchedCategory = await getCategoryById(categoryId);
             setCategory(fetchedCategory);
             const fetchedThreads = await getThreadsByCategoryId(categoryId);
-            setThreads(fetchedThreads);
+            const threadsWithRepliesCounts = await Promise.all(
+                fetchedThreads.map(async (thread) => {
+                    const repliesCount = await getRepliesCountByThreadId(thread.id);
+                    return { ...thread, repliesCount };
+                })
+            );
+            setThreads(threadsWithRepliesCounts);
         } catch (error) {
             console.error('Error fetching threads:', error);
         }
     };
 
-
     const handleCreateThread = async () => {
         if (newThreadTitle.trim() && newThreadContent.trim()) {
             try {
                 await createThread(categoryId, newThreadTitle, newThreadContent, user.uid, userData.username);
-                setThreads([...threads, { title: newThreadTitle, content: newThreadContent }]);
+                setFetchTrigger(!fetchTrigger);
                 setNewThreadTitle('');
                 setNewThreadContent('');
                 setShowCreateThread(false);
-                setFetchTrigger(!fetchTrigger);
             } catch (error) {
                 console.error('Error creating thread:', error);
             }
         }
     };
-
 
     return (
         <div className="category-container">
@@ -70,9 +74,9 @@ export default function Category() {
                                 </h3>
                                 <p>{thread.content.substring(0, 100)}...</p>
                                 <div className="thread-stats">
-                                    <span>Replies: {thread.replies && thread.replies.length || 0} </span>
+                                    <span>Replies: {thread.repliesCount}</span>
                                     <span>Upvotes: {thread.upvotes && thread.upvotes.length || 0}</span>
-                                    <span>Downvotes: {threads.downvotes && thread.downvotes.length || 0}</span>
+                                    <span>Downvotes: {thread.downvotes && thread.downvotes.length || 0}</span>
                                     <span>Views: {thread.views}</span>
                                 </div>
                             </div>
