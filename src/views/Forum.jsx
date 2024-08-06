@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/category.service';
 import { getThreadsByCategoryId } from '../services/thread.service';
-import { getRepliesCountByThreadId } from '../services/reply.service';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/Forum.css';
@@ -31,13 +30,7 @@ export default function Forum() {
             const categoriesWithThreads = await Promise.all(
                 fetchedCategories.map(async (category) => {
                     const threads = await getThreadsByCategoryId(category.id, THREADS_LIMIT_BY_CATEGORY);
-                    const threadsWithRepliesCounts = await Promise.all(
-                        threads.map(async (thread) => {
-                            const repliesCount = await getRepliesCountByThreadId(thread.id);
-                            return { ...thread, repliesCount };
-                        })
-                    );
-                    return { ...category, threads: threadsWithRepliesCounts };
+                    return { ...category, threads };
                 })
             );
             setCategories(categoriesWithThreads);
@@ -94,7 +87,7 @@ export default function Forum() {
                             <Link to={`/forum/category/${category.id}`}>{category.title}</Link>
                         </h2>
                         <div className="category-meta">
-                            <span>Number of Threads: {category.threads.length}</span>
+                            <span>Number of Threads: {category.threadsCount}</span>
                             {isAdmin && (
                                 <div className="category-buttons">
                                     <button onClick={() => {

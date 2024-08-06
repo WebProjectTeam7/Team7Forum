@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import './CSS/Replies.css';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import UserRoleEnum from '../common/role.enum';
+import { updateRepliesCounter } from '../services/thread.service';
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);
@@ -32,6 +33,7 @@ export default function Replies({ threadId }) {
         if (replyContent.trim()) {
             try {
                 await createReply(threadId, userData.username, replyContent);
+                await updateRepliesCounter(threadId, 1);
                 setReplyContent('');
                 setFetchTrigger((prev) => !prev);
             } catch (error) {
@@ -43,7 +45,7 @@ export default function Replies({ threadId }) {
     const handleEditReply = async (replyId) => {
         if (editReplyContent.trim()) {
             try {
-                await updateReply(threadId, replyId, { content: editReplyContent });
+                await updateReply(replyId, { content: editReplyContent });
                 setEditReplyId(null);
                 setEditReplyContent('');
                 setFetchTrigger((prev) => !prev);
@@ -56,7 +58,8 @@ export default function Replies({ threadId }) {
     const handleDeleteReply = async (replyId) => {
         if (window.confirm('Are you sure you want to delete this reply?')) {
             try {
-                await deleteReply(threadId, replyId);
+                await deleteReply(replyId);
+                await updateRepliesCounter(threadId, -1);
                 setFetchTrigger((prev) => !prev);
             } catch (error) {
                 console.error('Error deleting reply:', error);
@@ -67,7 +70,7 @@ export default function Replies({ threadId }) {
     const handleVote = async (replyId, currentVote, voteType) => {
         const newVote = currentVote === voteType ? 0 : voteType;
         try {
-            await handleReplyVote(threadId, replyId, newVote, userData.username);
+            await handleReplyVote(replyId, newVote, userData.username);
             setFetchTrigger((prev) => !prev);
         } catch (error) {
             console.error(`Error handling ${voteType === 1 ? 'upvote' : 'downvote'}`, error);

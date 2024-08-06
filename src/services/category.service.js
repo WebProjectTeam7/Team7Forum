@@ -51,6 +51,23 @@ export const getCategoryById = async (categoryId) => {
     }
 };
 
+export const updateThreadsCounter = async (categoryId, factor) => {
+    try {
+        const categoryRef = ref(db, `categories/${categoryId}`);
+        const snapshot = await get(categoryRef);
+        if (!snapshot.exists()) {
+            throw new Error('Category not found');
+        }
+        const categoryData = snapshot.val();
+        const currentThreadsCount = categoryData.threadsCount || 0;
+        const newThreadsCount = currentThreadsCount + factor;
+        await update(categoryRef, { threadsCount: newThreadsCount });
+    } catch (error) {
+        console.error('Error updating threads count:', error);
+        throw new Error('Failed to update threads count');
+    }
+};
+
 // UPDATE
 
 export const updateCategory = async (categoryId, newTitle) => {
