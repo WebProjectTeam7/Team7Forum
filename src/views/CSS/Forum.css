@@ -1,3 +1,4 @@
+/* Light Mode */
 .forum-container {
     padding: 20px;
     background-color: #f5f5f5;
@@ -127,4 +128,84 @@ h1 {
     display: flex;
     gap: 10px;
     margin-top: 10px;
+}
+
+/* Dark Mode */
+body.dark-mode .forum-container {
+    background-color: #2e2e2e;
+}
+
+body.dark-mode h1 {
+    color: #fff;
+}
+
+body.dark-mode .admin-actions {
+    color: #fff;
+}
+
+body.dark-mode .category {
+    background-color: #3a3a3a;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .category-title-row {
+    background-color: #555;
+}
+
+body.dark-mode .category-title {
+    color: #fff;
+}
+
+body.dark-mode .category-meta {
+    color: #ccc;
+}
+
+body.dark-mode .edit-category input,
+body.dark-mode .create-category input {
+    background-color: #555;
+    color: #fff;
+    border: 1px solid #444;
+}
+
+body.dark-mode .edit-category button,
+body.dark-mode .create-category button,
+body.dark-mode .category-buttons .small-button {
+    background-color: #007bff;
+}
+
+body.dark-mode .cancel-button,
+body.dark-mode .delete-button,
+body.dark-mode .category-buttons .delete-button {
+    background-color: #dc3545;
+}
+
+body.dark-mode .thread-item {
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+}
+
+body.dark-mode .thread-info {
+    color: #ccc;
+}
+
+body.dark-mode .category-image {
+    border: 1px solid #444;
+}
+
+body.dark-mode .thread-author,
+body.dark-mode .thread-date {
+    color: #ccc;
+}
+
+body.dark-mode .thread-content {
+    background-color: #555;
+    color: #fff;
+}
+
+body.dark-mode .thread-content h3 {
+    color: #fff;
+}
+
+body.dark-mode .thread-stats {
+    color: #ccc;
 }

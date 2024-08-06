@@ -41,3 +41,40 @@
     max-height: 1000px;
     transform: scaleX(1) scaleY(1);
 }
+
+/* Dark Mode */
+body.dark-mode .infoButtonContainer {
+    /* No changes required here */
+}
+
+body.dark-mode .infoButton {
+    color: #e0e0e0;
+}
+
+body.dark-mode .infoIcon {
+    margin-right: 400px; /* Adjust as needed */
+}
+
+body.dark-mode .infoBox {
+    background-color: #333;
+    border: 1px solid #555;
+    padding: 10px;
+    max-width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    overflow: hidden;
+    transform-origin: top left;
+    transform: scaleX(0) scaleY(0);
+    transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+body.dark-mode .infoText {
+    color: #e0e0e0;
+    margin: 0;
+}
+
+body.dark-mode .infoButtonContainer:hover .infoBox {
+    opacity: 1;
+    max-height: 1000px;
+    transform: scaleX(1) scaleY(1);
+}

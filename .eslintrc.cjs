@@ -41,6 +41,7 @@ module.exports = {
                 ignoreStrings: true,
             },
         ],
+        'no-console': ["error", { "allow": ["warn", "error"] }],
         'object-curly-spacing': ['error', 'always'],
         quotes: ['error', 'single'],
         'quote-props': 'off',

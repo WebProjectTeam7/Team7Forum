@@ -67,3 +67,53 @@ form .strength-indicator {
 form .infoButton{
     margin-left: auto; 
 }
+
+/* Dark Mode */
+body.dark-mode form {
+    background: #2e2e2e;
+    border: 1px solid #444;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode form h1 {
+    color: #e0e0e0;
+}
+
+body.dark-mode form label {
+    color: #ccc;
+}
+
+body.dark-mode form input {
+    border: 1px solid #666;
+    background: #444;
+    color: #e0e0e0;
+}
+
+body.dark-mode form button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+body.dark-mode form button:hover {
+    background-color: #45a049;
+}
+
+body.dark-mode form a {
+    color: #4CAF50;
+}
+
+body.dark-mode form a:hover {
+    text-decoration: underline;
+}
+
+body.dark-mode form .error {
+    color: #ff6b6b;
+}
+
+body.dark-mode form .strength-indicator {
+    color: #ccc;
+}
+
+body.dark-mode form .infoButton {
+    margin-left: auto; 
+}

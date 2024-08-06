@@ -1,8 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/category.service';
-import { AppContext } from '../state/app.context';
 import { getThreadsByCategoryId } from '../services/thread.service';
+import { getRepliesCountByThreadId } from '../services/reply.service';
+import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/Forum.css';
 
@@ -23,13 +24,20 @@ export default function Forum() {
         fetchCategories();
     }, [fetchTrigger]);
 
+
     const fetchCategories = async () => {
         try {
             const fetchedCategories = await getCategories();
             const categoriesWithThreads = await Promise.all(
                 fetchedCategories.map(async (category) => {
                     const threads = await getThreadsByCategoryId(category.id, THREADS_LIMIT_BY_CATEGORY);
-                    return { ...category, threads };
+                    const threadsWithRepliesCounts = await Promise.all(
+                        threads.map(async (thread) => {
+                            const repliesCount = await getRepliesCountByThreadId(thread.id);
+                            return { ...thread, repliesCount };
+                        })
+                    );
+                    return { ...category, threads: threadsWithRepliesCounts };
                 })
             );
             setCategories(categoriesWithThreads);
@@ -56,7 +64,6 @@ export default function Forum() {
         if (editCategoryTitle.trim()) {
             try {
                 await updateCategory(categoryId, editCategoryTitle);
-                fetchCategories();
                 setEditCategoryId(null);
                 setFetchTrigger(!fetchTrigger);
             } catch (error) {
@@ -129,9 +136,9 @@ export default function Forum() {
                                             </h3>
                                             <p>{thread.content.substring(0, 100)}...</p>
                                             <div className="thread-stats">
-                                                <span>Replies: {thread.replies && thread.replies.length || 0}</span>
-                                                <span>Upvotes: {thread.upvotes && thread.upvotes.length || 0}</span>
-                                                <span>Downvotes: {thread.downvotes && thread.downvotes.length || 0}</span>
+                                                <span>Replies: {thread.repliesCount}</span>
+                                                <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
+                                                <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
                                                 <span>Views: {thread.views}</span>
                                             </div>
                                         </div>
