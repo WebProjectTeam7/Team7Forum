@@ -13,7 +13,6 @@ export const createThread = async (categoryId, title, content, authorId, authorN
             authorId,
             authorName,
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
         };
 
         const threadsRef = ref(db, 'threads');
@@ -74,7 +73,7 @@ export const updateThread = async (threadId, updatedData) => {
         if (!snapshot.exists()) {
             throw new Error('Thread not found');
         }
-        await update(threadRef, updatedData);
+        await update(threadRef, { ...updatedData, updatedAt: new Date().toISOString(), });
     } catch (error) {
         console.error('Error updating thread:', error);
         throw error;
