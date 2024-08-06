@@ -1,19 +1,18 @@
 import { ref, push, set, query, get, orderByChild, equalTo, update, remove } from 'firebase/database';
 import { db } from '../config/firebase-config';
 
-
 // CREATE
 
-export const createReply = async (threadId, userId, replyContent) => {
+export const createReply = async (threadId, username, content) => {
     try {
         const newReply = {
-            userId,
+            author: username,
             threadId,
-            content: replyContent,
+            content,
             createdAt: new Date().toISOString(),
         };
 
-        const repliesRef = ref(db, 'replies');
+        const repliesRef = ref(db, `replies/${threadId}`);
         const newReplyRef = push(repliesRef);
         await set(newReplyRef, { ...newReply, id: newReplyRef.key });
         return newReplyRef.key;
@@ -23,17 +22,16 @@ export const createReply = async (threadId, userId, replyContent) => {
     }
 };
 
-
 // RETRIEVE
 
 export const getRepliesByThreadId = async (threadId) => {
     try {
-        const repliesRef = query(ref(db, 'replies'), orderByChild('threadId'), equalTo(threadId));
+        const repliesRef = ref(db, `replies/${threadId}`);
         const snapshot = await get(repliesRef);
         if (!snapshot.exists()) {
             return [];
         }
-        return Object.values(snapshot.val()).sort((a, b) => new Date(a.createdAt) - new DataTransfer(b.createdAt));
+        return Object.values(snapshot.val()).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     } catch (error) {
         console.error('Error retrieving replies by thread ID:', error);
         throw new Error('Failed to retrieve replies');
@@ -42,38 +40,23 @@ export const getRepliesByThreadId = async (threadId) => {
 
 export const getRepliesCountByThreadId = async (threadId) => {
     try {
-        const repliesRef = query(ref(db, 'replies'), orderByChild('threadId'), equalTo(threadId));
+        const repliesRef = ref(db, `replies/${threadId}`);
         const snapshot = await get(repliesRef);
         if (!snapshot.exists()) {
             return 0;
         }
         return Object.values(snapshot.val()).length;
     } catch (error) {
-        console.error('Error retrieving replies count bt thread ID:', error);
+        console.error('Error retrieving replies count by thread ID:', error);
         throw new Error('Failed to retrieve replies count');
     }
 };
 
-export const getRepliesByUserId = async (userId) => {
-    try {
-        const repliesRef = query(ref(db, 'replies'), orderByChild('userId'), equalTo(userId));
-        const snapshot = await get(repliesRef);
-        if (!snapshot.exists()) {
-            return [];
-        }
-        return Object.values(snapshot.val());
-    } catch (error) {
-        console.error('Error retrieving replies by user ID:', error);
-        throw new Error('Failed to retrieve replies');
-    }
-};
-
-
 // UPDATE
 
-export const updateReply = async (replyId, updatedData) => {
+export const updateReply = async (threadId, replyId, updatedData) => {
     try {
-        const replyRef = ref(db, `replies/${replyId}`);
+        const replyRef = ref(db, `replies/${threadId}/${replyId}`);
         await update(replyRef, updatedData);
     } catch (error) {
         console.error('Error editing reply:', error);
@@ -81,9 +64,9 @@ export const updateReply = async (replyId, updatedData) => {
     }
 };
 
-export const handleReplyVote = async (replyId, vote, username) => {
+export const handleReplyVote = async (threadId, replyId, vote, username) => {
     try {
-        const replyRef = ref(db, `replies/${replyId}`);
+        const replyRef = ref(db, `replies/${threadId}/${replyId}`);
         const snapshot = await get(replyRef);
         if (!snapshot.exists()) {
             throw new Error('Reply not found');
@@ -113,12 +96,11 @@ export const handleReplyVote = async (replyId, vote, username) => {
     }
 };
 
-
 // DELETE
 
-export const deleteReply = async (replyId) => {
+export const deleteReply = async (threadId, replyId) => {
     try {
-        const replyRef = ref(db, `replies/${replyId}`);
+        const replyRef = ref(db, `replies/${threadId}/${replyId}`);
         await remove(replyRef);
     } catch (error) {
         console.error('Error deleting reply:', error);

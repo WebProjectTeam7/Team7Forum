@@ -31,8 +31,7 @@ export default function Replies({ threadId }) {
     const handleCreateReply = async () => {
         if (replyContent.trim()) {
             try {
-                const userId = userData.uid;
-                await createReply(threadId, userId, replyContent);
+                await createReply(threadId, userData.username, replyContent);
                 setReplyContent('');
                 setFetchTrigger((prev) => !prev);
             } catch (error) {
@@ -44,7 +43,7 @@ export default function Replies({ threadId }) {
     const handleEditReply = async (replyId) => {
         if (editReplyContent.trim()) {
             try {
-                await updateReply(replyId, { content: editReplyContent });
+                await updateReply(threadId, replyId, { content: editReplyContent });
                 setEditReplyId(null);
                 setEditReplyContent('');
                 setFetchTrigger((prev) => !prev);
@@ -57,7 +56,7 @@ export default function Replies({ threadId }) {
     const handleDeleteReply = async (replyId) => {
         if (window.confirm('Are you sure you want to delete this reply?')) {
             try {
-                await deleteReply(replyId);
+                await deleteReply(threadId, replyId);
                 setFetchTrigger((prev) => !prev);
             } catch (error) {
                 console.error('Error deleting reply:', error);
@@ -68,7 +67,7 @@ export default function Replies({ threadId }) {
     const handleVote = async (replyId, currentVote, voteType) => {
         const newVote = currentVote === voteType ? 0 : voteType;
         try {
-            await handleReplyVote(replyId, newVote, userData.username);
+            await handleReplyVote(threadId, replyId, newVote, userData.username);
             setFetchTrigger((prev) => !prev);
         } catch (error) {
             console.error(`Error handling ${voteType === 1 ? 'upvote' : 'downvote'}`, error);

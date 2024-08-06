@@ -31,6 +31,7 @@ export default function Thread() {
     const incrementViews = async () => {
         try {
             await incrementThreadViews(threadId);
+            setFetchTrigger(!fetchTrigger);
         } catch (error) {
             console.error('Error incrementing thread views:', error);
         }
