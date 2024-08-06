@@ -1,24 +1,117 @@
+.replies-container {
+    margin-top: 20px;
+}
+
 .replies {
-    list-style: none;
+    list-style-type: none;
     padding: 0;
 }
 
-.replies li {
+.reply-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     margin-bottom: 10px;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.reply-body {
+    display: flex;
+}
+
+.reply-info {
+    flex: 1;
+    max-width: 16.6667%; /* 1/6th of the space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.reply-author-date p {
+    margin: 0;
+    text-align: center;
+}
+
+.reply-content {
+    flex: 5; /* The remaining space */
+    margin-left: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.reply-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.upvote-downvote {
+    
+    display: flex;
+    align-items: center;
+}
+
+.upvote-button,
+.downvote-button {
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upvote-button.active,
+.downvote-button.active {
+    color: green;
+}
+
+.edit-delete-buttons {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: stretch;
+}
+
+.edit-delete-buttons button {
+    margin-top: 5px;
 }
 
 .reply-input {
+    display: flex;
     margin-top: 20px;
 }
 
 .reply-input input {
-    width: 80%;
+    flex: 1;
     padding: 10px;
-    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 .reply-input button {
-    padding: 10px 20px;
+    margin-left: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.reply-input button:hover {
+    background-color: #0056b3;
 }

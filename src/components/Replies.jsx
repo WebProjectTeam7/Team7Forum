@@ -70,7 +70,7 @@ export default function Replies({ threadId }) {
     };
 
     return (
-        <div>
+        <div className="replies-container">
             <h2>Replies</h2>
             <ul className="replies">
                 {replies.map((reply) => {
@@ -78,38 +78,52 @@ export default function Replies({ threadId }) {
                         1 : reply.downvotes && (reply.downvotes.includes(userData.username) ? -1 : 0);
 
                     return (
-                        <li key={reply.id}>
-                            <div>
-                                {editReplyId === reply.id ? (
-                                    <div>
-                                        <input
-                                            type="text"
-                                            value={editReplyContent}
-                                            onChange={(e) => setEditReplyContent(e.target.value)}
-                                        />
-                                        <button onClick={() => handleEditReply(reply.id)}>Save</button>
-                                        <button onClick={() => setEditReplyId(null)}>Cancel</button>
+                        <li key={reply.id} className="reply-item">
+                            <div className="reply-body">
+                                <div className="reply-info">
+                                    <img src={reply.authorAvatar} alt="Author Avatar" className="author-avatar" />
+                                    <div className="reply-author-date">
+                                        <p>Author: {reply.author}</p>
+                                        <p>Created At: {new Date(reply.createdAt).toLocaleDateString()}</p>
+                                        {reply.updatedAt && <p>Last Edited: {new Date(reply.updatedAt).toLocaleDateString()}</p>}
                                     </div>
-                                ) : (
-                                    <div>
-                                        <p>{reply.content}</p>
-                                        <div className="upvote-downvote">
-                                            <button onClick={() => handleUpvote(reply.id, userData.username, userVote)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
-                                                <FaArrowAltCircleUp />
-                                            </button>
-                                            <span>Upvotes: {reply.upvotes ? reply.upvotes.length : 0}</span>
-                                            <button onClick={() => handleDownvote(reply.id, userData.username, userVote)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
-                                                <FaArrowAltCircleDown />
-                                            </button>
-                                            <span>Downvotes: {reply.downvotes ? reply.downvotes.length : 0}</span>
+                                </div>
+                                <div className="reply-content">
+                                    {editReplyId === reply.id ? (
+                                        <div>
+                                            <input
+                                                type="text"
+                                                value={editReplyContent}
+                                                onChange={(e) => setEditReplyContent(e.target.value)}
+                                            />
+                                            <button onClick={() => handleEditReply(reply.id)}>Save</button>
+                                            <button onClick={() => setEditReplyId(null)}>Cancel</button>
                                         </div>
-                                        <button onClick={() => {
-                                            setEditReplyId(reply.id);
-                                            setEditReplyContent(reply.content);
-                                        }}>Edit</button>
-                                        <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>
-                                    </div>
-                                )}
+                                    ) : (
+                                        <div>
+                                            <p>{reply.content}</p>
+                                            <div className="reply-actions">
+                                                <div className="upvote-downvote">
+                                                    <button onClick={() => handleUpvote(reply.id, userData.username, userVote)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                                                        <FaArrowAltCircleUp />
+                                                    </button>
+                                                    <span>Upvotes: {reply.upvotes ? reply.upvotes.length : 0}</span>
+                                                    <button onClick={() => handleDownvote(reply.id, userData.username, userVote)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                                                        <FaArrowAltCircleDown />
+                                                    </button>
+                                                    <span>Downvotes: {reply.downvotes ? reply.downvotes.length : 0}</span>
+                                                </div>
+                                                <div className="edit-delete-buttons">
+                                                    <button onClick={() => {
+                                                        setEditReplyId(reply.id);
+                                                        setEditReplyContent(reply.content);
+                                                    }}>Edit</button>
+                                                    <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </li>
                     );

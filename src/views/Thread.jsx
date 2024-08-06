@@ -1,11 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getThreadById, updateThread, deleteThread, handleThreadVote } from '../services/thread.service';
+import { getThreadById, updateThread, deleteThread, handleThreadVote, incrementThreadViews } from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/Thread.css';
-import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
+import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -21,6 +21,7 @@ export default function Thread() {
     useEffect(() => {
         const fetchThread = async () => {
             try {
+                await incrementThreadViews(threadId);
                 const fetchedThread = await getThreadById(threadId);
                 setThread(fetchedThread);
                 setEditThreadTitle(fetchedThread.title);
@@ -35,7 +36,7 @@ export default function Thread() {
         };
 
         fetchThread();
-    }, [threadId, thread]);
+    }, [threadId, userData]);
 
     const handleEditThread = async () => {
         try {
@@ -52,7 +53,6 @@ export default function Thread() {
         if (window.confirm('Are you sure you want to delete this thread?')) {
             try {
                 await deleteThread(threadId);
-                console.log(`Thread with ID ${threadId} deleted successfully.`);
                 navigate('/forum');
             } catch (error) {
                 console.error('Error deleting thread:', error);
@@ -60,14 +60,28 @@ export default function Thread() {
         }
     };
 
-    const handleUpvote = async (replyId, username, currentVote) => {
-        const newVote = currentVote === 1 ? 0 : 1;
-        await handleThreadVote(replyId, newVote, username);
+    const handleUpvote = async () => {
+        const newVote = userVote === 1 ? 0 : 1;
+        try {
+            await handleThreadVote(threadId, newVote, userData.username);
+            const updatedThread = await getThreadById(threadId);
+            setThread(updatedThread);
+            setUserVote(newVote);
+        } catch (error) {
+            console.error('Error handling upvote:', error);
+        }
     };
 
-    const handleDownvote = async (replyId, username, currentVote) => {
-        const newVote = currentVote === -1 ? 0 : -1;
-        await handleThreadVote(replyId, newVote, username);
+    const handleDownvote = async () => {
+        const newVote = userVote === -1 ? 0 : -1;
+        try {
+            await handleThreadVote(threadId, newVote, userData.username);
+            const updatedThread = await getThreadById(threadId);
+            setThread(updatedThread);
+            setUserVote(newVote);
+        } catch (error) {
+            console.error('Error handling downvote:', error);
+        }
     };
 
     if (!thread) {
@@ -85,16 +99,30 @@ export default function Thread() {
                     </div>
                 )}
             </div>
-            <div className="thread-content">
-                <p>{thread.content}</p>
-                <button onClick={() => handleUpvote(threadId, userData.username, userVote)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+            <div className="thread-body">
+                <div className="thread-info">
+                    <img src={thread.authorAvatar} alt="Author Avatar" className="author-avatar" />
+                    <div className="thread-author-date">
+                        <p>Author: {thread.authorName}</p>
+                        <p>Created At: {new Date(thread.createdAt).toLocaleDateString()}</p>
+                        {thread.updatedAt && <p>Last Edited: {new Date(thread.updatedAt).toLocaleDateString()}</p>}
+                    </div>
+                </div>
+                <div className="thread-content">
+                    <p>{thread.content}</p>
+                </div>
+            </div>
+            <div className="thread-actions">
+                <button onClick={handleUpvote} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
                     <FaArrowAltCircleUp />
                 </button>
                 <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
-                <button onClick={() => handleDownvote(threadId, userData.username, userVote)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                <button onClick={handleDownvote} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
                     <FaArrowAltCircleDown />
                 </button>
                 <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
+                <FaEye />
+                <span>Views: {thread.views || 0}</span>
             </div>
 
             {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && editMode && (

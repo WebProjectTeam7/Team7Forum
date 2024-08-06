@@ -19,6 +19,7 @@ export default function Category() {
     useEffect(() => {
         const fetchThreads = async () => {
             try {
+                console.log(2);
                 const fetchedCategory = await getCategoryById(categoryId);
                 setCategory(fetchedCategory);
                 const fetchedThreads = await getThreadsByCategoryId(categoryId);
@@ -29,7 +30,7 @@ export default function Category() {
         };
 
         fetchThreads();
-    }, [categoryId, category]);
+    }, [categoryId, userData]);
 
     const handleCreateThread = () => {
         if (newThreadTitle.trim() && newThreadContent.trim()) {

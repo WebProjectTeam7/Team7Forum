@@ -113,6 +113,17 @@ export const handleThreadVote = async (threadId, vote, username) => {
     }
 };
 
+export const incrementThreadViews = async (threadId) => {
+    const threadRef = ref(db, `threads/${threadId}`);
+    const snapshot = await get(threadRef);
+    if (!snapshot.exists()) {
+        throw new Error('Thread not found');
+    }
+    const threadData = snapshot.val();
+    const newViewsCount = (threadData.views || 0) + 1;
+    await update(threadRef, { views: newViewsCount });
+    return newViewsCount;
+};
 
 // DELETE
 
