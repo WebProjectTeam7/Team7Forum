@@ -10,7 +10,7 @@ const LoadingComponent = () => {
   useEffect(() => {
     const loading = async () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise();
       } catch (error) {
         console.error('Error during loading:', error);
       } finally {
