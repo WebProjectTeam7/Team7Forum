@@ -20,7 +20,7 @@ export default function Header() {
 
     return (
         <header>
-            <h1>Forum App</h1>
+            <h1>Beer Forum </h1>
             {userData && <span>Welcome, {userData.username}</span>}
             <nav>
                 <Search />
