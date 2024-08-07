@@ -74,3 +74,37 @@ export const deleteUser = async (uid) => {
         throw new Error('Failed to delete user: ' + error.message);
     }
 };
+
+// BAN USER
+
+export const banUser = async (uid, days) => {
+    const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+        const userId = Object.keys(snapshot.val())[0];
+        const banEndDate = new Date();
+        banEndDate.setDate(banEndDate.getDate() + days);
+        await update(ref(db, `users/${userId}`), { isBanned: true, banEndDate: banEndDate.toISOString() });
+    }
+};
+
+export const isUserBanned = async (uid) => {
+    const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+        const userData = Object.values(snapshot.val())[0];
+        if (userData.banExpiration) {
+            const banEndDate = new Date(userData.banExpiration);
+            const currentDate = new Date();
+            if (currentDate < banEndDate) {
+                return true;
+            }
+
+            const userId = Object.keys(snapshot.val())[0];
+            await update(ref(db, `users/${userId}`), { banExpiration: null });
+            return false;
+
+        }
+    }
+    return false;
+};

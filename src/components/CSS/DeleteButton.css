@@ -1,7 +1,6 @@
 
 .button {
     position: relative;
-    width: 100px;
     height: 40px;
     cursor: pointer;
     display: flex;

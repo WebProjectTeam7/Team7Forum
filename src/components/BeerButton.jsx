@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export default function Button ({ text, onClick }) {
     return (
-        <button onClick={onClick}>
+        <button onClick={onClick} className="beer-button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
                 <path
                     style={{ fill: '#363636' }}

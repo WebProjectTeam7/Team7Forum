@@ -9,6 +9,7 @@ import {
 import BeerRating from '../components/BeerRating';
 import { AppContext } from '../state/app.context';
 import './CSS/Survey.css';
+import { isUserBanned } from '../services/users.service';
 
 export default function Survey() {
     const [survey, setSurvey] = useState(null);
@@ -39,6 +40,12 @@ export default function Survey() {
     const handleRate = async (choiceId, rating) => {
         if (!user) {
             alert('You must be logged in to rate!');
+            return;
+        }
+
+        const banned = await isUserBanned(user.uid);
+        if (banned) {
+            alert('You are banned from rating!');
             return;
         }
 

@@ -59,6 +59,35 @@
     background-color: #0056b3;
 }
 
+.ban-user-section {
+    display: flex;
+    align-items: center;
+}
+
+.ban-duration-input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+}
+
+.ban-duration-input::-webkit-outer-spin-button,
+.ban-duration-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.ban-button {
+    background-color: #dc3545;
+}
+
+.ban-button:hover {
+    background-color: #c82333;
+}
+
 /* Dark Mode */
 body.dark-mode .admin-page-container {
     background-color: #2e2e2e;
@@ -98,3 +127,10 @@ body.dark-mode .admin-page-container button:hover {
     background-color: #0056b3;
 }
 
+body.dark-mode .ban-button {
+    background-color: #dc3545 !important;
+}
+
+body.dark-mode .ban-button:hover {
+    background-color: #c82333 !important;
+}

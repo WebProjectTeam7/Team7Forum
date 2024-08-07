@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAllUsers, switchUserRole } from '../services/users.service';
+import { getAllUsers, switchUserRole, banUser } from '../services/users.service';
 import { useNavigate } from 'react-router-dom';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/AdminPage.css';
@@ -7,6 +7,7 @@ import './CSS/AdminPage.css';
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
+    const [banDuration, setBanDuration] = useState({});
 
     useEffect(() => {
         getAllUsers()
@@ -28,6 +29,24 @@ export default function AdminPage() {
         }
     };
 
+    const handleBanUser = async (uid) => {
+        const duration = banDuration[uid];
+        if (!duration) {
+            alert('Please enter a valid number of days.');
+            return;
+        }
+        try {
+            await banUser(uid, duration);
+            alert('User banned successfully.');
+        } catch (e) {
+            alert(e.message);
+        }
+    };
+
+    const handleBanDurationChange = (uid, value) => {
+        setBanDuration(prev => ({ ...prev, [uid]: value }));
+    };
+
     return (
         <div className="admin-page-container">
             <h1>All Users</h1>
@@ -39,6 +58,7 @@ export default function AdminPage() {
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Role</th>
+                        <th>Ban Duration (days)</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -58,6 +78,16 @@ export default function AdminPage() {
                                     <option value={UserRoleEnum.MODERATOR}>Moderator</option>
                                     <option value={UserRoleEnum.ADMIN}>Admin</option>
                                 </select>
+                            </td>
+                            <td className="ban-user-section">
+                                <input
+                                    type="number"
+                                    className="ban-duration-input"
+                                    placeholder="Days"
+                                    value={banDuration[user.uid] || ''}
+                                    onChange={(e) => handleBanDurationChange(user.uid, e.target.value)}
+                                />
+                                <button className="ban-button" onClick={() => handleBanUser(user.uid)}>Ban</button> {/* Added class "ban-button" */}
                             </td>
                             <td>
                                 <button onClick={() => navigate(`/user-profile/${user.uid}`)}>See profile</button>
