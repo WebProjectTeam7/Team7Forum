@@ -28,6 +28,33 @@ export const createThread = async (categoryId, title, content, authorId, authorN
 
 // RETRIEVE
 
+export const getThreadsByFilterInOrder = async (orderBy = 'createdAt', order = 'desc', limit = null, categoryId = null) => {
+    try {
+        let threadsRef = ref(db, 'threads');
+        if (categoryId) {
+            threadsRef = query(threadsRef, orderByChild('categoryId'), equalTo(categoryId));
+        }
+        threadsRef = query(threadsRef, orderByChild(orderBy));
+        if (limit) {
+            threadsRef = order === 'asc' ?
+                query(threadsRef, limitToFirst(limit)) :
+                query(threadsRef, limitToLast(limit));
+        }
+        const snapshot = await get(threadsRef);
+        if (!snapshot.exists()) {
+            return [];
+        }
+        const threads = [];
+        snapshot.forEach(childSnapshot => {
+            threads.push(childSnapshot.val());
+        });
+        return threads;
+    } catch (error) {
+        console.error('Error fetching threads:', error);
+        throw new Error('Failed to fetch threads');
+    }
+};
+
 export const getThreadsByCategoryId = async (categoryId, limit = 100, order = 'desc') => {
     try {
         const threadsRef = query(
@@ -36,7 +63,6 @@ export const getThreadsByCategoryId = async (categoryId, limit = 100, order = 'd
             equalTo(categoryId),
             order === 'desc' ? limitToLast(limit) : limitToFirst(limit),
         );
-
         const snapshot = await get(threadsRef);
         if (!snapshot.exists()) {
             return [];
@@ -47,7 +73,6 @@ export const getThreadsByCategoryId = async (categoryId, limit = 100, order = 'd
         throw error;
     }
 };
-
 
 export const getThreadById = async (threadId) => {
     try {
@@ -91,7 +116,6 @@ export const handleThreadVote = async (threadId, vote, username) => {
         const threadData = snapshot.val();
         let upvotes = threadData.upvotes || [];
         let downvotes = threadData.downvotes || [];
-
         if (vote === 1) {
             if (!upvotes.includes(username)) {
                 upvotes.push(username);
@@ -130,7 +154,7 @@ export const incrementThreadViews = async (threadId) => {
     }
 };
 
-export const updateRepliesCounter = async (threadId, factor) => {
+export const addReplyIdToThread = async (threadId, replyId) => {
     try {
         const threadRef = ref(db, `threads/${threadId}`);
         const snapshot = await get(threadRef);
@@ -138,15 +162,47 @@ export const updateRepliesCounter = async (threadId, factor) => {
             throw new Error('Thread not found');
         }
         const threadData = snapshot.val();
-        const currentRepliesCount = threadData.repliesCount || 0;
-        const newRepliesCount = currentRepliesCount + factor;
-        await update(threadRef, { repliesCount: newRepliesCount });
-        return newRepliesCount;
+        const replies = threadData.replies || [];
+        if (!replies.includes(replyId)) {
+            replies.push(replyId);
+            const updatedThread = {
+                ...threadData,
+                replies,
+                replyCount: replies.length,
+            };
+            await update(threadRef, updatedThread);
+        }
     } catch (error) {
-        console.error('Error updating replies count:', error);
+        console.error('Error updating thread replies:', error);
         throw new Error('Failed to update replies count');
     }
 };
+
+export const removeReplyIdFromThread = async (threadId, replyId) => {
+    try {
+        const threadRef = ref(db, `threads/${threadId}`);
+        const snapshot = await get(threadRef);
+        if (!snapshot.exists()) {
+            throw new Error('Thread not found');
+        }
+        const threadData = snapshot.val();
+        const replies = threadData.replies || [];
+        const replyIndex = replies.indexOf(replyId);
+        if (replyIndex >= 0) {
+            replies.splice(replyIndex, 1);
+            const updatedThread = {
+                ...threadData,
+                replies,
+                replyCount: replies.length,
+            };
+            await update(threadRef, updatedThread);
+        }
+    } catch (error) {
+        console.error('Error updating thread replies:', error);
+        throw new Error('Failed to update replies count');
+    }
+};
+
 
 // DELETE
 
@@ -154,7 +210,6 @@ export const deleteThread = async (threadId) => {
     try {
         const threadRef = ref(db, `threads/${threadId}`);
         await remove(threadRef);
-        console.log(`Thread with ID ${threadId} deleted successfully.`);
     } catch (error) {
         console.error('Error deleting thread:', error);
         throw error;

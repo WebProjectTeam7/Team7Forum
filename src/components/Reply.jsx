@@ -4,7 +4,7 @@ import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import { handleReplyVote, updateReply, deleteReply } from '../services/reply.service';
-import { updateRepliesCounter } from '../services/thread.service';
+import { removeReplyIdFromThread } from '../services/thread.service';
 import { getUserByUsername } from '../services/users.service';
 import './CSS/Replies.css';
 import UserInfo from './UserInfo';
@@ -46,7 +46,7 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
         if (window.confirm('Are you sure you want to delete this reply?')) {
             try {
                 await deleteReply(replyId);
-                await updateRepliesCounter(threadId, -1);
+                await removeReplyIdFromThread(threadId, replyId);
                 fetchReplies();
             } catch (error) {
                 console.error('Error deleting reply:', error);

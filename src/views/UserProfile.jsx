@@ -6,13 +6,10 @@ import './CSS/UserProfile.css';
 export default function UserProfile() {
     const [user, setUser] = useState(null);
     const { username } = useParams();
-    console.log(username);
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const data = await getUserByUsername(username);
-                console.log(username);
-                console.log(data);
                 if (!data) {
                     throw new Error('User not found');
                 }

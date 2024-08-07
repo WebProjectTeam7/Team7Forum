@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
 import { createReply, getRepliesByThreadId } from '../services/reply.service';
 import { AppContext } from '../state/app.context';
-import PropTypes from 'prop-types';
+import { addReplyIdToThread } from '../services/thread.service';
 import Reply from './Reply';
+import PropTypes from 'prop-types';
 import './CSS/Replies.css';
-import { updateRepliesCounter } from '../services/thread.service';
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);
@@ -29,8 +29,8 @@ export default function Replies({ threadId }) {
     const handleCreateReply = async () => {
         if (replyContent.trim()) {
             try {
-                await createReply(threadId, userData.username, replyContent);
-                await updateRepliesCounter(threadId, 1);
+                const replyId = await createReply(threadId, userData.username, replyContent);
+                await addReplyIdToThread(threadId, replyId);
                 setReplyContent('');
                 setFetchTrigger((prev) => !prev);
             } catch (error) {
