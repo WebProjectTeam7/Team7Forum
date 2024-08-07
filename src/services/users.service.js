@@ -43,8 +43,8 @@ export const getUserData = async (uid) => {
 };
 
 export const getAllUsers = async (role = null) => {
-    const usersRef = role ? query(ref(db, 'users'), orderByChild('role'), equalTo(role)) : ref(db, 'users');
     try {
+        const usersRef = role ? query(ref(db, 'users'), orderByChild('role'), equalTo(role)) : ref(db, 'users');
         const snapshot = await get(usersRef);
         if (!snapshot.exists()) {
             return [];
@@ -52,6 +52,19 @@ export const getAllUsers = async (role = null) => {
         return Object.values(snapshot.val());
     } catch (error) {
         throw new Error('Failed to retrieve users: ' + error.message);
+    }
+};
+
+export const getUsersCount = async () => {
+    try {
+        const usersRef = query(ref(db, 'users'));
+        const snapshot = await get(usersRef);
+        if (!snapshot.exists()) {
+            return 0;
+        }
+        return Object.keys(snapshot.val()).length;
+    } catch (error) {
+        throw new Error('Failed to retrieve users count: ' + error.message);
     }
 };
 

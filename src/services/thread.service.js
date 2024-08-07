@@ -95,6 +95,18 @@ export const getThreadById = async (threadId) => {
     }
 };
 
+export const getThreadsCount = async () => {
+    try {
+        const threadsRef = query(ref(db, 'threads'));
+        const snapshot = await get(threadsRef);
+        if (!snapshot.exists()) {
+            return 0;
+        }
+        return Object.keys(snapshot.val()).length;
+    } catch (error) {
+        throw new Error('Failed to retrieve threads count: ' + error.message);
+    }
+};
 
 // UPDATE
 
