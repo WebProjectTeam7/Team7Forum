@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { AppContext } from '../state/app.context';
 import PropTypes from 'prop-types';
 import { likePost, dislikePost } from '../services/post.service';
+import { isUserBanned } from '../services/users.service';
 
 export default function Post({ post }) {
     const { user, userData } = useContext(AppContext);
@@ -14,6 +15,13 @@ export default function Post({ post }) {
 
     const handleLike = async () => {
         if (user) {
+            const banned = await isUserBanned(user.uid);
+
+            if (banned) {
+                alert('You are banned from voting!');
+                return;
+            }
+
             const newLikedBy = { ...localLikedBy };
             const newDislikedBy = { ...localDislikedBy };
 

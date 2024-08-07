@@ -7,6 +7,7 @@ import UserRoleEnum from '../common/role.enum';
 import { getCategoryById, updateThreadsCounter } from '../services/category.service';
 import './CSS/Category.css';
 import ThreadItem from '../components/ThreadItem';
+import { isUserBanned } from '../services/users.service';
 
 export default function Category() {
     const { categoryId } = useParams();
@@ -38,6 +39,13 @@ export default function Category() {
 
     const handleCreateThread = async () => {
         if (newThreadTitle.trim() && newThreadContent.trim()) {
+            const banned = await isUserBanned(userData.uid);
+
+            if (banned) {
+                alert('You are banned from creating threads!');
+                return;
+            }
+
             try {
                 const newThreadId = await createThread(categoryId, newThreadTitle, newThreadContent, user.uid, userData.username);
                 await updateThreadsCounter(categoryId, 1);
