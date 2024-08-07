@@ -1,49 +1,52 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getUserData } from '../services/users.service';
+import { getUserByUsername } from '../services/users.service';
 import './CSS/UserProfile.css';
 
 export default function UserProfile() {
     const [user, setUser] = useState(null);
-    const { id } = useParams();
-
+    const { username } = useParams();
+    console.log(username);
     useEffect(() => {
-        getUserData(id)
-            .then(data => setUser(data[Object.keys(data)[0]]))
-            .catch(e => alert(e.message));
-    }, [id]);
+        const fetchUser = async () => {
+            try {
+                const data = await getUserByUsername(username);
+                console.log(username);
+                console.log(data);
+                if (!data) {
+                    throw new Error('User not found');
+                }
+                setUser(data);
+            } catch (error) {
+                console.error(error.message);
+            }
+        };
+
+        fetchUser();
+    }, [username]);
 
     return (
         <div className="user-profile-container">
             <h1>User Profile</h1>
             {user ? (
                 <div className="user-profile-details">
-
-                    {/* USERNAME */}
+                    <img src={user.avatar || '/src/image/default-profile.png'} alt="Author Avatar" className="author-avatar" />
                     <div>
                         <label>Username:</label>
                         <span>{user.username}</span>
                     </div>
-
-                    {/* EMAIL */}
                     <div>
                         <label>Email:</label>
                         <span>{user.email}</span>
                     </div>
-
-                    {/* FIRST NAME */}
                     <div>
                         <label>First Name:</label>
                         <span>{user.firstName}</span>
                     </div>
-
-                    {/* LAST NAME */}
                     <div>
                         <label>Last Name: </label>
                         <span>{user.lastName}</span>
                     </div>
-
-                    {/* ROLE */}
                     <div>
                         <label>Role: </label>
                         <span>{user.role}</span>

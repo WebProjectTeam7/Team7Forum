@@ -7,6 +7,8 @@ import UserRoleEnum from '../common/role.enum';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
 import './CSS/Thread.css';
 import { updateThreadsCounter } from '../services/category.service';
+import { getUserByUsername } from '../services/users.service';
+import UserInfo from '../components/UserInfo';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -17,6 +19,7 @@ export default function Thread() {
     const [editMode, setEditMode] = useState(false);
     const [editThreadTitle, setEditThreadTitle] = useState('');
     const [editThreadContent, setEditThreadContent] = useState('');
+    const [userAuthor, setUserAuthor] = useState({});
     const [userVote, setUserVote] = useState(0);
     const [fetchTrigger, setFetchTrigger] = useState(false);
 
@@ -44,12 +47,21 @@ export default function Thread() {
             setThread(fetchedThread);
             setEditThreadTitle(fetchedThread.title);
             setEditThreadContent(fetchedThread.content);
-
+            fetchUserAuthor(fetchedThread.authorName);
             const vote = fetchedThread.upvotes?.includes(userData.username) ? 1 :
                 fetchedThread.downvotes?.includes(userData.username) ? -1 : 0;
             setUserVote(vote);
         } catch (error) {
             console.error('Error fetching thread:', error);
+        }
+    };
+
+    const fetchUserAuthor = async (username) => {
+        try {
+            const user = await getUserByUsername(username);
+            setUserAuthor(user);
+        } catch (error) {
+            console.error('Error fetching user:', error);
         }
     };
 
@@ -68,7 +80,7 @@ export default function Thread() {
         if (window.confirm('Are you sure you want to delete this thread?')) {
             try {
                 await deleteThread(threadId);
-                await updateThreadsCounter(thread.categoryId ,-1);
+                await updateThreadsCounter(thread.categoryId, -1);
                 navigate('/forum');
             } catch (error) {
                 console.error('Error deleting thread:', error);
@@ -95,6 +107,8 @@ export default function Thread() {
         <div className="thread-container">
             <div className="thread-header">
                 <h1>{thread.title}</h1>
+                <p>Created At: {new Date(thread.createdAt).toLocaleDateString()}</p>
+                {thread.updatedAt && <p>Last Edited: {new Date(thread.updatedAt).toLocaleDateString()}</p>}
                 {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && (
                     <div>
                         <button onClick={() => setEditMode(true)}>Edit Thread</button>
@@ -103,14 +117,7 @@ export default function Thread() {
                 )}
             </div>
             <div className="thread-body">
-                <div className="thread-info">
-                    <img src={thread.authorAvatar} alt="Author Avatar" className="author-avatar" />
-                    <div className="thread-author-date">
-                        <p>Author: {thread.authorName}</p>
-                        <p>Created At: {new Date(thread.createdAt).toLocaleDateString()}</p>
-                        {thread.updatedAt && <p>Last Edited: {new Date(thread.updatedAt).toLocaleDateString()}</p>}
-                    </div>
-                </div>
+                <UserInfo userAuthor={userAuthor} />
                 <div className="thread-content">
                     <p>{thread.content}</p>
                 </div>

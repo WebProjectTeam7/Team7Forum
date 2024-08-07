@@ -13,7 +13,7 @@ export default function AdminPage() {
             .then(u => {
                 setUsers(u);
             }).catch(e => {
-                alert(e.message);
+                console.error(e.message);
             });
     }, []);
 
@@ -24,7 +24,7 @@ export default function AdminPage() {
                 prevUsers.map(user => user.uid === uid ? { ...user, role: newRole } : user)
             );
         } catch (e) {
-            alert(e.message);
+            console.error(e.message);
         }
     };
 
@@ -60,7 +60,7 @@ export default function AdminPage() {
                                 </select>
                             </td>
                             <td>
-                                <button onClick={() => navigate(`/user-profile/${user.uid}`)}>See profile</button>
+                                <button onClick={() => navigate(`/user-profile/${user.username}`)}>See profile</button>
                             </td>
                         </tr>
                     ))}
