@@ -14,7 +14,7 @@ const useDefaultAvatarUrl = () => {
     useEffect(() => {
         const fetchDefaultAvatarUrl = async () => {
             try {
-                const defaultAvatarRef = storageRef(storage, 'istockphoto-1366922968-612x612.jpg'); // Add the url form firebase here
+                const defaultAvatarRef = storageRef(storage, 'istockphoto-1406111499-612x612.jpg'); // Add the url form firebase here
                 const url = await getDownloadURL(defaultAvatarRef);
                 setDefaultAvatarUrl(url);
             } catch (error) {

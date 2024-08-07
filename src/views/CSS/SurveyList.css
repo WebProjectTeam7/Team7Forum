@@ -16,34 +16,12 @@
     margin-bottom: 20px;
     text-align: center;
   }
-  
-  /* Add Survey Button styling */
-  .add-survey-button {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #fff;
-    background-color: #28a745;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    text-align: center;
-  }
-  
-  .add-survey-button:hover {
-    background-color: #218838;
-  }
-  
-  .add-survey-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5);
-  }
-  
+   
   /* Survey list item styling */
   .survey-item {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
     padding: 10px;
     border-bottom: 1px solid #ddd;
   }
@@ -67,4 +45,3 @@
     outline: none;
     text-decoration: underline;
   }
-  

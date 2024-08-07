@@ -1,8 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/category.service';
-import { AppContext } from '../state/app.context';
 import { getThreadsByCategoryId } from '../services/thread.service';
+import { getRepliesCountByThreadId } from '../services/reply.service';
+import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/Forum.css';
 
@@ -17,60 +18,69 @@ export default function Forum() {
     const [editCategoryId, setEditCategoryId] = useState(null);
     const [editCategoryTitle, setEditCategoryTitle] = useState('');
     const [showCreateCategory, setShowCreateCategory] = useState(false);
+    const [fetchTrigger, setFetchTrigger] = useState(false);
 
     useEffect(() => {
-        getCategories()
-            .then((c) => {
-                return Promise.all(
-                    c.map((category) => {
-                        return getThreadsByCategoryId(category.id, THREADS_LIMIT_BY_CATEGORY)
-                            .then((threads) => {
-                                return { ...category, threads };
-                            });
-                    })
-                );
-            })
-            .then((categoriesWithThreads) => {
-                setCategories(categoriesWithThreads);
-            })
-            .catch((error) => {
-                console.error('Error fetching categories:', error);
-            });
-    }, [categories]);
+        fetchCategories();
+    }, [fetchTrigger]);
 
-    const handleCreateCategory = () => {
+
+    const fetchCategories = async () => {
+        try {
+            const fetchedCategories = await getCategories();
+            const categoriesWithThreads = await Promise.all(
+                fetchedCategories.map(async (category) => {
+                    const threads = await getThreadsByCategoryId(category.id, THREADS_LIMIT_BY_CATEGORY);
+                    const threadsWithRepliesCounts = await Promise.all(
+                        threads.map(async (thread) => {
+                            const repliesCount = await getRepliesCountByThreadId(thread.id);
+                            return { ...thread, repliesCount };
+                        })
+                    );
+                    return { ...category, threads: threadsWithRepliesCounts };
+                })
+            );
+            setCategories(categoriesWithThreads);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
+    const handleCreateCategory = async () => {
         if (newCategoryTitle.trim()) {
-            createCategory(newCategoryTitle)
-                .then((newCategoryId) => {
-                    setCategories([...categories, { id: newCategoryId, title: newCategoryTitle, threads: [] }]);
-                    setNewCategoryTitle('');
-                    setShowCreateCategory(false);
-                })
-                .catch((error) => console.error('Error creating category:', error));
+            try {
+                const newCategoryId = await createCategory(newCategoryTitle);
+                setCategories([...categories, { id: newCategoryId, title: newCategoryTitle, threads: [] }]);
+                setNewCategoryTitle('');
+                setShowCreateCategory(false);
+                setFetchTrigger(!fetchTrigger);
+            } catch (error) {
+                console.error('Error creating category:', error);
+            }
         }
     };
 
-    const handleEditCategory = (categoryId) => {
+    const handleEditCategory = async (categoryId) => {
         if (editCategoryTitle.trim()) {
-            updateCategory(categoryId, editCategoryTitle)
-                .then(() => {
-                    setCategories(categories.map(category =>
-                        category.id === categoryId ? { ...category, title: editCategoryTitle } : category
-                    ));
-                    setEditCategoryId(null);
-                    setEditCategoryTitle('');
-                })
-                .catch((error) => console.error('Error updating category:', error));
+            try {
+                await updateCategory(categoryId, editCategoryTitle);
+                setEditCategoryId(null);
+                setFetchTrigger(!fetchTrigger);
+            } catch (error) {
+                console.error('Error updating category:', error);
+            }
         }
     };
 
-    const handleDeleteCategory = (categoryId) => {
+    const handleDeleteCategory = async (categoryId) => {
         if (window.confirm('Are you sure you want to delete this category?')) {
-            deleteCategory(categoryId)
-                .then(() => {
-                    setCategories(categories.filter(category => category.id !== categoryId));
-                })
-                .catch((error) => console.error('Error deleting category:', error));
+            try {
+                await deleteCategory(categoryId);
+                setCategories(categories.filter(category => category.id !== categoryId));
+                setFetchTrigger(!fetchTrigger);
+            } catch (error) {
+                console.error('Error deleting category:', error);
+            }
         }
     };
 
@@ -116,7 +126,7 @@ export default function Forum() {
                                         <div className="thread-info">
                                             <img src="/path/to/category/image.jpg" alt="Category" className="category-image" />
                                             <div>
-                                                <p className="thread-author">{thread.author}</p>
+                                                <p className="thread-author">Author: {thread.authorName}</p>
                                                 <p className="thread-date">Created on: {new Date(thread.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>
@@ -126,9 +136,9 @@ export default function Forum() {
                                             </h3>
                                             <p>{thread.content.substring(0, 100)}...</p>
                                             <div className="thread-stats">
-                                                <span>Replies: {thread.replies && thread.replies.length}</span>
-                                                <span>Upvotes: {thread.upvotes && thread.upvotes.length}</span>
-                                                <span>Downvotes: {thread.downvotes && thread.downvotes.length}</span>
+                                                <span>Replies: {thread.repliesCount}</span>
+                                                <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
+                                                <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
                                                 <span>Views: {thread.views}</span>
                                             </div>
                                         </div>

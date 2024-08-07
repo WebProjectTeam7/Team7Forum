@@ -1,6 +1,6 @@
-import { ref as dbRef, push, get, update, set } from 'firebase/database';
+import { ref as dbRef, push, get, update, set, remove } from 'firebase/database';
 import { db, storage } from '../config/firebase-config';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 export const getAllSurveys = async () => {
     const snapshot = await get(dbRef(db, 'surveys'));
@@ -75,4 +75,23 @@ export const addSurvey = async (survey) => {
     );
 
     await update(newSurveyRef, { ...survey, choices: choicesWithImageUrls, id: newSurveyRef.key });
+};
+
+export const deleteSurvey = async (id) => {
+    const surveyRef = dbRef(db, `surveys/${id}`);
+    const snapshot = await get(surveyRef);
+    const survey = snapshot.val();
+
+    if (survey.choices) {
+        for (const choice of Object.values(survey.choices)) {
+            if (choice.image) {
+                const imageRef = storageRef(storage, choice.image);
+                await deleteObject(imageRef).catch((error) => {
+                    console.error(`Failed to delete image ${choice.image}:`, error);
+                });
+            }
+        }
+    }
+
+    await remove(surveyRef);
 };

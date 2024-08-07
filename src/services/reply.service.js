@@ -40,6 +40,20 @@ export const getRepliesByThreadId = async (threadId) => {
     }
 };
 
+export const getRepliesCountByThreadId = async (threadId) => {
+    try {
+        const repliesRef = query(ref(db, 'replies'), orderByChild('threadId'), equalTo(threadId));
+        const snapshot = await get(repliesRef);
+        if (!snapshot.exists()) {
+            return 0;
+        }
+        return Object.values(snapshot.val()).length;
+    } catch (error) {
+        console.error('Error retrieving replies count bt thread ID:', error);
+        throw new Error('Failed to retrieve replies count');
+    }
+};
+
 export const getRepliesByUserId = async (userId) => {
     try {
         const repliesRef = query(ref(db, 'replies'), orderByChild('userId'), equalTo(userId));
@@ -102,9 +116,9 @@ export const handleReplyVote = async (replyId, vote, username) => {
 
 // DELETE
 
-export const deleteReply = async (threadId, replyId) => {
+export const deleteReply = async (replyId) => {
     try {
-        const replyRef = ref(db, `threads/${threadId}/replies/${replyId}`);
+        const replyRef = ref(db, `replies/${replyId}`);
         await remove(replyRef);
     } catch (error) {
         console.error('Error deleting reply:', error);

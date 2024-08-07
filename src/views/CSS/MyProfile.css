@@ -91,7 +91,6 @@
     background-color: #45a049;
 }
 
-
 /* Avatar-related styles */
 .avatar-container {
     text-align: center;
@@ -136,6 +135,59 @@
     width: 50%;
 }
 
-.avatar-upload-button:hover {
-    background-color:  #45a049;
+.upload-avatar-button:hover {
+    background-color: #45a049;
+}
+
+/* Dark Mode */
+body.dark-mode .profile-container {
+    background: #2e2e2e;
+    border: 1px solid #444;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .profile-container h1 {
+    color: #e0e0e0;
+}
+
+body.dark-mode .profile-field {
+    background: #3a3a3a;
+    border-bottom: 1px solid #555;
+}
+
+body.dark-mode .profile-field label {
+    color: #ccc;
+}
+
+body.dark-mode .profile-field span {
+    color: #e0e0e0;
+}
+
+body.dark-mode .profile-field input {
+    border: 1px solid #666;
+    background: #444;
+    color: #e0e0e0;
+}
+
+body.dark-mode .edit-button,
+body.dark-mode .save-button,
+body.dark-mode .delete-button,
+body.dark-mode .upload-avatar-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+body.dark-mode .edit-button:hover,
+body.dark-mode .save-button:hover,
+body.dark-mode .delete-button:hover,
+body.dark-mode .upload-avatar-button:hover {
+    background-color: #45a049;
+}
+
+body.dark-mode .avatar-img {
+    border: 2px solid #666;
+}
+
+body.dark-mode .avatar-upload-label {
+    color: #999;
 }

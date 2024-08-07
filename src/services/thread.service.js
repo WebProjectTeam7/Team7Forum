@@ -13,7 +13,6 @@ export const createThread = async (categoryId, title, content, authorId, authorN
             authorId,
             authorName,
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
         };
 
         const threadsRef = ref(db, 'threads');
@@ -28,13 +27,12 @@ export const createThread = async (categoryId, title, content, authorId, authorN
 
 // RETRIEVE
 
-export const getThreadsByCategoryId = async (categoryId, limit = 100, orderBy = 'createdAt', order = 'desc') => {
+export const getThreadsByCategoryId = async (categoryId, limit = 100, order = 'desc') => {
     try {
         const threadsRef = query(
             ref(db, 'threads'),
             orderByChild('categoryId'),
             equalTo(categoryId),
-            // orderByChild(orderBy),
             order === 'desc' ? limitToLast(limit) : limitToFirst(limit),
         );
 
@@ -48,6 +46,7 @@ export const getThreadsByCategoryId = async (categoryId, limit = 100, orderBy = 
         throw error;
     }
 };
+
 
 export const getThreadById = async (threadId) => {
     try {
@@ -74,7 +73,7 @@ export const updateThread = async (threadId, updatedData) => {
         if (!snapshot.exists()) {
             throw new Error('Thread not found');
         }
-        await update(threadRef, updatedData);
+        await update(threadRef, { ...updatedData, updatedAt: new Date().toISOString(), });
     } catch (error) {
         console.error('Error updating thread:', error);
         throw error;

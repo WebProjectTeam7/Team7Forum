@@ -91,3 +91,68 @@
 .thread-edit button {
     margin-right: 10px;
 }
+
+/* Dark Mode */
+body.dark-mode .thread-container {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+}
+
+body.dark-mode .thread-header {
+    color: #e0e0e0;
+}
+
+body.dark-mode .thread-info {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .author-avatar {
+    border: 2px solid #e0e0e0;
+}
+
+body.dark-mode .thread-content {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .thread-actions {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .thread-actions button {
+    background-color: #444;
+    color: #e0e0e0;
+}
+
+body.dark-mode .thread-actions button:hover {
+    background-color: #555;
+}
+
+body.dark-mode .upvote-button.active,
+body.dark-mode .downvote-button.active {
+    color: #81c784; /* Lighter green for active state */
+}
+
+body.dark-mode .thread-edit input,
+body.dark-mode .thread-edit textarea {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+body.dark-mode .thread-edit button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+body.dark-mode .thread-edit button:hover {
+    background-color: #0056b3;
+}
