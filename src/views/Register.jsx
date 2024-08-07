@@ -9,6 +9,7 @@ import RoleEnum from '../common/role.enum';
 import InfoButton from '../components/InfoButton';
 import { FaEye } from 'react-icons/fa';
 import WelcomeGifNotification  from '../components/NotificationAfterRegister';
+import ErrorComponent from '../components/ServerError';
 
 export default function Register() {
     const { setAppState } = useContext(AppContext);
@@ -26,6 +27,7 @@ export default function Register() {
     const [alertMessage, setAlertMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [showGift, setShowGift] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
@@ -45,6 +47,7 @@ export default function Register() {
 
         setLoading(true);
         setAlertMessage('');
+        setErrorMessage(true);
 
         const alertArr = [];
 
@@ -194,6 +197,7 @@ export default function Register() {
                 {/* SUBMIT */}
                 <button>Register</button>
             </form>
+            {errorMessage && <ErrorComponent />}
             <WelcomeGifNotification show={showGift} onClose={handleCloseNotification} />
         </>
     );
