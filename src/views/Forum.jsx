@@ -5,6 +5,7 @@ import { getThreadsByCategoryId } from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/Forum.css';
+import ThreadItem from '../components/ThreadItem';
 
 const THREADS_LIMIT_BY_CATEGORY = 3;
 
@@ -114,29 +115,14 @@ export default function Forum() {
                     ) : (
                         <div className="category-threads">
                             <ul>
-                                {category.threads.map((thread) => (
-                                    <li key={thread.id} className="thread-item">
-                                        <div className="thread-info">
-                                            <img src="/path/to/category/image.jpg" alt="Category" className="category-image" />
-                                            <div>
-                                                <p className="thread-author">Author: {thread.authorName}</p>
-                                                <p className="thread-date">Created on: {new Date(thread.createdAt).toLocaleDateString()}</p>
-                                            </div>
-                                        </div>
-                                        <div className="thread-content">
-                                            <h3>
-                                                <Link to={`/forum/thread/${thread.id}`}>{thread.title}</Link>
-                                            </h3>
-                                            <p>{thread.content.substring(0, 100)}...</p>
-                                            <div className="thread-stats">
-                                                <span>Replies: {thread.repliesCount}</span>
-                                                <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
-                                                <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
-                                                <span>Views: {thread.views}</span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                ))}
+                                {category.threads.length > 0 ? (
+                                    category.threads.map((thread) => (
+                                        <ThreadItem key={thread.id} thread={thread} />
+                                    ))
+                                ) : (
+                                    <li>No threads available</li>
+                                )}
+
                             </ul>
                         </div>
                     )}

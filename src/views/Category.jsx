@@ -6,6 +6,7 @@ import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import { getCategoryById, updateThreadsCounter } from '../services/category.service';
 import './CSS/Category.css';
+import ThreadItem from '../components/ThreadItem';
 
 export default function Category() {
     const { categoryId } = useParams();
@@ -60,27 +61,7 @@ export default function Category() {
             <ul className="threads">
                 {threads.length > 0 ? (
                     threads.map((thread) => (
-                        <li key={thread.id} className="thread-item">
-                            <div className="thread-info">
-                                <img src="/path/to/thread/image.jpg" alt="Thread" className="thread-image" />
-                                <div>
-                                    <p className="thread-author">{thread.author}</p>
-                                    <p className="thread-date">Created on: {new Date(thread.createdAt).toLocaleDateString()}</p>
-                                </div>
-                            </div>
-                            <div className="thread-content">
-                                <h3>
-                                    <Link to={`/forum/thread/${thread.id}`}>{thread.title}</Link>
-                                </h3>
-                                <p>{thread.content.substring(0, 100)}...</p>
-                                <div className="thread-stats">
-                                    <span>Replies: {thread.repliesCount}</span>
-                                    <span>Upvotes: {thread.upvotes && thread.upvotes.length || 0}</span>
-                                    <span>Downvotes: {thread.downvotes && thread.downvotes.length || 0}</span>
-                                    <span>Views: {thread.views}</span>
-                                </div>
-                            </div>
-                        </li>
+                        <ThreadItem key={thread.id} thread={thread} />
                     ))
                 ) : (
                     <li>No threads available</li>
