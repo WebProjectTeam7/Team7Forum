@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { getThreadsByFilterInOrder } from '../services/thread.service';
 import './CSS/Category.css';
 import ThreadItem from '../components/ThreadItem';
+import { HOME_PAGE_CHART_COUNT } from '../common/views.constants';
+
 
 export default function Home() {
     const [mostCommentedThreads, setMostCommentedThreads] = useState([]);
@@ -15,10 +17,10 @@ export default function Home() {
     const fetchThreads = async () => {
         try {
             setLoading(true);
-            const fetchedMostCommentedThreads = await getThreadsByFilterInOrder('replyCount', 'desc', 5);
+            const fetchedMostCommentedThreads = await getThreadsByFilterInOrder('replyCount', 'desc', HOME_PAGE_CHART_COUNT);
             setMostCommentedThreads(fetchedMostCommentedThreads.reverse());
 
-            const fetchedMostRecentThreads = await getThreadsByFilterInOrder('createdAt', 'desc', 5);
+            const fetchedMostRecentThreads = await getThreadsByFilterInOrder('createdAt', 'desc', HOME_PAGE_CHART_COUNT);
             setMostRecentThreads(fetchedMostRecentThreads.reverse());
         } catch (error) {
             console.error('Error fetching threads:', error);
@@ -29,7 +31,7 @@ export default function Home() {
 
     return (
         <div className="category-container">
-            <h1>Top 10 Most Commented Threads</h1>
+            <h1>Top {HOME_PAGE_CHART_COUNT} Most Commented Threads</h1>
             {loading ? (
                 <p>Loading...</p>
             ) : (
@@ -44,7 +46,7 @@ export default function Home() {
                 </ul>
             )}
 
-            <h1>Top 10 Most Recent Threads</h1>
+            <h1>Top {HOME_PAGE_CHART_COUNT} Most Recent Threads</h1>
             {loading ? (
                 <p>Loading...</p>
             ) : (

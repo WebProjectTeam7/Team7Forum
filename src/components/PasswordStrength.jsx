@@ -1,5 +1,5 @@
 import { HAS_UPPERCASE, HAS_LOWERCASE, HAS_DIGIT, HAS_SPECIAL_CHAR } from '../common/regex';
-import { PASSWORD_STRENGTH_LOW_LENGTH, PASSWORD_STRENGTH_STRONG_LENGTH, WEAK_COLOR, MEDIUM_COLOR, STRONG_COLOR, DEFAULT_COLOR } from '../common/registration.constants';
+import { PASSWORD_STRENGTH_LOW_LENGTH, PASSWORD_STRENGTH_STRONG_LENGTH, WEAK_COLOR, MEDIUM_COLOR, STRONG_COLOR, DEFAULT_COLOR } from '../common/components.constants';
 import PropTypes from 'prop-types';
 
 export default function PasswordStrengthIndicator({ password }) {
