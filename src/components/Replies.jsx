@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Reply from './Reply';
 import './CSS/Replies.css';
 import { updateRepliesCounter } from '../services/thread.service';
+import { isUserBanned } from '../services/users.service';
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);
@@ -28,6 +29,13 @@ export default function Replies({ threadId }) {
 
     const handleCreateReply = async () => {
         if (replyContent.trim()) {
+            const banned = await isUserBanned(userData.uid);
+
+            if (banned) {
+                alert('You are banned from posting replies!');
+                return;
+            }
+
             try {
                 await createReply(threadId, userData.username, replyContent);
                 await updateRepliesCounter(threadId, 1);

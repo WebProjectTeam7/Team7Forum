@@ -6,6 +6,7 @@ import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/Forum.css';
 import ThreadItem from '../components/ThreadItem';
+import { isUserBanned } from '../services/users.service';
 
 const THREADS_LIMIT_BY_CATEGORY = 3;
 
@@ -42,6 +43,13 @@ export default function Forum() {
 
     const handleCreateCategory = async () => {
         if (newCategoryTitle.trim()) {
+            const banned = await isUserBanned(userData.uid);
+
+            if (banned) {
+                alert('You are banned from creating threads!');
+                return;
+            }
+
             try {
                 const newCategoryId = await createCategory(newCategoryTitle);
                 setCategories([...categories, { id: newCategoryId, title: newCategoryTitle, threads: [] }]);

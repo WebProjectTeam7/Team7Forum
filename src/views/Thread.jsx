@@ -7,7 +7,7 @@ import UserRoleEnum from '../common/role.enum';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
 import './CSS/Thread.css';
 import { updateThreadsCounter } from '../services/category.service';
-import { getUserByUsername } from '../services/users.service';
+import { getUserByUsername, isUserBanned } from '../services/users.service';
 import UserInfo from '../components/UserInfo';
 
 export default function Thread() {
@@ -90,6 +90,14 @@ export default function Thread() {
 
     const handleVote = async (vote) => {
         const newVote = userVote === vote ? 0 : vote;
+
+        const banned = await isUserBanned(userData.uid);
+
+        if (banned) {
+            alert('You are banned from voting!');
+            return;
+        }
+
         try {
             await handleThreadVote(threadId, newVote, userData.username);
             setUserVote(newVote);
