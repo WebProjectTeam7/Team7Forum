@@ -6,6 +6,7 @@ import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
 import './CSS/Thread.css';
+import { updateThreadsCounter } from '../services/category.service';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -31,6 +32,7 @@ export default function Thread() {
     const incrementViews = async () => {
         try {
             await incrementThreadViews(threadId);
+            setFetchTrigger(!fetchTrigger);
         } catch (error) {
             console.error('Error incrementing thread views:', error);
         }
@@ -66,6 +68,7 @@ export default function Thread() {
         if (window.confirm('Are you sure you want to delete this thread?')) {
             try {
                 await deleteThread(threadId);
+                await updateThreadsCounter(thread.categoryId ,-1);
                 navigate('/forum');
             } catch (error) {
                 console.error('Error deleting thread:', error);
@@ -113,13 +116,13 @@ export default function Thread() {
                 </div>
             </div>
             <div className="thread-actions">
-                <button onClick={() => handleVote(1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                <div onClick={() => handleVote(1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
                     <FaArrowAltCircleUp />
-                </button>
+                </div>
                 <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
-                <button onClick={() => handleVote(-1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                <div onClick={() => handleVote(-1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
                     <FaArrowAltCircleDown />
-                </button>
+                </div>
                 <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
                 <FaEye />
                 <span>Views: {thread.views || 0}</span>

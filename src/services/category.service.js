@@ -32,7 +32,7 @@ export const getCategories = async () => {
         return Object.values(snapshot.val());
     } catch (error) {
         console.error('Error fetching categories:', error);
-        throw error;
+        throw new Error('Failed to retrieve categories');
     }
 };
 
@@ -47,7 +47,24 @@ export const getCategoryById = async (categoryId) => {
         return data ? Object.values(data)[0] : null;
     } catch (error) {
         console.error('Error fetching category:', error);
-        throw error;
+        throw new Error('Failed to retrieve category by tag');
+    }
+};
+
+export const updateThreadsCounter = async (categoryId, factor) => {
+    try {
+        const categoryRef = ref(db, `categories/${categoryId}`);
+        const snapshot = await get(categoryRef);
+        if (!snapshot.exists()) {
+            throw new Error('Category not found');
+        }
+        const categoryData = snapshot.val();
+        const currentThreadsCount = categoryData.threadsCount || 0;
+        const newThreadsCount = currentThreadsCount + factor;
+        await update(categoryRef, { threadsCount: newThreadsCount });
+    } catch (error) {
+        console.error('Error updating threads count:', error);
+        throw new Error('Failed to update threads count');
     }
 };
 
@@ -57,7 +74,6 @@ export const updateCategory = async (categoryId, newTitle) => {
     try {
         const categoryRef = ref(db, `categories/${categoryId}`);
         await update(categoryRef, { title: newTitle });
-        console.log(`Category with ID ${categoryId} updated successfully.`);
     } catch (error) {
         console.error('Error updating category:', error);
         throw new Error('Failed to update category');
@@ -71,7 +87,6 @@ export const deleteCategory = async (categoryId) => {
     try {
         const categoryRef = ref(db, `categories/${categoryId}`);
         await remove(categoryRef);
-        console.log(`Category with ID ${categoryId} deleted successfully.`);
     } catch (error) {
         console.error('Error deleting category:', error);
         throw new Error('Failed to delete category');

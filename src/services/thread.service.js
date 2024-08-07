@@ -18,6 +18,7 @@ export const createThread = async (categoryId, title, content, authorId, authorN
         const threadsRef = ref(db, 'threads');
         const newThreadRef = await push(threadsRef);
         await set(newThreadRef, { ...newThread, id: newThreadRef.key });
+        return newThreadRef.key;
     } catch (error) {
         console.error('Error creating thread:', error);
         throw error;
@@ -113,15 +114,38 @@ export const handleThreadVote = async (threadId, vote, username) => {
 };
 
 export const incrementThreadViews = async (threadId) => {
-    const threadRef = ref(db, `threads/${threadId}`);
-    const snapshot = await get(threadRef);
-    if (!snapshot.exists()) {
-        throw new Error('Thread not found');
+    try {
+        const threadRef = ref(db, `threads/${threadId}`);
+        const snapshot = await get(threadRef);
+        if (!snapshot.exists()) {
+            throw new Error('Thread not found');
+        }
+        const threadData = snapshot.val();
+        const newViewsCount = (threadData.views || 0) + 1;
+        await update(threadRef, { views: newViewsCount });
+        return newViewsCount;
+    } catch (error) {
+        console.error('Error incrementing thread views:', error);
+        throw new Error('Failed to increment thread views');
     }
-    const threadData = snapshot.val();
-    const newViewsCount = (threadData.views || 0) + 1;
-    await update(threadRef, { views: newViewsCount });
-    return newViewsCount;
+};
+
+export const updateRepliesCounter = async (threadId, factor) => {
+    try {
+        const threadRef = ref(db, `threads/${threadId}`);
+        const snapshot = await get(threadRef);
+        if (!snapshot.exists()) {
+            throw new Error('Thread not found');
+        }
+        const threadData = snapshot.val();
+        const currentRepliesCount = threadData.repliesCount || 0;
+        const newRepliesCount = currentRepliesCount + factor;
+        await update(threadRef, { repliesCount: newRepliesCount });
+        return newRepliesCount;
+    } catch (error) {
+        console.error('Error updating replies count:', error);
+        throw new Error('Failed to update replies count');
+    }
 };
 
 // DELETE

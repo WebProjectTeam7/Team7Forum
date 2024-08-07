@@ -4,10 +4,10 @@ import { db } from '../config/firebase-config';
 
 // CREATE
 
-export const createReply = async (threadId, userId, replyContent) => {
+export const createReply = async (threadId, username, replyContent) => {
     try {
         const newReply = {
-            userId,
+            author: username,
             threadId,
             content: replyContent,
             createdAt: new Date().toISOString(),
@@ -37,20 +37,6 @@ export const getRepliesByThreadId = async (threadId) => {
     } catch (error) {
         console.error('Error retrieving replies by thread ID:', error);
         throw new Error('Failed to retrieve replies');
-    }
-};
-
-export const getRepliesCountByThreadId = async (threadId) => {
-    try {
-        const repliesRef = query(ref(db, 'replies'), orderByChild('threadId'), equalTo(threadId));
-        const snapshot = await get(repliesRef);
-        if (!snapshot.exists()) {
-            return 0;
-        }
-        return Object.values(snapshot.val()).length;
-    } catch (error) {
-        console.error('Error retrieving replies count bt thread ID:', error);
-        throw new Error('Failed to retrieve replies count');
     }
 };
 

@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getThreadsByCategoryId, createThread } from '../services/thread.service';
-import { getRepliesCountByThreadId } from '../services/reply.service';
+import { createThreadTag } from '../services/tag.service';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
-import { getCategoryById } from '../services/category.service';
+import { getCategoryById, updateThreadsCounter } from '../services/category.service';
 import './CSS/Category.css';
 
 export default function Category() {
@@ -16,6 +16,7 @@ export default function Category() {
     const [category, setCategory] = useState(null);
     const [newThreadTitle, setNewThreadTitle] = useState('');
     const [newThreadContent, setNewThreadContent] = useState('');
+    const [newThreadTags, setNewThreadTags] = useState('');
     const [showCreateThread, setShowCreateThread] = useState(false);
     const [fetchTrigger, setFetchTrigger] = useState(false);
 
@@ -28,13 +29,7 @@ export default function Category() {
             const fetchedCategory = await getCategoryById(categoryId);
             setCategory(fetchedCategory);
             const fetchedThreads = await getThreadsByCategoryId(categoryId);
-            const threadsWithRepliesCounts = await Promise.all(
-                fetchedThreads.map(async (thread) => {
-                    const repliesCount = await getRepliesCountByThreadId(thread.id);
-                    return { ...thread, repliesCount };
-                })
-            );
-            setThreads(threadsWithRepliesCounts);
+            setThreads(fetchedThreads);
         } catch (error) {
             console.error('Error fetching threads:', error);
         }
@@ -43,10 +38,15 @@ export default function Category() {
     const handleCreateThread = async () => {
         if (newThreadTitle.trim() && newThreadContent.trim()) {
             try {
-                await createThread(categoryId, newThreadTitle, newThreadContent, user.uid, userData.username);
+                const newThreadId = await createThread(categoryId, newThreadTitle, newThreadContent, user.uid, userData.username);
+                await updateThreadsCounter(categoryId, 1);
+                const tagsArray = newThreadTags.split(',').filter(tag => tag.trim().length > 0);
+                await Promise.all(tagsArray.map(tag => createThreadTag(tag.trim(), newThreadId)));
+
                 setFetchTrigger(!fetchTrigger);
                 setNewThreadTitle('');
                 setNewThreadContent('');
+                setNewThreadTags('');
                 setShowCreateThread(false);
             } catch (error) {
                 console.error('Error creating thread:', error);
@@ -102,6 +102,12 @@ export default function Category() {
                                     value={newThreadContent}
                                     onChange={(e) => setNewThreadContent(e.target.value)}
                                     placeholder="New thread content"
+                                />
+                                <input
+                                    type="text"
+                                    value={newThreadTags}
+                                    onChange={(e) => setNewThreadTags(e.target.value)}
+                                    placeholder="Tags (comma-separated)"
                                 />
                                 <button onClick={handleCreateThread}>Save Thread</button>
                             </div>

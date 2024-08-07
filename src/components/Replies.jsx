@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import './CSS/Replies.css';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import UserRoleEnum from '../common/role.enum';
+import { updateRepliesCounter } from '../services/thread.service';
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);
@@ -31,8 +32,8 @@ export default function Replies({ threadId }) {
     const handleCreateReply = async () => {
         if (replyContent.trim()) {
             try {
-                const userId = userData.uid;
-                await createReply(threadId, userId, replyContent);
+                await createReply(threadId, userData.username, replyContent);
+                await updateRepliesCounter(threadId, 1);
                 setReplyContent('');
                 setFetchTrigger((prev) => !prev);
             } catch (error) {
@@ -58,6 +59,7 @@ export default function Replies({ threadId }) {
         if (window.confirm('Are you sure you want to delete this reply?')) {
             try {
                 await deleteReply(replyId);
+                await updateRepliesCounter(threadId, -1);
                 setFetchTrigger((prev) => !prev);
             } catch (error) {
                 console.error('Error deleting reply:', error);
@@ -110,13 +112,13 @@ export default function Replies({ threadId }) {
                                             <p>{reply.content}</p>
                                             <div className="reply-actions">
                                                 <div className="upvote-downvote">
-                                                    <button onClick={() => handleVote(reply.id, userVote, 1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                                                    <div onClick={() => handleVote(reply.id, userVote, 1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
                                                         <FaArrowAltCircleUp />
-                                                    </button>
+                                                    </div>
                                                     <span>Upvotes: {reply.upvotes ? reply.upvotes.length : 0}</span>
-                                                    <button onClick={() => handleVote(reply.id, userVote, -1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                                                    <div onClick={() => handleVote(reply.id, userVote, -1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
                                                         <FaArrowAltCircleDown />
-                                                    </button>
+                                                    </div>
                                                     <span>Downvotes: {reply.downvotes ? reply.downvotes.length : 0}</span>
                                                 </div>
                                                 {(userData.role === UserRoleEnum.ADMIN || userData.username === reply.author) && (
