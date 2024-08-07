@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import { useEffect, useState } from 'react';
-import errorGif from './error.gif';
+import errorGif from '../image/error.gif';
 import './CSS/ErrorMessage.css';
 
 const ErrorComponent = () => {
@@ -61,8 +61,7 @@ const ErrorComponent = () => {
           <p>{errorMessage}</p>
         </div>
       )}
-      {loading &&
-      <p>Loading...</p>}
+      {loading && <p>Loading...</p>}
     </div>
   );
 };

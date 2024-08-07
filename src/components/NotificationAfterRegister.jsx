@@ -5,7 +5,7 @@ import '../components/CSS/Notification.css';
 import welcomeGif from '../image/welcome.gif';
 
 function WelcomeGifNotification({ show, onClose }) {
-    const [isVisible, setIsVisible] = useState(show);
+    const [isVisible, setIsVisible] = useState(false);
 
     // eslint-disable-next-line consistent-return
     useEffect(() => {
@@ -24,7 +24,7 @@ function WelcomeGifNotification({ show, onClose }) {
 
     return (
         <div className={`gift-animation ${isVisible ? 'show' : ''}`}>
-            <img src={welcomeGif} alt="Hello!" />
+            {isVisible && <img src={welcomeGif} alt="Welcome!" />}
         </div>
     );
 }
