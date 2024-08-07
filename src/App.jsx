@@ -43,7 +43,7 @@ export default function App() {
                 setAppState({ ...appState, userData });
             })
             .catch((e) => {
-                alert(e.message);
+                console.error(e.message);
             });
     }, [user]);
 
@@ -58,7 +58,7 @@ export default function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/my-profile" element={<MyProfile />} />
-                    <Route path="/user-profile/:id" element={<UserProfile />} />
+                    <Route path="/user-profile/:username" element={<UserProfile />} />
                     <Route path="/add-survey" element={<AddSurvey />} />
                     <Route path="/survey/:id" element={<Survey />} />
                     <Route path="/surveys" element={<SurveyList />} />

@@ -5,8 +5,9 @@ import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import { handleReplyVote, updateReply, deleteReply } from '../services/reply.service';
 import { updateRepliesCounter } from '../services/thread.service';
-import './CSS/Replies.css';
 import { getUserByUsername } from '../services/users.service';
+import './CSS/Replies.css';
+import UserInfo from './UserInfo';
 
 const Reply = ({ reply, threadId, fetchReplies }) => {
     const { userData } = useContext(AppContext);
@@ -68,15 +69,7 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
     return (
         <li className="reply-item">
             <div className="reply-body">
-                <div className="reply-info">
-                    <img src={userAuthor ? userAuthor.avatar : ''} alt="Author Avatar" className="author-avatar" />
-                    <div className="reply-author-date">
-                        <p>Author: {userAuthor ? userAuthor.username : reply.author}</p>
-                        <p>Role: {userAuthor ? userAuthor.role : ''}</p>
-                        <p>Created At: {new Date(reply.createdAt).toLocaleDateString()}</p>
-                        {reply.updatedAt && <p>Last Edited: {new Date(reply.updatedAt).toLocaleDateString()}</p>}
-                    </div>
-                </div>
+                <UserInfo userAuthor={userAuthor} />
                 <div className="reply-content">
                     {editReplyId === reply.id ? (
                         <div>
@@ -93,6 +86,8 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
                             <p>{reply.content}</p>
                             <div className="reply-actions">
                                 <div className="upvote-downvote">
+                                    <p>Created At: {new Date(reply.createdAt).toLocaleDateString()}</p>
+                                    {reply.updatedAt && <p>Last Edited: {new Date(reply.updatedAt).toLocaleDateString()}</p>}
                                     <div onClick={() => handleVote(reply.id, userVote, 1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
                                         <FaArrowAltCircleUp />
                                     </div>
