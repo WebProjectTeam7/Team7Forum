@@ -5,7 +5,6 @@ import { addReplyIdToThread } from '../services/thread.service';
 import Reply from './Reply';
 import PropTypes from 'prop-types';
 import './CSS/Replies.css';
-import { updateRepliesCounter } from '../services/thread.service';
 import { isUserBanned } from '../services/users.service';
 
 export default function Replies({ threadId }) {

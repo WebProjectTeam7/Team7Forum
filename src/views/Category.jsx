@@ -8,6 +8,8 @@ import { getCategoryById, updateThreadsCounter } from '../services/category.serv
 import './CSS/Category.css';
 import ThreadItem from '../components/ThreadItem';
 import { isUserBanned } from '../services/users.service';
+import InfoButton from '../components/InfoButton';
+import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
 
 export default function Category() {
     const { categoryId } = useParams();
@@ -46,6 +48,21 @@ export default function Category() {
                 return;
             }
 
+            const alertArr = [];
+
+            if (!TITLE_REGEX.test(newThreadTitle)) {
+                alertArr.push('Invalid title length, must be between 3 and 64 characters!');
+            }
+
+            if (!CONTENT_REGEX.test(newThreadContent)) {
+                alertArr.push('Invalid content length, must be between 3 and 8192 characters!');
+            }
+
+            if (alertArr.length > 0) {
+                alert(alertArr.join('\n'));
+                return;
+            }
+
             try {
                 const newThreadId = await createThread(categoryId, newThreadTitle, newThreadContent, user.uid, userData.username);
                 await updateThreadsCounter(categoryId, 1);
@@ -81,12 +98,16 @@ export default function Category() {
                         </button>
                         {showCreateThread && (
                             <div className="create-thread">
+                                <InfoButton text="Title must be:
+                               between 3 to 64 characters,"/>
                                 <input
                                     type="text"
                                     value={newThreadTitle}
                                     onChange={(e) => setNewThreadTitle(e.target.value)}
                                     placeholder="New thread title"
                                 />
+                                <InfoButton text="Content must be:
+                               between 3 to 8192 characters,"/>
                                 <textarea
                                     value={newThreadContent}
                                     onChange={(e) => setNewThreadContent(e.target.value)}

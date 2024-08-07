@@ -19,7 +19,7 @@ const ThreadItem = ({ thread }) => {
                 <div className="thread-stats">
                     <span>Author: {thread.authorName}</span>
                     <span>Created on: {new Date(thread.createdAt).toLocaleDateString()}</span>
-                    <span>Replies: {thread.repliesCount || 0}</span>
+                    <span>Replies: {thread.replyCount || 0}</span>
                     <span>Upvotes: {thread.upvotes && thread.upvotes.length || 0}</span>
                     <span>Downvotes: {thread.downvotes && thread.downvotes.length || 0}</span>
                     <span>Views: {thread.views || 0}</span>
@@ -37,7 +37,7 @@ ThreadItem.propTypes = {
         content: PropTypes.string.isRequired,
         authorName: PropTypes.string,
         createdAt: PropTypes.string.isRequired,
-        repliesCount: PropTypes.number,
+        replyCount: PropTypes.number,
         upvotes: PropTypes.arrayOf(PropTypes.string),
         downvotes: PropTypes.arrayOf(PropTypes.string),
         views: PropTypes.number,

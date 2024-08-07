@@ -31,23 +31,29 @@ export const createThread = async (categoryId, title, content, authorId, authorN
 export const getThreadsByFilterInOrder = async (orderBy = 'createdAt', order = 'desc', limit = null, categoryId = null) => {
     try {
         let threadsRef = ref(db, 'threads');
+
         if (categoryId) {
             threadsRef = query(threadsRef, orderByChild('categoryId'), equalTo(categoryId));
         }
+
         threadsRef = query(threadsRef, orderByChild(orderBy));
+
         if (limit) {
             threadsRef = order === 'asc' ?
                 query(threadsRef, limitToFirst(limit)) :
                 query(threadsRef, limitToLast(limit));
         }
+
         const snapshot = await get(threadsRef);
         if (!snapshot.exists()) {
             return [];
         }
+
         const threads = [];
         snapshot.forEach(childSnapshot => {
-            threads.push(childSnapshot.val());
+            threads.push({ id: childSnapshot.key, ...childSnapshot.val() });
         });
+
         return threads;
     } catch (error) {
         console.error('Error fetching threads:', error);
