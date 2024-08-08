@@ -45,6 +45,65 @@
     margin-top: 20px;
 }
 
+.author-avatar {
+    width: 100px !important; 
+    height: 100px !important;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ban-user-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.user-ban-duration-input {
+    width: 50%; 
+    padding: 5px;
+    text-align: center;
+    font-size: 1em;
+    margin-left: 200px;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+}
+
+.user-ban-duration-input::-webkit-outer-spin-button,
+.user-ban-duration-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.user-ban-button {
+    padding: 10px 20px; 
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1em;
+    margin-right: 200px;
+}
+
+.user-ban-button:hover {
+    background-color: #c82333;
+}
+
+.user-ban-duration-input::placeholder {
+    font-size: 1em; 
+}
+
+.user-ban-info span {
+    text-align: center !important;
+    color: #f13e50 !important;
+}
+
 /* Dark Mode */
 body.dark-mode .user-profile-container {
     background-color: #2e2e2e;

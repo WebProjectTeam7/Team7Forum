@@ -87,7 +87,7 @@ export default function AdminPage() {
                                     value={banDuration[user.uid] || ''}
                                     onChange={(e) => handleBanDurationChange(user.uid, e.target.value)}
                                 />
-                                <button className="ban-button" onClick={() => handleBanUser(user.uid)}>Ban</button> {/* Added class "ban-button" */}
+                                <button className="ban-button" onClick={() => handleBanUser(user.uid)}>Ban</button>
                             </td>
                             <td>
                                 <button onClick={() => navigate(`/user-profile/${user.username}`)}>See profile</button>

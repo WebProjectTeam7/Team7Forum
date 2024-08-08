@@ -127,6 +127,13 @@ export const banUser = async (uid, days) => {
     }
 };
 
+export const handleBanUser = async (uid, banDuration) => {
+    if (!banDuration) {
+        throw new Error('Please enter a valid number of days.');
+    }
+    await banUser(uid, parseInt(banDuration));
+};
+
 export const isUserBanned = async (uid) => {
     const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
     const snapshot = await get(userRef);
