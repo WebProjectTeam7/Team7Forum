@@ -6,9 +6,9 @@ import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
 import './CSS/Thread.css';
-import { updateThreadsCounter } from '../services/category.service';
 import { getUserByUsername, isUserBanned } from '../services/users.service';
 import UserInfo from '../components/UserInfo';
+import { removeThreadIdFromCategory } from '../services/category.service';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -80,7 +80,7 @@ export default function Thread() {
         if (window.confirm('Are you sure you want to delete this thread?')) {
             try {
                 await deleteThread(threadId);
-                await updateThreadsCounter(thread.categoryId, -1);
+                await removeThreadIdFromCategory(thread.categoryId, threadId);
                 navigate('/forum');
             } catch (error) {
                 console.error('Error deleting thread:', error);

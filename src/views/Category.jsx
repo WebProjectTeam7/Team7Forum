@@ -4,7 +4,7 @@ import { getThreadsByCategoryId, createThread } from '../services/thread.service
 import { createThreadTag } from '../services/tag.service';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
-import { getCategoryById, updateThreadsCounter } from '../services/category.service';
+import { getCategoryById, addThreadIdToCategory } from '../services/category.service';
 import './CSS/Category.css';
 import ThreadItem from '../components/ThreadItem';
 import { isUserBanned } from '../services/users.service';
@@ -65,9 +65,10 @@ export default function Category() {
 
             try {
                 const newThreadId = await createThread(categoryId, newThreadTitle, newThreadContent, user.uid, userData.username);
-                await updateThreadsCounter(categoryId, 1);
                 const tagsArray = newThreadTags.split(',').filter(tag => tag.trim().length > 0);
                 await Promise.all(tagsArray.map(tag => createThreadTag(tag.trim(), newThreadId)));
+
+                await addThreadIdToCategory(categoryId, newThreadId);
 
                 setFetchTrigger(!fetchTrigger);
                 setNewThreadTitle('');
