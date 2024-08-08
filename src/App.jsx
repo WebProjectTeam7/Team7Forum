@@ -20,6 +20,7 @@ import SurveyList from './views/SurveyList';
 import Forum from './views/Forum';
 import Category from './views/Category';
 import Thread from './views/Thread';
+import Beerpedia from './views/Beerpedia';
 
 
 export default function App() {
@@ -66,6 +67,7 @@ export default function App() {
                     <Route path="/forum" element={<Forum />} />
                     <Route path="/forum/category/:categoryId" element={<Category />} />
                     <Route path="/forum/thread/:threadId" element={<Thread />} />
+                    <Route path="/beerpedia" element={<Beerpedia />}></Route>
                     <Route path="*" element={<NotFound />} />
                 </Routes>
                 <footer>&copy;Team7Forum</footer>

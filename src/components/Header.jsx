@@ -4,11 +4,11 @@ import { AppContext } from '../state/app.context';
 import { logoutUser } from '../services/auth.service';
 import Search from './Search';
 import './CSS/Header.css';
-
 import UserRoleEnum from '../common/role.enum';
 import BeerSwitch from './BeerSwitch';
 import { getUsersCount } from '../services/users.service';
 import { getThreadsCount } from '../services/thread.service';
+
 
 export default function Header() {
     const { user, userData, setAppState } = useContext(AppContext);
@@ -48,6 +48,7 @@ export default function Header() {
                 <NavLink to="/forum">Forum</NavLink>
                 {!user && <NavLink to="/login">Login</NavLink>}
                 {!user && <NavLink to="/register">Register</NavLink>}
+                <NavLink to="/beerpedia">Beerpedia</NavLink>
                 {user && <NavLink to="/surveys">Beercyclopedia</NavLink>}
                 {user && <NavLink to="/my-profile">My Profile</NavLink>}
                 {userData && userData.role === UserRoleEnum.ADMIN && (
