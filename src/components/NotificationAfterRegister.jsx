@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import '../components/CSS/Notification.css';
-import welcomeGif from '../image/welcome.gif';
+import welcomeGif from '../image/welcome-cheers.gif';
 
 function WelcomeGifNotification({ show, onClose }) {
     const [isVisible, setIsVisible] = useState(false);
