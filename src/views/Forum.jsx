@@ -7,6 +7,8 @@ import UserRoleEnum from '../common/role.enum';
 import './CSS/Forum.css';
 import ThreadItem from '../components/ThreadItem';
 import { isUserBanned } from '../services/users.service';
+import EditButton from '../components/EditButton';
+import DeleteButton from '../components/DeleteButton';
 
 const THREADS_LIMIT_BY_CATEGORY = 3;
 
@@ -96,15 +98,14 @@ export default function Forum() {
                             <Link to={`/forum/category/${category.id}`}>{category.title}</Link>
                         </h2>
                         <div className="category-meta">
-                            <span>Number of Threads: {category.threadsCount}</span>
+                            <span>Number of Threads: {category.threadCount}</span>
                             {isAdmin && (
                                 <div className="category-buttons">
-                                    <button onClick={() => {
+                                    <EditButton onClick={() => {
                                         setEditCategoryId(category.id);
                                         setEditCategoryTitle(category.title);
-                                    }} className="small-button">Edit</button>
-                                    <button className="delete-button small-button"
-                                        onClick={() => handleDeleteCategory(category.id)}>Delete</button>
+                                    }} />
+                                    <DeleteButton onClick={() => handleDeleteCategory(category.id)} />
                                 </div>
                             )}
                         </div>

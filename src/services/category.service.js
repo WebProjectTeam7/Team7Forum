@@ -51,22 +51,6 @@ export const getCategoryById = async (categoryId) => {
     }
 };
 
-export const updateThreadsCounter = async (categoryId, factor) => {
-    try {
-        const categoryRef = ref(db, `categories/${categoryId}`);
-        const snapshot = await get(categoryRef);
-        if (!snapshot.exists()) {
-            throw new Error('Category not found');
-        }
-        const categoryData = snapshot.val();
-        const currentThreadsCount = categoryData.threadsCount || 0;
-        const newThreadsCount = currentThreadsCount + factor;
-        await update(categoryRef, { threadsCount: newThreadsCount });
-    } catch (error) {
-        console.error('Error updating threads count:', error);
-        throw new Error('Failed to update threads count');
-    }
-};
 
 // UPDATE
 
@@ -77,6 +61,55 @@ export const updateCategory = async (categoryId, newTitle) => {
     } catch (error) {
         console.error('Error updating category:', error);
         throw new Error('Failed to update category');
+    }
+};
+
+export const addThreadIdToCategory = async (categoryId, threadId) => {
+    try {
+        const categoryRef = ref(db, `categories/${categoryId}`);
+        const snapshot = await get(categoryRef);
+        if (!snapshot.exists()) {
+            throw new Error('Category not found');
+        }
+        const categoryData = snapshot.val();
+        const threads = categoryData.threads || [];
+        if (!threads.includes(threadId)) {
+            threads.push(threadId);
+            const updatedCategory = {
+                ...categoryData,
+                threads,
+                threadCount: threads.length,
+            };
+            await update(categoryRef, updatedCategory);
+        }
+    } catch (error) {
+        console.error('Error updating category threads:', error);
+        throw new Error('Failed to update threads count: ' + error.message);
+    }
+};
+
+export const removeThreadIdFromCategory = async (categoryId, threadId) => {
+    try {
+        const categoryRef = ref(db, `categories/${categoryId}`);
+        const snapshot = await get(categoryRef);
+        if (!snapshot.exists()) {
+            throw new Error('Category not found');
+        }
+        const categoryData = snapshot.val();
+        const threads = categoryData.threads || [];
+        const threadIndex = threads.indexOf(threadId);
+        if (threadIndex >= 0) {
+            threads.splice(threadIndex, 1);
+            const updatedCategory = {
+                ...categoryData,
+                threads,
+                threadCount: threads.length,
+            };
+            await update(categoryRef, updatedCategory);
+        }
+    } catch (error) {
+        console.error('Error removing thread from category:', error);
+        throw new Error('Failed to remove thread from category: ' + error.message);
     }
 };
 

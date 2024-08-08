@@ -81,11 +81,11 @@
 }
 
 .ban-button {
-    background-color: #dc3545;
+    background-color: #dc3545 !important;
 }
 
 .ban-button:hover {
-    background-color: #c82333;
+    background-color: #c82333 !important;
 }
 
 /* Dark Mode */

@@ -6,9 +6,11 @@ import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
 import './CSS/Thread.css';
-import { updateThreadsCounter } from '../services/category.service';
 import { getUserByUsername, isUserBanned } from '../services/users.service';
 import UserInfo from '../components/UserInfo';
+import { removeThreadIdFromCategory } from '../services/category.service';
+import EditButton from '../components/EditButton';
+import DeleteButton from '../components/DeleteButton';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -80,7 +82,7 @@ export default function Thread() {
         if (window.confirm('Are you sure you want to delete this thread?')) {
             try {
                 await deleteThread(threadId);
-                await updateThreadsCounter(thread.categoryId, -1);
+                await removeThreadIdFromCategory(thread.categoryId, threadId);
                 navigate('/forum');
             } catch (error) {
                 console.error('Error deleting thread:', error);
@@ -118,9 +120,9 @@ export default function Thread() {
                 <p>Created At: {new Date(thread.createdAt).toLocaleDateString()}</p>
                 {thread.updatedAt && <p>Last Edited: {new Date(thread.updatedAt).toLocaleDateString()}</p>}
                 {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && (
-                    <div>
-                        <button onClick={() => setEditMode(true)}>Edit Thread</button>
-                        <button onClick={handleDeleteThread}>Delete Thread</button>
+                    <div className="button-container">
+                        <EditButton onClick={() => setEditMode(true)} />
+                        <DeleteButton onClick={handleDeleteThread} />
                     </div>
                 )}
             </div>

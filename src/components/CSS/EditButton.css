@@ -1,0 +1,45 @@
+
+.edit-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 40px;
+    border: 1px solid #d9e94c;
+    padding: 0 20px;
+    background-color: rgb(147, 161, 14);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: background-color 0.3s;
+    box-shadow: none;
+}
+
+.edit-text {
+    transition: opacity 0.3s;
+}
+
+.edit-svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    position: absolute;
+    right: -30px; 
+    transition: right 0.3s;
+}
+
+.edit-btn:hover .edit-text {
+    opacity: 0;
+}
+
+.edit-btn:hover .edit-svg {
+    right: 35px; 
+}
+
+.edit-btn:active {
+    transform: translate(3px, 3px);
+    transition-duration: 0.3s;
+}
