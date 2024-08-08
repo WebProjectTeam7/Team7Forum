@@ -8,6 +8,8 @@ import { removeReplyIdFromThread } from '../services/thread.service';
 import { getUserByUsername } from '../services/users.service';
 import './CSS/Replies.css';
 import UserInfo from './UserInfo';
+import EditButton from './EditButton';
+import DeleteButton from './DeleteButton';
 
 const Reply = ({ reply, threadId, fetchReplies }) => {
     const { userData } = useContext(AppContext);
@@ -99,11 +101,11 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
                                 </div>
                                 {(userData.role === UserRoleEnum.ADMIN || userData.username === reply.author) && (
                                     <div className="edit-delete-buttons">
-                                        <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>
-                                        <button onClick={() => {
+                                        <DeleteButton onClick={() => handleDeleteReply(reply.id)} />
+                                        <EditButton onClick={() => {
                                             setEditReplyId(reply.id);
                                             setEditReplyContent(reply.content);
-                                        }}>Edit</button>
+                                        }} />
                                     </div>
                                 )}
                             </div>

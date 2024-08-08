@@ -8,7 +8,7 @@
     height: 40px;
     border: 1px solid #d9e94c;
     padding: 0 20px;
-    background-color: rgb(147, 161, 14);
+    background-color: rgb(147, 161, 14) !important;
     color: white;
     font-weight: 500;
     cursor: pointer;
