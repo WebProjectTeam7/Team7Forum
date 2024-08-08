@@ -154,3 +154,14 @@ export const isUserBanned = async (uid) => {
     }
     return false;
 };
+
+export const getRemainingBanTime = (banEndDate) => {
+    const now = new Date();
+    const end = new Date(banEndDate);
+    const diff = end - now;
+    if (diff <= 0) return 'Ban has expired';
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    return `${days} days ${hours} hours`;
+};

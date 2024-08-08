@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { banUser, getUserByUsername } from '../services/users.service';
+import { banUser, getRemainingBanTime, getUserByUsername } from '../services/users.service';
 import './CSS/UserProfile.css';
 import { AppContext } from '../state/app.context';
 
@@ -39,18 +39,6 @@ export default function UserProfile() {
             alert(e.message);
         }
     };
-
-    const getRemainingBanTime = (banEndDate) => {
-        const now = new Date();
-        const end = new Date(banEndDate);
-        const diff = end - now;
-        if (diff <= 0) return 'Ban has expired';
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        return `${days} days ${hours} hours`;
-    };
-
 
     return (
         <div className="user-profile-container">

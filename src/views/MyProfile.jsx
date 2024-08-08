@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { updateUser, deleteUser, getUserByUsername } from '../services/users.service';
+import { updateUser, deleteUser, getUserByUsername, getRemainingBanTime } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 import { useNavigate } from 'react-router-dom';
 import { auth, storage } from '../config/firebase-config';
@@ -155,7 +155,12 @@ export default function MyProfile() {
     return (
         <div className="profile-container">
             <h1>My Profile</h1>
-
+            {/* BAN TIMER */}
+            {userData.isBanned && (
+                <div className="user-ban-info">
+                    <span>Ban Time Left: {getRemainingBanTime(userData.banEndDate)}</span>
+                </div>
+            )}
             {/* AVATAR */}
             <div className="profile-field avatar-container">
                 <label>Avatar:</label>
