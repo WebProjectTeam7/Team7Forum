@@ -1,0 +1,44 @@
+.edit-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100px;
+    height: 40px;
+    border: none;
+    padding: 0px 20px;
+    background-color: rgb(217, 233, 76);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 5px 5px 0px rgb(158, 170, 48);
+    transition-duration: 0.3s;
+}
+
+.edit-btn svg {
+    width: 13px;
+    position: absolute;
+    right: 0;
+    margin-right: 20px;
+    fill: white;
+    transition-duration: 0.3s;
+}
+
+.edit-btn:hover {
+    color: transparent;
+}
+
+.edit-btn:hover svg {
+    right: 43%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    transition-duration: 0.3s;
+}
+
+.edit-btn:active {
+    transform: translate(3px, 3px);
+    transition-duration: 0.3s;
+    box-shadow: 2px 2px 0px rgb(140, 32, 212);
+}
