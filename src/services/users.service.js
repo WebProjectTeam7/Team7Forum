@@ -127,6 +127,15 @@ export const banUser = async (uid, days) => {
     }
 };
 
+export const unbanUser = async (uid) => {
+    const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+        const userId = Object.keys(snapshot.val())[0];
+        await update(ref(db, `users/${userId}`), { isBanned: false, banEndDate: null });
+    }
+};
+
 export const handleBanUser = async (uid, banDuration) => {
     if (!banDuration) {
         throw new Error('Please enter a valid number of days.');

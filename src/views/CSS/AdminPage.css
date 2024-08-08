@@ -1,7 +1,7 @@
 /* AdminPage.css */
 
 .admin-page-container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
@@ -13,6 +13,50 @@
     text-align: center;
     color: #333;
     margin-bottom: 20px;
+}
+
+.see-profile-button {
+    height: 42px !important;
+    margin-top: 4px;
+}
+
+.see-profile-button:hover {
+    background-color: #138496;
+}
+
+.see-profile-button:active {
+    background-color: #117a8b;
+}
+
+
+.nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.nav button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.nav button:hover {
+    background-color: #0056b3;
+}
+
+.search-bar {
+    width: 40%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
 }
 
 .admin-page-container table {
@@ -34,6 +78,41 @@
 
 .admin-page-container td {
     color: #666;
+}
+
+.admin-page-container th:nth-child(1),
+.admin-page-container td:nth-child(1) {
+    width: 15%;
+}
+
+.admin-page-container th:nth-child(2),
+.admin-page-container td:nth-child(2) {
+    width: 20%;
+}
+
+.admin-page-container th:nth-child(3),
+.admin-page-container td:nth-child(3) {
+    width: 10%;
+}
+
+.admin-page-container th:nth-child(4),
+.admin-page-container td:nth-child(4) {
+    width: 10%;
+}
+
+.admin-page-container th:nth-child(5),
+.admin-page-container td:nth-child(5) {
+    width: 10%;
+}
+
+.admin-page-container th:nth-child(6),
+.admin-page-container td:nth-child(6) {
+    width: 90%;
+}
+
+.admin-page-container th:nth-child(7),
+.admin-page-container td:nth-child(7) {
+    width: 10%;
 }
 
 .admin-page-container select {
@@ -70,6 +149,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-right: 10px;
+    font-size: 1em;
     -webkit-appearance: none;
     -moz-appearance: textfield;
 }
@@ -82,10 +162,31 @@
 
 .ban-button {
     background-color: #dc3545 !important;
+    height: 38px;
+    margin-bottom: 6px;
 }
 
 .ban-button:hover {
     background-color: #c82333 !important;
+}
+
+.unban-button {
+    background-color: #28a745 !important;
+    height: 3.5cap !important;
+}
+
+.unban-button:hover {
+    background-color: #218838 !important;
+}
+
+.admin-page-container th:nth-child(7),
+.admin-page-container td:nth-child(7) {
+    width: 120px;
+}
+
+.admin-page-container th:last-child,
+.admin-page-container td:last-child {
+    width: 50px;
 }
 
 /* Dark Mode */
@@ -133,4 +234,12 @@ body.dark-mode .ban-button {
 
 body.dark-mode .ban-button:hover {
     background-color: #c82333 !important;
+}
+
+body.dark-mode .unban-button {
+    background-color: #28a745 !important;
+}
+
+body.dark-mode .unban-button:hover {
+    background-color: #218838 !important;
 }
