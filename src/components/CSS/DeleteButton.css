@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   border: 1px solid #cc0000;
-  background-color: #e50000;
+  background-color: #cc0000 !important;
   overflow: hidden;
   transition: background-color 0.3s;
 }
@@ -22,7 +22,7 @@
 
 .delete-icon {
   position: absolute;
-  transform: translateX(60px);
+  transform: translateX(80px);
   height: 100%;
   width: 39px;
   background-color: #cc0000;
@@ -32,7 +32,7 @@
 }
 
 .delete-svg {
-  width: 20px;
+  width: 25px;
   transition: fill 0.3s;
 }
 
@@ -45,7 +45,7 @@
 }
 
 .delete-btn:hover .delete-icon {
-  width: 45px;
+  width: 50px;
   transform: translateX(0);
 }
 
