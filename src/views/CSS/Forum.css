@@ -71,10 +71,21 @@ h1 {
 }
 
 .cancel-button,
-.delete-button,
+.delete-button button,
 .category-buttons .delete-button {
     background-color: #dc3545;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: auto;
 }
+
 
 .category-threads ul {
     list-style-type: none;

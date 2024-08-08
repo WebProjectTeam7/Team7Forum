@@ -1,7 +1,8 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 1950px;
+  margin-left: 0;
+  margin-right: auto;
+  padding: auto; 
 }
 
 .logo {
@@ -50,9 +51,11 @@ body {
   background-color: rgb(228, 228, 17);
   color: #000000;
   background-image: url('/src/image/Light.jpg');
-  background-size: cover;
+  background-size: auto;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: repeat;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Dark mode styles */
@@ -60,7 +63,9 @@ body {
   background-color: rgb(66, 48, 48);
   color: #ffffff;
   background-image: url('/src/image/Dark.jpg');
-  background-size: cover;
+  background-size: auto;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: repeat;
+  display: flex;
+  flex-direction: column;
 }

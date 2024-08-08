@@ -8,13 +8,14 @@ body {
 
 h1, h2 {
     color: #333;
+    font-family: fantasy;
 }
 
 /* Category container */
 .category-container {
     width: 80%;
     margin: 20px auto;
-    background: #fff;
+    background: #ece9e0;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -77,7 +78,7 @@ h1, h2 {
     padding: 8px 12px;
     font-size: 1em;
     color: #fff;
-    background-color: #007bff;
+    background-color: rgb(12, 100, 59);
     border: none;
     border-radius: 4px;
     cursor: pointer;
