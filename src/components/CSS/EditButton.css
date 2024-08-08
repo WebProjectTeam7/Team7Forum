@@ -1,20 +1,21 @@
+
 .edit-btn {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100px;
+    width: 88px;
     height: 40px;
-    border: none;
+    border: 1px solid #d9e94c;
     padding: 0 20px;
-    background-color: rgb(217, 233, 76);
+    background-color: rgb(147, 161, 14);
     color: white;
     font-weight: 500;
     cursor: pointer;
-    border-radius: 10px;
-    box-shadow: 5px 5px 0px rgb(158, 170, 48);
+    border-radius: 8px;
     overflow: hidden;
     transition: background-color 0.3s;
+    box-shadow: none;
 }
 
 .edit-text {
@@ -35,11 +36,10 @@
 }
 
 .edit-btn:hover .edit-svg {
-    right: 40px; 
+    right: 35px; 
 }
 
 .edit-btn:active {
     transform: translate(3px, 3px);
     transition-duration: 0.3s;
-    box-shadow: 2px 2px 0px rgb(140, 32, 212);
 }

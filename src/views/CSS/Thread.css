@@ -156,3 +156,8 @@ body.dark-mode .thread-edit button {
 body.dark-mode .thread-edit button:hover {
     background-color: #0056b3;
 }
+
+.button-container {
+    display: flex;
+    gap: 5px;
+}

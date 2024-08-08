@@ -9,6 +9,8 @@ import './CSS/Thread.css';
 import { updateThreadsCounter } from '../services/category.service';
 import { getUserByUsername, isUserBanned } from '../services/users.service';
 import UserInfo from '../components/UserInfo';
+import EditButton from '../components/EditButton';
+import DeleteButton from '../components/DeleteButton';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -118,9 +120,9 @@ export default function Thread() {
                 <p>Created At: {new Date(thread.createdAt).toLocaleDateString()}</p>
                 {thread.updatedAt && <p>Last Edited: {new Date(thread.updatedAt).toLocaleDateString()}</p>}
                 {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && (
-                    <div>
-                        <button onClick={() => setEditMode(true)}>Edit Thread</button>
-                        <button onClick={handleDeleteThread}>Delete Thread</button>
+                    <div className="button-container">
+                        <EditButton onClick={() => setEditMode(true)} />
+                        <DeleteButton onClick={handleDeleteThread} />
                     </div>
                 )}
             </div>
