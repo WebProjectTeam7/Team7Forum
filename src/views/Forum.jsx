@@ -98,7 +98,7 @@ export default function Forum() {
                             <Link to={`/forum/category/${category.id}`}>{category.title}</Link>
                         </h2>
                         <div className="category-meta">
-                            <span>Number of Threads: {category.threadsCount}</span>
+                            <span>Number of Threads: {category.threadCount}</span>
                             {isAdmin && (
                                 <div className="category-buttons">
                                     <EditButton onClick={() => {
