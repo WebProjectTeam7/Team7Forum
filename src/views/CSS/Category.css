@@ -15,7 +15,7 @@ h1, h2 {
 .category-container {
     width: 80%;
     margin: 20px auto;
-    background: #ece9e0;
+    background: rgba(249, 249, 249, 0.3);
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
