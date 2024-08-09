@@ -1,8 +1,9 @@
 #root {
-  width: 1950px;
+  width: 100vw;
+  min-height: 100vh;
   margin-left: 0;
   margin-right: auto;
-  padding: auto; 
+  padding: 0; 
 }
 
 .logo {
@@ -52,7 +53,7 @@ body {
   color: #000000;
   background-image: url('/src/image/Light.jpg');
   background-size: auto;
-  background-position: center;
+  background-position: top left;
   background-repeat: repeat;
   display: flex;
   flex-direction: column;
