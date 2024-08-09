@@ -100,7 +100,7 @@ form .infoButton{
 
 /* Dark Mode */
 body.dark-mode form {
-    background: #2e2e2e;
+    background: rgba(30, 30, 30, 0.3);
     border: 1px solid #444;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
