@@ -56,16 +56,15 @@ body {
   background-position: top left;
   background-repeat: repeat;
   display: flex;
-  flex-direction: column;
 }
 
 /* Dark mode styles */
 .dark-mode {
   background-color: rgb(66, 48, 48);
   color: #ffffff;
-  background-image: url('/src/image/Dark.jpg');
-  background-size: cover;
-  background-position: center;
+  background-image: url('/src/image/dark-mode-background.png');
+  background-size: auto;
+  background-position: top left;
   background-repeat: repeat;
   display: flex;
   flex-direction: column;
