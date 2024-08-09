@@ -21,7 +21,7 @@
     padding: 10px 20px;
     font-size: 1.2em;
     color: #fff;
-    background-color: #3498db;
+    background-color: #4CAF50;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -29,7 +29,7 @@
 }
 
 .create-button:hover {
-    background-color: #2980b9;
+    background-color: #45a049;
 }
 
 .beer-grid {
@@ -115,11 +115,11 @@ body.dark-mode .beerpedia-container h1 {
 }
 
 body.dark-mode .create-button {
-    background-color: #2980b9;
+    background-color: #4CAF50;
 }
 
 body.dark-mode .create-button:hover {
-    background-color: #1f618d;
+    background-color: #45a049;
 }
 
 body.dark-mode .beer-box {

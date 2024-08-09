@@ -11,18 +11,21 @@ const ErrorComponent = () => {
     const login = async () => {
       setLoading(true);
       try {
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: 'user', password: 'password' }),
+        // const response = await fetch('/api/login', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ username: 'user', password: 'password' }),
+        // });
+
+        // if (!response.ok) {
+        //   throw new Error('Login failed!');
+        // }
+
+        // const data = await response.json();
+        // console.log('Login successful:', data);
+        await new Promise((resolve, reject) => {
+          setTimeout(() => reject(new Error('Login failed!')), 1000);
         });
-
-        if (!response.ok) {
-          throw new Error('Login failed!');
-        }
-
-        const data = await response.json();
-        console.log('Login successful:', data);
       } catch (error) {
         setErrorMessage(error.message);
       } finally {
@@ -32,7 +35,6 @@ const ErrorComponent = () => {
 
     login();
   }, []);
-
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
   //   try {

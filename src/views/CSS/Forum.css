@@ -1,8 +1,10 @@
 /* Light Mode */
 .forum-container {
-    padding: 20px;
-    background-color: #f5f5f5;
+    padding: 0px 0px 0px 0px;
+    background-color: rgba(249, 249, 249, 0.3);
     align-items: center;
+    border: #2e2e2e;
+    border-radius: 5px;
 }
 
 h1 {
