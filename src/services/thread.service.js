@@ -4,12 +4,13 @@ import { db } from '../config/firebase-config';
 
 // CREATE
 
-export const createThread = async (categoryId, title, content, authorId, authorName) => {
+export const createThread = async (categoryId, title, content, tags, authorId, authorName) => {
     try {
         const newThread = {
             categoryId,
             title,
             content,
+            tags,
             authorId,
             authorName,
             createdAt: new Date().toISOString(),

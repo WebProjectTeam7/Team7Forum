@@ -23,6 +23,7 @@ import Thread from './views/Thread';
 import Beerpedia from './views/Beerpedia';
 import Authenticated from './hoc/Authenticated';
 import UserRoleEnum from './common/role.enum';
+import SearchResultPage from './views/SearchResultPage';
 
 
 export default function App() {
@@ -57,6 +58,7 @@ export default function App() {
                 <Header />
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/search-results" element={<SearchResultPage />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/my-profile" element={<Authenticated><MyProfile /></Authenticated>} />

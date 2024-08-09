@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getThreadsByCategoryId, createThread } from '../services/thread.service';
 import { createThreadTag } from '../services/tag.service';
 import { AppContext } from '../state/app.context';
@@ -64,10 +64,15 @@ export default function Category() {
             }
 
             try {
-                const newThreadId = await createThread(categoryId, newThreadTitle, newThreadContent, user.uid, userData.username);
-                const tagsArray = newThreadTags.split(',').filter(tag => tag.trim().length > 0);
-                await Promise.all(tagsArray.map(tag => createThreadTag(tag.trim(), newThreadId)));
+                const tagsArray = [...new Set(newThreadTags.split(',')
+                    .filter(tag => tag.trim().length > 0)
+                    .map(tag => tag.toLowerCase())
+                )];
 
+                const newThreadId =
+                    await createThread(categoryId, newThreadTitle, newThreadContent, tagsArray, user.uid, userData.username);
+
+                await Promise.all(tagsArray.forEach(tag => createThreadTag(tag.toLowerCase(), newThreadId)));
                 await addThreadIdToCategory(categoryId, newThreadId);
 
                 setFetchTrigger(!fetchTrigger);
