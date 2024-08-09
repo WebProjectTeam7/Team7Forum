@@ -62,7 +62,7 @@ body {
 .dark-mode {
   background-color: rgb(66, 48, 48);
   color: #ffffff;
-  background-image: url('/src/image/dark-mode-background.png');
+  background-image: url('/src/image/darkMode.jpeg');
   background-size: auto;
   background-position: top left;
   background-repeat: repeat;
