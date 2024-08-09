@@ -96,11 +96,12 @@ export default function BeerModal({ beer, onClose, onSave }) {
                             required
                         />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group description-group">
                         <label>Description:</label>
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
+                            className="description-textarea"
                             required
                         />
                     </div>

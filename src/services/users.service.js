@@ -29,6 +29,23 @@ export const getUserByUsername = async (username) => {
     }
 };
 
+export const getUsersByUsername = async () => {
+    const usersRef = ref(db, 'users');
+    try {
+        const snapshot = await get(usersRef);
+        if (!snapshot.exists()) {
+            throw new Error('No users found');
+        }
+        const allUsers = snapshot.val();
+        return Object.keys(allUsers).map(key => ({
+            key,
+            ...allUsers[key]
+        }));
+    } catch (error) {
+        throw new Error('Failed to retrieve users: ' + error.message);
+    }
+};
+
 export const getUserData = async (uid) => {
     const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
     try {
