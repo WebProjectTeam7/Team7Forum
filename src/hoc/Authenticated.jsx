@@ -2,13 +2,23 @@ import PropTypes from 'prop-types';
 import { useContext } from 'react';
 import { AppContext } from '../state/app.context';
 import { Navigate, useLocation } from 'react-router-dom';
+import UserRoleEnum from '../common/role.enum';
 
-export default function Authenticated({ children }) {
-    const { user } = useContext(AppContext);
+export default function Authenticated({ children, requiredRole }) {
+    const { user, userData } = useContext(AppContext);
     const location = useLocation();
 
     if (!user) {
         return <Navigate replace to="/login" state={{ from: location }} />;
+    }
+
+    if (!userData) {
+        return <div>Loading...</div>;
+    }
+
+    if (requiredRole && userData.role !== requiredRole) {
+
+        return <Navigate replace to="/" state={{ from: location }} />;
     }
 
     return (
@@ -20,4 +30,5 @@ export default function Authenticated({ children }) {
 
 Authenticated.propTypes = {
     children: PropTypes.any,
+    requiredRole: PropTypes.string,
 };
