@@ -85,7 +85,7 @@ h1, h2 {
 }
 
 .admin-actions button:hover {
-    background-color: #0056b3;
+    background-color: rgba(38, 61, 35, 0.301);
 }
 
 /* Dark Mode */
@@ -139,9 +139,9 @@ body.dark-mode .admin-actions textarea {
 }
 
 body.dark-mode .admin-actions button {
-    background-color: #007bff;
+    background-color: rgb(12, 100, 59);
 }
 
 body.dark-mode .admin-actions button:hover {
-    background-color: #0056b3;
+    background-color: rgba(38, 61, 35, 0.301);
 }
