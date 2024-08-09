@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { banUser, getRemainingBanTime, getUserByUsername } from '../services/users.service';
 import './CSS/UserProfile.css';
 import { AppContext } from '../state/app.context';
+import UserRoleEnum from '../common/role.enum';
 
 export default function UserProfile() {
     const [user, setUser] = useState(null);
@@ -71,7 +72,7 @@ export default function UserProfile() {
                         <label>Role: </label>
                         <span>{user.role}</span>
                     </div>
-                    {userData && userData.role === 'admin' && (
+                    {userData && (userData.role === UserRoleEnum.ADMIN || userData.role === UserRoleEnum.MODERATOR) && (
                         <div className="ban-user-section">
                             <input
                                 type="number"

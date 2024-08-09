@@ -6,9 +6,9 @@ import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import BeerModal from '../components/BeerModal';
 import './CSS/Beerpedia.css';
-
+import UserRoleEnum from '../common/role.enum';
 export default function Beerpedia() {
-    const { userData } = useContext(AppContext);
+    const { user,userData } = useContext(AppContext);
     const [beers, setBeers] = useState([]);
     const [editMode, setEditMode] = useState(null);
     const [editedBeerData, setEditedBeerData] = useState({});
@@ -57,6 +57,10 @@ export default function Beerpedia() {
     };
 
     const handleRating = async (beerId, rating) => {
+        if (!user || userData.isBanned) {
+            alert('You don`t have permision to vote!');
+            return;
+        }
         try {
             await rateBeer(beerId, userData.username, rating);
             fetchBeers();
@@ -110,9 +114,11 @@ export default function Beerpedia() {
     return (
         <div className="beerpedia-container">
             <h1>Beerpedia</h1>
-            <button className="create-button" onClick={handleCreate}>
-                Create New Beer
-            </button>
+            {userData && (userData.role === UserRoleEnum.ADMIN || userData.role === UserRoleEnum.MODERATOR) && (
+                <button className="create-button" onClick={handleCreate}>
+                    Create New Beer
+                </button>
+            )}
             <div className="beer-grid">
                 {beers.map(beer => (
                     <div className="beer-box" key={beer.id}>
@@ -181,10 +187,12 @@ export default function Beerpedia() {
                                     <p><strong>Rating:</strong> {beer.averageRating.toFixed(1)} 🍺</p>
                                 </>
                             )}
-                            <BeerRating
-                                rating={beer.averageRating}
-                                onRate={(rating) => handleRating(beer.id, rating)}
-                            />
+                            {user && !userData.isBanned && (
+                                <BeerRating
+                                    rating={beer.averageRating}
+                                    onRate={(rating) => handleRating(beer.id, rating)}
+                                />
+                            )}
                         </div>
                         <div className="beer-actions">
                             {editMode === beer.id ? (

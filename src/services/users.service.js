@@ -138,6 +138,11 @@ export const banUser = async (uid, days) => {
     const snapshot = await get(userRef);
     if (snapshot.exists()) {
         const userId = Object.keys(snapshot.val())[0];
+        const userData = Object.values(snapshot.val())[0];
+        if (userData.role === 'admin') {
+            throw new Error('Admins cannot be banned.');
+        }
+
         const banEndDate = new Date();
         banEndDate.setDate(banEndDate.getDate() + days);
         await update(ref(db, `users/${userId}`), { isBanned: true, banEndDate: banEndDate.toISOString() });
