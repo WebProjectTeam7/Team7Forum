@@ -78,7 +78,7 @@ nav button {
   font-weight: bold;
   transition: background-color 0.3s;
   margin-left: 0;
-  margin-right: -10px;
+  opacity: 0.9;
 }
 
 nav button:hover {
@@ -109,7 +109,7 @@ nav .beer-switch {
 
 input {
   font-size: 10px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(170, 168, 168, 0.8);
   color: #d4eeff;
   border: 1px solid gray;
   border-radius: 4px;
