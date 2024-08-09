@@ -5,6 +5,8 @@
     align-items: center;
     border: #2e2e2e;
     border-radius: 5px;
+    margin-left: 70px;
+    margin-right: 70px;
 }
 
 h1 {
@@ -150,7 +152,7 @@ body.dark-mode .forum-container {
 }
 
 body.dark-mode h1 {
-    color: #fff;
+    color: #a39f9f;
 }
 
 body.dark-mode .admin-actions {

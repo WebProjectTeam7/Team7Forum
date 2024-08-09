@@ -1,6 +1,6 @@
 .beer-button {
     border: 0;
-    background: ghostwhite;
+    background: rgba(30, 30, 30, 0.5);
     display: flex;
     align-items: center;
     cursor: pointer;
