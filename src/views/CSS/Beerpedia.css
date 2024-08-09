@@ -6,6 +6,8 @@
     margin: 0 auto;
     color: #333;
     font-family: Arial, sans-serif;
+    background-color: rgba(30, 30, 30, 0.4);
+    margin-top: 30px;
 }
 
 .beerpedia-container h1 {
@@ -117,7 +119,7 @@ body.dark-mode {
 }
 
 body.dark-mode .beerpedia-container h1 {
-    color: #ecf0f1;
+    color: #a39f9f;
 }
 
 body.dark-mode .create-button {
