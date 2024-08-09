@@ -21,6 +21,8 @@ import Forum from './views/Forum';
 import Category from './views/Category';
 import Thread from './views/Thread';
 import Beerpedia from './views/Beerpedia';
+import Authenticated from './hoc/Authenticated';
+import UserRoleEnum from './common/role.enum';
 
 
 export default function App() {
@@ -57,13 +59,13 @@ export default function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/my-profile" element={<MyProfile />} />
-                    <Route path="/user-profile/:username" element={<UserProfile />} />
-                    <Route path="/add-survey" element={<AddSurvey />} />
+                    <Route path="/my-profile" element={<Authenticated><MyProfile /></Authenticated>} />
+                    <Route path="/user-profile/:username" element={<Authenticated><UserProfile /></Authenticated>} />
+                    <Route path="/add-survey" element={<Authenticated requiredRole="moderator"><AddSurvey /></Authenticated>} />
                     <Route path="/survey/:id" element={<Survey />} />
                     <Route path="/surveys" element={<SurveyList />} />
-                    <Route path="/edit-survey/:id" element={<EditSurvey />} />
-                    <Route path="/admin-page" element={<AdminPage />} />
+                    <Route path="/edit-survey/:id" element={<Authenticated requiredRole="moderator"><EditSurvey /></Authenticated>} />
+                    <Route path="/admin-page" element={<Authenticated requiredRole="admin"><AdminPage /></Authenticated>} />
                     <Route path="/forum" element={<Forum />} />
                     <Route path="/forum/category/:categoryId" element={<Category />} />
                     <Route path="/forum/thread/:threadId" element={<Thread />} />
