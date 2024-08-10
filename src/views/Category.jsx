@@ -97,23 +97,21 @@ export default function Category() {
                 ) : (
                     <li>No threads available</li>
                 )}
-                {isAdmin && (
+                {userData && (
                     <div className="admin-actions">
                         <button onClick={() => setShowCreateThread(!showCreateThread)}>
                             {showCreateThread ? 'Cancel' : 'Create Thread'}
                         </button>
                         {showCreateThread && (
                             <div className="create-thread">
-                                <InfoButton text="Title must be:
-                               between 3 to 64 characters,"/>
+                                <InfoButton text="Title must be between 3 to 64 characters." />
                                 <input
                                     type="text"
                                     value={newThreadTitle}
                                     onChange={(e) => setNewThreadTitle(e.target.value)}
                                     placeholder="New thread title"
                                 />
-                                <InfoButton text="Content must be:
-                               between 3 to 8192 characters,"/>
+                                <InfoButton text="Content must be between 3 to 8192 characters." />
                                 <textarea
                                     value={newThreadContent}
                                     onChange={(e) => setNewThreadContent(e.target.value)}
