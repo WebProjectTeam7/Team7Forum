@@ -109,6 +109,70 @@ export const getThreadsCount = async () => {
     }
 };
 
+export const getThreadsByTitleExact = async (title) => {
+    try {
+        const threadsRef = query(
+            ref(db, 'threads'),
+            orderByChild('title'),
+            equalTo(title)
+        );
+        const snapshot = await get(threadsRef);
+        if (!snapshot.exists()) {
+            return [];
+        }
+        const threads = [];
+        snapshot.forEach(childSnapshot => {
+            threads.push({ id: childSnapshot.key, ...childSnapshot.val() });
+        });     // TODO Remove if thread title is unique validation
+        return threads;
+    } catch (error) {
+        console.error('Error fetching threads by exact title:', error);
+        throw new Error('Failed to fetch threads by title');
+    }
+};
+
+export const getThreadsByTitleMatch = async (keyWord) => {
+    try {
+        const threadsRef = query(ref(db, 'threads'), orderByChild('title'));
+        const snapshot = await get(threadsRef);
+        if (!snapshot.exists()) {
+            return [];
+        }
+        const threads = [];
+        snapshot.forEach(childSnapshot => {
+            const threadData = childSnapshot.val();
+            if (threadData.title.toLowerCase().includes(keyWord.toLowerCase())) {
+                threads.push({ id: childSnapshot.key, ...threadData });
+            }
+        });
+        return threads;
+    } catch (error) {
+        console.error('Error fetching threads by title match:', error);
+        throw new Error('Failed to fetch threads by title match');
+    }
+};
+
+export const getThreadsByContentMatch = async (keyWord) => {
+    try {
+        const threadsRef = query(ref(db, 'threads'), orderByChild('content'));
+        const snapshot = await get(threadsRef);
+        if (!snapshot.exists()) {
+            return [];
+        }
+        const threads = [];
+        snapshot.forEach(childSnapshot => {
+            const threadData = childSnapshot.val();
+            if (threadData.content.toLowerCase().includes(keyWord.toLowerCase())) {
+                threads.push({ id: childSnapshot.key, ...threadData });
+            }
+        });
+        return threads;
+    } catch (error) {
+        console.error('Error fetching threads by content match:', error);
+        throw new Error('Failed to fetch threads by content match');
+    }
+};
+
 // UPDATE
 
 export const updateThread = async (threadId, updatedData) => {

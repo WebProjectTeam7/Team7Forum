@@ -7,7 +7,7 @@ import { db } from '../config/firebase-config';
 export const createThreadTag = async (tag, threadId) => {
     try {
         const threadsIds = await getThreadsIdsByTag(tag);
-        if (threadsIds.includes(threadId)) {
+        if (threadsIds && threadsIds.includes(threadId)) {
             return;
         }
         const newTagRef = ref(db, `tags/${tag}`);
