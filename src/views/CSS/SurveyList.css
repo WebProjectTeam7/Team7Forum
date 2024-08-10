@@ -3,7 +3,7 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background: rgba(30, 30, 30, 0.4);
+    background: rgba(249, 249, 249, 0.2);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-top: 30px;
@@ -45,4 +45,8 @@
   .survey-link:focus {
     outline: none;
     text-decoration: underline;
+  }
+
+  .dark-mode.survey-list-container {
+      background: rgba(30, 30, 30, 0.7);
   }

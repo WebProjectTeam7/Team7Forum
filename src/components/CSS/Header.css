@@ -44,10 +44,10 @@ header span {
 nav {
   display: flex;
   align-items: center;
-  gap: 74px;
+  gap: 44px;
   flex-wrap: wrap;
   justify-content: flex-start;
-  font-size: 19px;
+  font-size: 23px;
   width: 100%;
   max-width: 1600px;
   padding: 0 0px;
@@ -109,7 +109,7 @@ nav .beer-switch {
 }
 
 input {
-  font-size: 10px;
+
   background-color: rgba(170, 168, 168, 0.8);
   color: #d4eeff;
   border: 1px solid gray;

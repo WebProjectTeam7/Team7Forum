@@ -11,9 +11,13 @@ h1, h2 {
     font-family: fantasy;
 }
 
+h1 {
+    margin-left: 20px;
+}
+
 /* Category container */
 .category-container {
-    width: 80%;
+    width: 50%;
     margin: 20px auto;
     background: rgba(249, 249, 249, 0.3);
     padding: 20px;

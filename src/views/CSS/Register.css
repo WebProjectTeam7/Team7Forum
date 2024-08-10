@@ -38,13 +38,12 @@ input {
 }
 
 form input {
-    width: 100%;
+    width: 95%;
     padding: 8px;
-    margin: 6px 0 20px 0;
     display: inline-block;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box;
+    box-sizing: content-box;
 }
 
 input#checkbox-remember {
@@ -107,7 +106,7 @@ body.dark-mode form {
 }
 
 body.dark-mode form h1 {
-    color: #e0e0e0;
+    color: #a39f9f;
 }
 
 body.dark-mode form label {

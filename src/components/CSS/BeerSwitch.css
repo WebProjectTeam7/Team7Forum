@@ -2,13 +2,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-left: auto;
+  gap: 0px;
+  margin-left: 87%;
+  margin-top: -20px;
+  margin-bottom: -10px;
 }
 
 .icon {
   width: 30px;
   height: 45px;
+
 }
 
 
