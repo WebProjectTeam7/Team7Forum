@@ -83,11 +83,15 @@ export default function AdminPage() {
     };
 
     const filteredUsers = users.filter(user =>
-        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.firstName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const filteredBannedUsers = bannedUsers.filter(user =>
-        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+        user.username.toLowerCase().includes(searchTerm.toLowerCase()) |
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.firstName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleDeleteUser = async (uid, role) => {
