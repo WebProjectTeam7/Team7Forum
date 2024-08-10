@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { getAllUsers, switchUserRole, banUser, getRemainingBanTime, unbanUser } from '../services/users.service';
 import { useNavigate } from 'react-router-dom';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/AdminPage.css';
 import DeleteButton from '../components/deletebutton';
+import { deleteUser } from 'firebase/auth';
+import { AppContext } from '../state/app.context';
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
@@ -12,6 +14,7 @@ export default function AdminPage() {
     const [bannedUsers, setBannedUsers] = useState([]);
     const [view, setView] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
+    const { userData } = useContext(AppContext);
 
     useEffect(() => {
         fetchAllUsers();
