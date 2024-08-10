@@ -55,15 +55,17 @@ export default function Replies({ threadId }) {
                     <Reply key={reply.id} reply={reply} threadId={threadId} fetchReplies={fetchReplies} />
                 ))}
             </ul>
-            <div className="reply-input">
-                <input
-                    type="text"
-                    value={replyContent}
-                    onChange={(e) => setReplyContent(e.target.value)}
-                    placeholder="Add a reply"
-                />
-                <button onClick={handleCreateReply}>Add Reply</button>
-            </div>
+            {userData && (
+                <div className="reply-input">
+                    <input
+                        type="text"
+                        value={replyContent}
+                        onChange={(e) => setReplyContent(e.target.value)}
+                        placeholder="Add a reply"
+                    />
+                    <button onClick={handleCreateReply}>Add Reply</button>
+                </div>
+            )}
         </div>
     );
 }
