@@ -37,10 +37,10 @@ export default function Search() {
 
             if (filter === 'thread-tags' || filter === 'All') {
                 const tags = searchQuery.split(',').map(tag => tag.trim());
-                const threadIdsArray = await Promise.all(tags.map(async (tag) => await getThreadsIdsByTag(tag)));
-                const threadIds = threadIdsArray.flat();
-                const threads = await Promise.all(threadIds.map(threadId => getThreadById(threadId)));
-                result.threads = result.threads.concat(threads);
+                const threadsIdsArray = await Promise.all(tags.map(async (tag) => await getThreadsIdsByTag(tag)));
+                const threadsIds = threadsIdsArray.flat();
+                const threads = await Promise.all(threadsIds.map(threadId => getThreadById(threadId)));
+                result.threads = result.threads.concat(threads.filter(thread => !!thread));
             }
 
             if (filter === 'user-username-exact') {

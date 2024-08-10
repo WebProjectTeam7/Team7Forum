@@ -24,7 +24,7 @@ export default function SearchResultPage() {
                             <ul>
                                 {results.users.map((user) => (
                                     <li key={user.uid}>
-                                        <UserInfo userAuthor={user} />
+                                        <UserInfo key={user.uid} userAuthor={user} />
                                     </li>
                                 ))}
                             </ul>
