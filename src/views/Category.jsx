@@ -72,7 +72,7 @@ export default function Category() {
                 const newThreadId =
                     await createThread(categoryId, newThreadTitle, newThreadContent, tagsArray, user.uid, userData.username);
 
-                await Promise.all(tagsArray.forEach(tag => createThreadTag(tag.toLowerCase(), newThreadId)));
+                await Promise.all(tagsArray.map(tag => createThreadTag(tag.toLowerCase(), newThreadId)));
                 await addThreadIdToCategory(categoryId, newThreadId);
 
                 setFetchTrigger(!fetchTrigger);
