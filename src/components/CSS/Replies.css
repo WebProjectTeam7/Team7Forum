@@ -46,25 +46,28 @@
 }
 
 .reply-content {
-    flex: 5; /* The remaining space */
+    flex: 5;
     margin-left: 20px;
     padding: 20px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
 }
 
 .reply-actions {
-    display: flex;
+    /* display: flex; */
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
 
 .upvote-downvote {
-    
     display: flex;
     align-items: center;
+    margin-top: auto; 
 }
 
 .upvote-button,

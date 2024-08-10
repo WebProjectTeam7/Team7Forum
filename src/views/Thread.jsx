@@ -1,6 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getThreadById, updateThread, deleteThread, handleThreadVote, incrementThreadViews } from '../services/thread.service';
+import {
+    getThreadById,
+    updateThread,
+    deleteThread,
+    handleThreadVote,
+    incrementThreadViews
+} from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
@@ -13,7 +19,6 @@ import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
 import { createOrUpdateThreadTag, getThreadsIdsByTag, removeThreadIdFromTag } from '../services/tag.service';
-
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -40,7 +45,7 @@ export default function Thread() {
     const incrementViews = async () => {
         try {
             await incrementThreadViews(threadId);
-            setFetchTrigger(!fetchTrigger);
+            setFetchTrigger(prev => !prev);
         } catch (error) {
             console.error('Error incrementing thread views:', error);
         }
@@ -52,7 +57,7 @@ export default function Thread() {
             setThread(fetchedThread);
             setEditThreadTitle(fetchedThread.title);
             setEditThreadContent(fetchedThread.content);
-            setEditThreadTags(fetchedThread.tags && fetchedThread.tags.join(', '));
+            setEditThreadTags(fetchedThread.tags ? fetchedThread.tags.join(', ') : '');
             fetchUserAuthor(fetchedThread.authorName);
 
             if (userData) {
@@ -75,14 +80,15 @@ export default function Thread() {
     };
 
     const handleTagClick = async (tag) => {
-        let result = {
-            threads: [],
-            users: [],
-        };
-        const threadsIds = await getThreadsIdsByTag(tag);
-        const threads = await Promise.all(threadsIds.map(threadId => getThreadById(threadId)));
-        result.threads = result.threads.concat(threads.filter(thread => !!thread));
-        navigate('/search-results', { state: { results: result } });
+        const result = { threads: [], users: [] };
+        try {
+            const threadsIds = await getThreadsIdsByTag(tag);
+            const threads = await Promise.all(threadsIds.map(id => getThreadById(id)));
+            result.threads = threads.filter(thread => !!thread);
+            navigate('/search-results', { state: { results: result } });
+        } catch (error) {
+            console.error('Error fetching threads by tag:', error);
+        }
     };
 
     const handleEditThread = async () => {
@@ -118,18 +124,16 @@ export default function Thread() {
 
             if (thread.tags) {
                 const tagsToRemove = thread.tags.filter(tag => !updatedData.tags.includes(tag));
-                console.log(tagsToRemove);
                 await Promise.all(tagsToRemove.map(tag => removeThreadIdFromTag(tag, threadId)));
             }
 
             setEditMode(false);
-            setFetchTrigger(!fetchTrigger);
+            setFetchTrigger(prev => !prev);
         } catch (error) {
             console.error('Error editing thread:', error);
             alert('An error occurred while editing the thread. Please try again.');
         }
     };
-
 
     const handleDeleteThread = async () => {
         if (window.confirm('Are you sure you want to delete this thread?')) {
@@ -146,17 +150,16 @@ export default function Thread() {
     const handleVote = async (vote) => {
         const newVote = userVote === vote ? 0 : vote;
 
-        const banned = await isUserBanned(userData.uid);
-
-        if (banned) {
-            alert('You are banned from voting!');
-            return;
-        }
-
         try {
+            const banned = await isUserBanned(userData.uid);
+            if (banned) {
+                alert('You are banned from voting!');
+                return;
+            }
+
             await handleThreadVote(threadId, newVote, userData.username);
             setUserVote(newVote);
-            setFetchTrigger(!fetchTrigger);
+            setFetchTrigger(prev => !prev);
         } catch (error) {
             console.error(`Error handling ${vote === 1 ? 'upvote' : 'downvote'}`, error);
         }
@@ -179,8 +182,12 @@ export default function Thread() {
                 ) : (
                     <h1>{thread.title}</h1>
                 )}
-                <p>Created At: {new Date(thread.createdAt).toLocaleDateString()}</p>
-                {thread.updatedAt && <p>Last Edited: {new Date(thread.updatedAt).toLocaleDateString()}</p>}
+                <p className="thread-dates">
+                    Created At: {new Date(thread.createdAt).toLocaleDateString()}
+                    {thread.updatedAt && (
+                        <> | Last Edited: {new Date(thread.updatedAt).toLocaleDateString()}</>
+                    )}
+                </p>
                 {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && (
                     <div className="button-container">
                         <EditButton onClick={() => setEditMode(true)} />
@@ -203,16 +210,24 @@ export default function Thread() {
                 </div>
             </div>
             <div className="thread-actions">
-                <div onClick={userData ? () => handleVote(1) : null} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                <div
+                    onClick={userData ? () => handleVote(1) : null}
+                    className={`vote-button upvote-button ${userVote === 1 ? 'active' : ''}`}
+                >
                     <FaArrowAltCircleUp />
                 </div>
-                <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
-                <div onClick={userData ? () => handleVote(-1) : null} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                <span>Upvotes: {thread.upvotes?.length || 0}</span>
+                <div
+                    onClick={userData ? () => handleVote(-1) : null}
+                    className={`vote-button downvote-button ${userVote === -1 ? 'active' : ''}`}
+                >
                     <FaArrowAltCircleDown />
                 </div>
-                <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
-                <FaEye />
-                <span>Views: {thread.views || 0}</span>
+                <span>Downvotes: {thread.downvotes?.length || 0}</span>
+                <div className="views">
+                    <FaEye />
+                    <span>Views: {thread.views || 0}</span>
+                </div>
             </div>
             <div className="thread-tags">
                 {editMode ? (
@@ -243,7 +258,6 @@ export default function Thread() {
                     <button onClick={() => setEditMode(false)}>Cancel</button>
                 </div>
             )}
-
             <Replies threadId={threadId} />
         </div>
     );
