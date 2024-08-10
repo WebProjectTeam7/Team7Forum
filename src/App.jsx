@@ -24,6 +24,7 @@ import Beerpedia from './views/Beerpedia';
 import Authenticated from './hoc/Authenticated';
 import UserRoleEnum from './common/role.enum';
 import SearchResultPage from './views/SearchResultPage';
+import RedirectIfAuthenticated from './hoc/RedirectIfAuthenticated';
 
 
 export default function App() {
@@ -59,8 +60,8 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/search-results" element={<SearchResultPage />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<RedirectIfAuthenticated><Register /></RedirectIfAuthenticated>} />
+                    <Route path="/login" element={<RedirectIfAuthenticated><Login /></RedirectIfAuthenticated>} />
                     <Route path="/my-profile" element={<Authenticated><MyProfile /></Authenticated>} />
                     <Route path="/user-profile/:username" element={<Authenticated><UserProfile /></Authenticated>} />
                     <Route path="/add-survey" element={<Authenticated requiredRole="moderator"><AddSurvey /></Authenticated>} />
