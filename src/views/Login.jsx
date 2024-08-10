@@ -72,17 +72,10 @@ export default function Login() {
             <input value={user.email} onChange={updateUser('email')} type="text" name="email" id="email" /><br /><br />
             <label htmlFor="password">Password: </label>
             <input value={user.password} onChange={updateUser('password')} type="password" name="password" id="password" /><br />
-            <div className="checkbox-container">
-              <label>
-                <input type="checkbox"
-                       id="checkbox-remember" 
-                       checked={remember} 
-                       onChange={toggleRemember} 
-                       />
-                Remember Me
-            </label>
-            </div><br /><br />
-            
+            <div className="checkbox-container" style={{ display: 'flex', alignItems: 'center' }}>
+            <input type="checkbox" id="checkbox-remember" checked={remember} onChange={toggleRemember} />
+            <label htmlFor="checkbox-remember" style={{ marginLeft: '8px' }}>Remember Me</label>
+        </div><br />
             <button type="submit">Login</button>
         </form>
     );
