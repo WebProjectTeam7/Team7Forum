@@ -33,7 +33,6 @@ export default function Thread() {
         fetchThread();
     }, [fetchTrigger]);
 
-
     const incrementViews = async () => {
         try {
             await incrementThreadViews(threadId);
@@ -50,9 +49,12 @@ export default function Thread() {
             setEditThreadTitle(fetchedThread.title);
             setEditThreadContent(fetchedThread.content);
             fetchUserAuthor(fetchedThread.authorName);
-            const vote = fetchedThread.upvotes?.includes(userData.username) ? 1 :
-                fetchedThread.downvotes?.includes(userData.username) ? -1 : 0;
-            setUserVote(vote);
+
+            if (userData) {
+                const vote = fetchedThread.upvotes?.includes(userData.username) ? 1 :
+                    fetchedThread.downvotes?.includes(userData.username) ? -1 : 0;
+                setUserVote(vote);
+            }
         } catch (error) {
             console.error('Error fetching thread:', error);
         }
@@ -133,11 +135,11 @@ export default function Thread() {
                 </div>
             </div>
             <div className="thread-actions">
-                <div onClick={() => handleVote(1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                <div onClick={userData ? () => handleVote(1) : null} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
                     <FaArrowAltCircleUp />
                 </div>
                 <span>Upvotes: {thread.upvotes ? thread.upvotes.length : 0}</span>
-                <div onClick={() => handleVote(-1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                <div onClick={userData ? () => handleVote(-1) : null} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
                     <FaArrowAltCircleDown />
                 </div>
                 <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>

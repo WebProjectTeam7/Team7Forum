@@ -30,7 +30,6 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
         }
     };
 
-
     const handleEditReply = async (replyId) => {
         if (editReplyContent.trim()) {
             try {
@@ -57,6 +56,10 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
     };
 
     const handleVote = async (replyId, currentVote, voteType) => {
+        if (!userData) {
+            alert('You need to be logged in to vote.');
+            return;
+        }
         const newVote = currentVote === voteType ? 0 : voteType;
         try {
             await handleReplyVote(replyId, newVote, userData.username);
@@ -66,7 +69,18 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
         }
     };
 
-    const userVote = reply.upvotes?.includes(userData.username) ? 1 : reply.downvotes?.includes(userData.username) ? -1 : 0;
+    let userVote;
+    if (userData) {
+        if (reply.upvotes?.includes(userData.username)) {
+            userVote = 1;
+        } else if (reply.downvotes?.includes(userData.username)) {
+            userVote = -1;
+        } else {
+            userVote = 0;
+        }
+    } else {
+        userVote = 0;
+    }
 
     return (
         <li className="reply-item">
@@ -90,16 +104,22 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
                                 <div className="upvote-downvote">
                                     <p>Created At: {new Date(reply.createdAt).toLocaleDateString()}</p>
                                     {reply.updatedAt && <p>Last Edited: {new Date(reply.updatedAt).toLocaleDateString()}</p>}
-                                    <div onClick={() => handleVote(reply.id, userVote, 1)} className={`upvote-button ${userVote === 1 ? 'active' : ''}`}>
+                                    <div
+                                        onClick={userData ? () => handleVote(reply.id, userVote, 1) : null}
+                                        className={`upvote-button ${userVote === 1 ? 'active' : ''}`}
+                                    >
                                         <FaArrowAltCircleUp />
                                     </div>
                                     <span>Upvotes: {reply.upvotes ? reply.upvotes.length : 0}</span>
-                                    <div onClick={() => handleVote(reply.id, userVote, -1)} className={`downvote-button ${userVote === -1 ? 'active' : ''}`}>
+                                    <div
+                                        onClick={userData ? () => handleVote(reply.id, userVote, -1) : null}
+                                        className={`downvote-button ${userVote === -1 ? 'active' : ''}`}
+                                    >
                                         <FaArrowAltCircleDown />
                                     </div>
                                     <span>Downvotes: {reply.downvotes ? reply.downvotes.length : 0}</span>
                                 </div>
-                                {(userData.role === UserRoleEnum.ADMIN || userData.username === reply.author) && (
+                                {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === reply.author)) && (
                                     <div className="edit-delete-buttons">
                                         <DeleteButton onClick={() => handleDeleteReply(reply.id)} />
                                         <EditButton onClick={() => {
