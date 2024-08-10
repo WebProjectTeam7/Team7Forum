@@ -11,6 +11,9 @@ import UserInfo from '../components/UserInfo';
 import { removeThreadIdFromCategory } from '../services/category.service';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
+import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
+import { createOrUpdateThreadTag, getThreadsIdsByTag, removeThreadIdFromTag } from '../services/tag.service';
+
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -21,6 +24,7 @@ export default function Thread() {
     const [editMode, setEditMode] = useState(false);
     const [editThreadTitle, setEditThreadTitle] = useState('');
     const [editThreadContent, setEditThreadContent] = useState('');
+    const [editThreadTags, setEditThreadTags] = useState('');
     const [userAuthor, setUserAuthor] = useState({});
     const [userVote, setUserVote] = useState(0);
     const [fetchTrigger, setFetchTrigger] = useState(false);
@@ -48,6 +52,7 @@ export default function Thread() {
             setThread(fetchedThread);
             setEditThreadTitle(fetchedThread.title);
             setEditThreadContent(fetchedThread.content);
+            setEditThreadTags(fetchedThread.tags && fetchedThread.tags.join(', '));
             fetchUserAuthor(fetchedThread.authorName);
 
             if (userData) {
@@ -69,16 +74,62 @@ export default function Thread() {
         }
     };
 
+    const handleTagClick = async (tag) => {
+        let result = {
+            threads: [],
+            users: [],
+        };
+        const threadsIds = await getThreadsIdsByTag(tag);
+        const threads = await Promise.all(threadsIds.map(threadId => getThreadById(threadId)));
+        result.threads = result.threads.concat(threads.filter(thread => !!thread));
+        navigate('/search-results', { state: { results: result } });
+    };
+
     const handleEditThread = async () => {
+        const alertArr = [];
+
+        if (!TITLE_REGEX.test(editThreadTitle)) {
+            alertArr.push('Invalid title length, must be between 3 and 64 characters!');
+        }
+
+        if (!CONTENT_REGEX.test(editThreadContent)) {
+            alertArr.push('Invalid content length, must be between 3 and 8192 characters!');
+        }
+
+        if (alertArr.length > 0) {
+            alert(alertArr.join('\n'));
+            return;
+        }
+
         try {
-            const updatedData = { title: editThreadTitle, content: editThreadContent };
+            const updatedData = {
+                title: editThreadTitle,
+                content: editThreadContent,
+                tags: [...new Set(editThreadTags.split(',')
+                    .map(tag => tag.toLowerCase().trim())
+                    .filter(tag => tag.length > 0))],
+            };
+
             await updateThread(threadId, updatedData);
+
+            if (updatedData.tags.length > 0) {
+                await Promise.all(updatedData.tags.map(tag => createOrUpdateThreadTag(tag, threadId)));
+            }
+
+            if (thread.tags) {
+                const tagsToRemove = thread.tags.filter(tag => !updatedData.tags.includes(tag));
+                console.log(tagsToRemove);
+                await Promise.all(tagsToRemove.map(tag => removeThreadIdFromTag(tag, threadId)));
+            }
+
             setEditMode(false);
             setFetchTrigger(!fetchTrigger);
         } catch (error) {
             console.error('Error editing thread:', error);
+            alert('An error occurred while editing the thread. Please try again.');
         }
     };
+
 
     const handleDeleteThread = async () => {
         if (window.confirm('Are you sure you want to delete this thread?')) {
@@ -118,7 +169,16 @@ export default function Thread() {
     return (
         <div className="thread-container">
             <div className="thread-header">
-                <h1>{thread.title}</h1>
+                {editMode ? (
+                    <input
+                        type="text"
+                        value={editThreadTitle}
+                        onChange={(e) => setEditThreadTitle(e.target.value)}
+                        placeholder="Edit thread title"
+                    />
+                ) : (
+                    <h1>{thread.title}</h1>
+                )}
                 <p>Created At: {new Date(thread.createdAt).toLocaleDateString()}</p>
                 {thread.updatedAt && <p>Last Edited: {new Date(thread.updatedAt).toLocaleDateString()}</p>}
                 {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && (
@@ -131,7 +191,15 @@ export default function Thread() {
             <div className="thread-body">
                 <UserInfo userAuthor={userAuthor} />
                 <div className="thread-content">
-                    <p>{thread.content}</p>
+                    {editMode ? (
+                        <textarea
+                            value={editThreadContent}
+                            onChange={(e) => setEditThreadContent(e.target.value)}
+                            placeholder="Edit thread content"
+                        />
+                    ) : (
+                        <p>{thread.content}</p>
+                    )}
                 </div>
             </div>
             <div className="thread-actions">
@@ -146,20 +214,31 @@ export default function Thread() {
                 <FaEye />
                 <span>Views: {thread.views || 0}</span>
             </div>
-
-            {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && editMode && (
-                <div className="thread-edit">
+            <div className="thread-tags">
+                {editMode ? (
                     <input
                         type="text"
-                        value={editThreadTitle}
-                        onChange={(e) => setEditThreadTitle(e.target.value)}
-                        placeholder="Edit thread title"
+                        value={editThreadTags}
+                        onChange={(e) => setEditThreadTags(e.target.value)}
+                        placeholder="Edit tags (comma-separated)"
                     />
-                    <textarea
-                        value={editThreadContent}
-                        onChange={(e) => setEditThreadContent(e.target.value)}
-                        placeholder="Edit thread content"
-                    />
+                ) : (
+                    <p>
+                        <strong>Tags:</strong>
+                        {thread.tags && thread.tags.map((tag, index) => (
+                            <span
+                                key={index}
+                                className="tag-link"
+                                onClick={() => handleTagClick(tag)}
+                            >
+                                {tag}{index < thread.tags.length - 1 ? ', ' : ''}
+                            </span>
+                        ))}
+                    </p>
+                )}
+            </div>
+            {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && editMode && (
+                <div className="thread-edit">
                     <button onClick={handleEditThread}>Save Changes</button>
                     <button onClick={() => setEditMode(false)}>Cancel</button>
                 </div>
