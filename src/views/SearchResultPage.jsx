@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import ThreadItem from '../components/ThreadItem';
+import UserInfo from '../components/UserInfo';
 
 export default function SearchResultPage() {
     const location = useLocation();
@@ -22,26 +23,8 @@ export default function SearchResultPage() {
                             <h3>User Results:</h3>
                             <ul>
                                 {results.users.map((user) => (
-                                    <li key={user.id}>
-                                        <div>
-                                            <strong>Username:</strong> {user.username}
-                                        </div>
-                                        <div>
-                                            <strong>First Name:</strong> {user.firstName}
-                                        </div>
-                                        <div>
-                                            <strong>Last Name:</strong> {user.lastName}
-                                        </div>
-                                        <div>
-                                            <strong>Email:</strong> {user.email}
-                                        </div>
-                                        <div>
-                                            <strong>Avatar:</strong>
-                                            <img src={user.avatar} alt={`${user.username}'s avatar`} width="50" height="50" />
-                                        </div>
-                                        <div>
-                                            <strong>Role:</strong> {user.role}
-                                        </div>
+                                    <li key={user.uid}>
+                                        <UserInfo userAuthor={user} />
                                     </li>
                                 ))}
                             </ul>
@@ -53,7 +36,6 @@ export default function SearchResultPage() {
                             <h3>Thread Results:</h3>
                             <ul>
                                 {results.threads.map((thread) => (
-
                                     <li key={thread.id}>
                                         <ThreadItem key={thread.id} thread={thread} />
                                     </li>

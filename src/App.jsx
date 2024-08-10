@@ -20,6 +20,7 @@ import Beerpedia from './views/Beerpedia';
 import Authenticated from './hoc/Authenticated';
 import SearchResultPage from './views/SearchResultPage';
 import RedirectIfAuthenticated from './hoc/RedirectIfAuthenticated';
+import UserRoleEnum from './common/role.enum';
 
 
 export default function App() {
@@ -59,7 +60,7 @@ export default function App() {
                     <Route path="/login" element={<RedirectIfAuthenticated><Login /></RedirectIfAuthenticated>} />
                     <Route path="/my-profile" element={<Authenticated><MyProfile /></Authenticated>} />
                     <Route path="/user-profile/:username" element={<Authenticated><UserProfile /></Authenticated>} />
-                    <Route path="/admin-page" element={<Authenticated requiredRole="admin"><AdminPage /></Authenticated>} />
+                    <Route path="/admin-page" element={<Authenticated requiredRole={UserRoleEnum.ADMIN}><AdminPage /></Authenticated>} />
                     <Route path="/forum" element={<Forum />} />
                     <Route path="/forum/category/:categoryId" element={<Category />} />
                     <Route path="/forum/thread/:threadId" element={<Thread />} />
@@ -68,6 +69,6 @@ export default function App() {
                 </Routes>
                 <footer>&copy;Team7Forum</footer>
             </AppContext.Provider>
-        </BrowserRouter>
+        </BrowserRouter >
     );
 }
