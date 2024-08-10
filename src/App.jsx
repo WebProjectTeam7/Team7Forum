@@ -8,21 +8,16 @@ import { auth } from './config/firebase-config';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getUserData } from './services/users.service';
 import Header from './components/Header';
-import EditSurvey from './components/EditSurvey';
 import NotFound from './views/NotFound';
 import Home from './views/Home';
 import MyProfile from './views/MyProfile';
 import AdminPage from './views/AdminPage';
 import UserProfile from './views/UserProfile';
-import Survey from './views/Survey';
-import AddSurvey from './views/AddSurvey';
-import SurveyList from './views/SurveyList';
 import Forum from './views/Forum';
 import Category from './views/Category';
 import Thread from './views/Thread';
 import Beerpedia from './views/Beerpedia';
 import Authenticated from './hoc/Authenticated';
-import UserRoleEnum from './common/role.enum';
 import SearchResultPage from './views/SearchResultPage';
 import RedirectIfAuthenticated from './hoc/RedirectIfAuthenticated';
 
@@ -64,10 +59,6 @@ export default function App() {
                     <Route path="/login" element={<RedirectIfAuthenticated><Login /></RedirectIfAuthenticated>} />
                     <Route path="/my-profile" element={<Authenticated><MyProfile /></Authenticated>} />
                     <Route path="/user-profile/:username" element={<Authenticated><UserProfile /></Authenticated>} />
-                    <Route path="/add-survey" element={<Authenticated requiredRole="moderator"><AddSurvey /></Authenticated>} />
-                    <Route path="/survey/:id" element={<Survey />} />
-                    <Route path="/surveys" element={<SurveyList />} />
-                    <Route path="/edit-survey/:id" element={<Authenticated requiredRole="moderator"><EditSurvey /></Authenticated>} />
                     <Route path="/admin-page" element={<Authenticated requiredRole="admin"><AdminPage /></Authenticated>} />
                     <Route path="/forum" element={<Forum />} />
                     <Route path="/forum/category/:categoryId" element={<Category />} />
