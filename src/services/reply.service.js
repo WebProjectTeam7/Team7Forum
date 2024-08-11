@@ -111,3 +111,24 @@ export const deleteReply = async (replyId) => {
         throw new Error('Failed to delete reply');
     }
 };
+
+// REPORT
+
+export const reportReply = async (replyId, reporter, content, reason) => {
+    try {
+        const reportRef = push(ref(db, 'reports'));
+        const report = {
+            id: reportRef.key,
+            type: 'reply',
+            targetId: replyId,
+            reporter,
+            content,
+            reason,
+            reportedAt: new Date().toISOString(),
+        };
+        await set(reportRef, report);
+    } catch (error) {
+        console.error('Error reporting reply:', error);
+        throw error;
+    }
+};

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getThreadById, updateThread, deleteThread, handleThreadVote, incrementThreadViews } from '../services/thread.service';
+import { getThreadById, updateThread, deleteThread, handleThreadVote, incrementThreadViews, reportThread } from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
@@ -111,6 +111,18 @@ export default function Thread() {
         }
     };
 
+    const handleReportThread = async () => {
+        const reason = prompt('Please enter the reason for reporting this thread:');
+        if (reason) {
+            try {
+                await reportThread(threadId, userData.username, thread.content, reason);
+                alert('Thread reported successfully.');
+            } catch (error) {
+                console.error('Error reporting thread:', error);
+            }
+        }
+    };
+
     if (!thread) {
         return <div>Loading...</div>;
     }
@@ -145,6 +157,9 @@ export default function Thread() {
                 <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
                 <FaEye />
                 <span>Views: {thread.views || 0}</span>
+                {userData && (
+                    <button onClick={handleReportThread}>Report</button>
+                )}
             </div>
 
             {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && editMode && (

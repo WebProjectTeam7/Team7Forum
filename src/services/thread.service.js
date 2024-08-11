@@ -234,3 +234,24 @@ export const deleteThread = async (threadId) => {
         throw error;
     }
 };
+
+// REPORT
+
+export const reportThread = async (threadId, reporter, content, reason) => {
+    try {
+        const reportRef = push(ref(db, 'reports'));
+        const report = {
+            id: reportRef.key,
+            type: 'thread',
+            targetId: threadId,
+            reporter,
+            content,
+            reason,
+            reportedAt: new Date().toISOString(),
+        };
+        await set(reportRef, report);
+    } catch (error) {
+        console.error('Error reporting thread:', error);
+        throw error;
+    }
+};
