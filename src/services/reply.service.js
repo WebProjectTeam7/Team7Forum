@@ -74,6 +74,8 @@ export const getReplyById = async (replyId) => {
 export const updateReply = async (replyId, updatedData) => {
     try {
         const replyRef = ref(db, `replies/${replyId}`);
+        updatedData.updatedAt = new Date().toISOString();
+
         await update(replyRef, updatedData);
     } catch (error) {
         console.error('Error editing reply:', error);
