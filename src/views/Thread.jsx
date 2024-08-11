@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../state/app.context';
-import { getThreadById, updateThread, deleteThread, incrementThreadViews, reportThread } from '../services/thread.service';
+import { getThreadById, updateThread, deleteThread, incrementThreadViews, reportThread, uploadThreadImages } from '../services/thread.service';
 import { createOrUpdateThreadTag, getThreadsIdsByTag, removeThreadIdFromTag } from '../services/tag.service';
 import { getUserByUsername } from '../services/users.service';
 import { removeThreadIdFromCategory } from '../services/category.service';
@@ -27,6 +28,9 @@ export default function Thread() {
     const [editThreadTags, setEditThreadTags] = useState('');
     const [userAuthor, setUserAuthor] = useState({});
     const [userVote, setUserVote] = useState(0);
+    const [selectedImages, setSelectedImages] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
+    const [removedImages, setRemovedImages] = useState([]);
 
     useEffect(() => {
         incrementViews();
@@ -59,6 +63,9 @@ export default function Thread() {
                     fetchedThread.downvotes?.includes(userData.username) ? -1 : 0;
                 setUserVote(vote);
             }
+            if (fetchedThread.imagesUrls) {
+                setImagePreviews(fetchedThread.imagesUrls);
+            }
         } catch (error) {
             console.error('Error fetching thread:', error);
         }
@@ -85,6 +92,21 @@ export default function Thread() {
         }
     };
 
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setSelectedImages(files);
+        const previews = files.map(file => URL.createObjectURL(file));
+        setImagePreviews(prev => [...prev, ...previews]);
+    };
+
+    const handleRemoveImage = (index, isExisting) => {
+        if (isExisting) {
+            setRemovedImages(prev => [...prev, imagePreviews[index]]);
+        }
+        setImagePreviews(prev => prev.filter((_, i) => i !== index));
+        setSelectedImages(prev => prev.filter((_, i) => i !== index - (imagePreviews.length - selectedImages.length)));
+    };
+
     const handleEditThread = async () => {
         const alertArr = [];
 
@@ -102,25 +124,27 @@ export default function Thread() {
         }
 
         try {
+            let uploadedImagesUrls = [];
+            if (selectedImages.length > 0) {
+                uploadedImagesUrls = await uploadThreadImages(threadId, selectedImages);
+            }
+
             const updatedData = {
                 title: editThreadTitle,
                 content: editThreadContent,
                 tags: [...new Set(editThreadTags.split(',')
                     .map(tag => tag.toLowerCase().trim())
                     .filter(tag => tag.length > 0))],
+                imagesUrls: [...imagePreviews, ...uploadedImagesUrls].filter(url => !removedImages.includes(url)),
             };
-
             await updateThread(threadId, updatedData);
-
             if (updatedData.tags.length > 0) {
                 await Promise.all(updatedData.tags.map(tag => createOrUpdateThreadTag(tag, threadId)));
             }
-
             if (thread.tags) {
                 const tagsToRemove = thread.tags.filter(tag => !updatedData.tags.includes(tag));
                 await Promise.all(tagsToRemove.map(tag => removeThreadIdFromTag(tag, threadId)));
             }
-
             setEditMode(false);
             fetchThread();
         } catch (error) {
@@ -140,7 +164,6 @@ export default function Thread() {
             }
         }
     };
-
 
     const handleReportThread = async () => {
         const reason = prompt('Please enter the reason for reporting this thread:');
@@ -178,7 +201,6 @@ export default function Thread() {
                     )}
                 </p>
 
-
                 <div className="button-container">
                     {userData && (
                         <button onClick={handleReportThread}>Report</button>
@@ -195,13 +217,39 @@ export default function Thread() {
                 <UserInfo userAuthor={userAuthor} />
                 <div className="thread-content">
                     {editMode ? (
-                        <textarea
-                            value={editThreadContent}
-                            onChange={(e) => setEditThreadContent(e.target.value)}
-                            placeholder="Edit thread content"
-                        />
+                        <div className="thread-input">
+                            <textarea
+                                value={editThreadContent}
+                                onChange={(e) => setEditThreadContent(e.target.value)}
+                                placeholder="Edit thread content"
+                            />
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleImageChange}
+                            />
+                            <div className="image-previews">
+                                {imagePreviews.map((url, index) => (
+                                    <>
+                                        <div key={index} className="image-preview">
+                                            <img src={url} alt="Preview" />
+                                        </div>
+                                        <button onClick={() =>
+                                            handleRemoveImage(index, index < imagePreviews.length - selectedImages.length)}>Remove</button>
+                                    </>
+                                ))}
+                            </div>
+                        </div>
                     ) : (
-                        <p>{thread.content}</p>
+                        <>
+                            <p>{thread.content}</p>
+                            <div className="image-preview">
+                                {thread.imagesUrls && thread.imagesUrls.map((url, index) => (
+                                    <img key={index} src={url} alt={`Thread image ${index}`} />
+                                ))}
+                            </div>
+                        </>
                     )}
                 </div>
             </div>
@@ -216,7 +264,6 @@ export default function Thread() {
                 />
                 <FaEye />
                 <span>Views: {thread.views || 0}</span>
-
             </div>
             <div className="thread-tags">
                 {editMode ? (
@@ -250,6 +297,6 @@ export default function Thread() {
                 )
             }
             <Replies threadId={threadId} />
-        </div >
+        </div>
     );
 }

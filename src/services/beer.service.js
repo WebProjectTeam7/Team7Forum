@@ -1,6 +1,6 @@
 import { ref as dbRef, push, get, update, set, remove } from 'firebase/database';
-import { db, storage } from '../config/firebase-config';
 import { ref as storageRef, uploadBytes, deleteObject, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../config/firebase-config';
 
 // CREATE
 

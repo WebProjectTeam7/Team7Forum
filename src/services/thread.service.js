@@ -1,10 +1,11 @@
 import { ref, get, query, orderByChild, limitToLast, limitToFirst, equalTo, push, update, remove, set } from 'firebase/database';
-import { db } from '../config/firebase-config';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../config/firebase-config';
 
 
 // CREATE
 
-export const createThread = async (categoryId, title, content, tags, authorId, authorName) => {
+export const createThread = async (categoryId, title, content, tags, authorId, authorName, imagesUrls) => {
     try {
         const newThread = {
             categoryId,
@@ -13,6 +14,7 @@ export const createThread = async (categoryId, title, content, tags, authorId, a
             tags,
             authorId,
             authorName,
+            imagesUrls,
             createdAt: new Date().toISOString(),
         };
 
@@ -286,6 +288,21 @@ export const removeReplyIdFromThread = async (threadId, replyId) => {
     }
 };
 
+export const uploadThreadImages = async (threadId, imageFiles) => {
+    try {
+        const imageUrls = [];
+        for (const imageFile of imageFiles) {
+            const imageReference = storageRef(storage, `threads/${threadId}/${imageFile.name}`);
+            const snapshot = await uploadBytes(imageReference, imageFile);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            imageUrls.push(downloadURL);
+        }
+        return imageUrls;
+    } catch (error) {
+        console.error('Error uploading images:', error);
+        throw new Error('Failed to upload images');
+    }
+};
 
 // DELETE
 

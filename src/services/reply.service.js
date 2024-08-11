@@ -1,15 +1,17 @@
 import { ref, push, set, query, get, orderByChild, equalTo, update, remove } from 'firebase/database';
-import { db } from '../config/firebase-config';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../config/firebase-config';
 
 
 // CREATE
 
-export const createReply = async (threadId, username, replyContent) => {
+export const createReply = async (threadId, username, replyContent, imagesUrls) => {
     try {
         const newReply = {
             author: username,
             threadId,
             content: replyContent,
+            imagesUrls,
             createdAt: new Date().toISOString(),
         };
 
@@ -33,7 +35,7 @@ export const getRepliesByThreadId = async (threadId) => {
         if (!snapshot.exists()) {
             return [];
         }
-        return Object.values(snapshot.val()).sort((a, b) => new Date(a.createdAt) - new DataTransfer(b.createdAt));
+        return Object.values(snapshot.val()).sort((a, b) => new Date(b.createdAt) - new DataTransfer(a.createdAt));
     } catch (error) {
         console.error('Error retrieving replies by thread ID:', error);
         throw new Error('Failed to retrieve replies');
@@ -68,6 +70,7 @@ export const getReplyById = async (replyId) => {
         throw new Error('Failed to retrieve reply');
     }
 };
+
 
 // UPDATE
 
@@ -115,6 +118,21 @@ export const handleReplyVote = async (replyId, vote, username) => {
     }
 };
 
+export const uploadReplyImages = async (replyId, imageFiles) => {
+    try {
+        const imageUrls = [];
+        for (const imageFile of imageFiles) {
+            const imageReference = storageRef(storage, `replies/${replyId}/${imageFile.name}`);
+            const snapshot = await uploadBytes(imageReference, imageFile);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            imageUrls.push(downloadURL);
+        }
+        return imageUrls;
+    } catch (error) {
+        console.error('Error uploading images:', error);
+        throw new Error('Failed to upload images');
+    }
+};
 
 // DELETE
 

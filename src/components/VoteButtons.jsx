@@ -29,7 +29,7 @@ const VoteButtons = ({ itemId, itemType, fetchItem, initialUserVote, upvotes, do
                 await handleReplyVote(itemId, newVote, userData.username);
             }
             setUserVote(newVote);
-            fetchItem(); // To refresh the votes count
+            fetchItem();
         } catch (error) {
             console.error(`Error handling ${vote === 1 ? 'upvote' : 'downvote'}`, error);
         }
