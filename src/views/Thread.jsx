@@ -1,13 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getThreadById, updateThread, deleteThread, handleThreadVote, incrementThreadViews, reportThread } from '../services/thread.service';
-import {
-    getThreadById,
-    updateThread,
-    deleteThread,
-    handleThreadVote,
-    incrementThreadViews
-} from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
@@ -242,11 +235,6 @@ export default function Thread() {
                 {userData && (
                     <button onClick={handleReportThread}>Report</button>
                 )}
-                <span>Downvotes: {thread.downvotes?.length || 0}</span>
-                <div className="views">
-                    <FaEye />
-                    <span>Views: {thread.views || 0}</span>
-                </div>
             </div>
             <div className="thread-tags">
                 {editMode ? (
