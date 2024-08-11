@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { updateUser, deleteUser, getUserByUsername, getRemainingBanTime } from '../services/users.service';
+import { updateUser,getUserByUsername } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 import { useNavigate } from 'react-router-dom';
 import { auth, storage } from '../config/firebase-config';
@@ -7,6 +7,7 @@ import { signOut } from 'firebase/auth';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { MAX_FILE_SIZE } from '../common/views.constants';
 import './CSS/MyProfile.css';
+import { deleteUser, getRemainingBanTime } from '../services/admin.service';
 
 const useDefaultAvatarUrl = () => {
     const [defaultAvatarUrl, setDefaultAvatarUrl] = useState(null);

@@ -4,7 +4,7 @@ import { AppContext } from '../state/app.context';
 import BeerRating from '../components/BeerRating';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
-import BeerModal from '../components/BeerModal';
+import CreateBeerModal from '../components/CreateBeerModal';
 import './CSS/Beerpedia.css';
 import UserRoleEnum from '../common/role.enum';
 export default function Beerpedia() {
@@ -214,7 +214,7 @@ export default function Beerpedia() {
             </div>
 
             {isModalOpen && (
-                <BeerModal
+                <CreateBeerModal
                     beer={null}
                     onClose={() => setIsModalOpen(false)}
                     onSave={handleSaveNewBeer}

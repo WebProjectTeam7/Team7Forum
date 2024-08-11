@@ -54,12 +54,28 @@ export const getRepliesByUserId = async (userId) => {
     }
 };
 
+export const getReplyById = async (replyId) => {
+    try {
+        const replyRef = query(ref(db, 'replies'), orderByChild('id'), equalTo(replyId));
+        const snapshot = await get(replyRef);
+        if (!snapshot.exists()) {
+            return null;
+        }
+        const data = snapshot.val();
+        return data ? Object.values(data)[0] : null;
+    } catch (error) {
+        console.error('Error fetching reply:', error);
+        throw new Error('Failed to retrieve reply');
+    }
+};
 
 // UPDATE
 
 export const updateReply = async (replyId, updatedData) => {
     try {
         const replyRef = ref(db, `replies/${replyId}`);
+        updatedData.updatedAt = new Date().toISOString();
+
         await update(replyRef, updatedData);
     } catch (error) {
         console.error('Error editing reply:', error);
@@ -109,5 +125,26 @@ export const deleteReply = async (replyId) => {
     } catch (error) {
         console.error('Error deleting reply:', error);
         throw new Error('Failed to delete reply');
+    }
+};
+
+// REPORT
+
+export const reportReply = async (replyId, reporter, content, reason) => {
+    try {
+        const reportRef = push(ref(db, 'reports'));
+        const report = {
+            id: reportRef.key,
+            type: 'reply',
+            targetId: replyId,
+            reporter,
+            content,
+            reason,
+            reportedAt: new Date().toISOString(),
+        };
+        await set(reportRef, report);
+    } catch (error) {
+        console.error('Error reporting reply:', error);
+        throw error;
     }
 };

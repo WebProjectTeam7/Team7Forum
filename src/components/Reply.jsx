@@ -1,15 +1,15 @@
 import { useState, useContext, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { AppContext } from '../state/app.context';
-import UserRoleEnum from '../common/role.enum';
-import { handleReplyVote, updateReply, deleteReply } from '../services/reply.service';
+import PropTypes from 'prop-types';
+import { updateReply, deleteReply, reportReply } from '../services/reply.service';
 import { removeReplyIdFromThread } from '../services/thread.service';
 import { getUserByUsername } from '../services/users.service';
-import './CSS/Replies.css';
+import UserRoleEnum from '../common/role.enum';
 import UserInfo from './UserInfo';
 import EditButton from './EditButton';
 import DeleteButton from './DeleteButton';
+import VoteButtons from './VoteButtons';
+import './CSS/Replies.css';
 
 const Reply = ({ reply, threadId, fetchReplies }) => {
     const { userData } = useContext(AppContext);
@@ -55,31 +55,25 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
         }
     };
 
-    const handleVote = async (replyId, currentVote, voteType) => {
-        if (!userData) {
-            alert('You need to be logged in to vote.');
-            return;
-        }
-        const newVote = currentVote === voteType ? 0 : voteType;
-        try {
-            await handleReplyVote(replyId, newVote, userData.username);
-            fetchReplies();
-        } catch (error) {
-            console.error(`Error handling ${voteType === 1 ? 'upvote' : 'downvote'}`, error);
+    const handleReportReply = async () => {
+        const reason = prompt('Please enter the reason for reporting this reply:');
+        if (reason) {
+            try {
+                await reportReply(reply.id, userData.username, reply.content, reason);
+                alert('Reply reported successfully.');
+            } catch (error) {
+                console.error('Error reporting reply:', error);
+            }
         }
     };
 
-    let userVote;
+    let userVote = 0;
     if (userData) {
         if (reply.upvotes?.includes(userData.username)) {
             userVote = 1;
         } else if (reply.downvotes?.includes(userData.username)) {
             userVote = -1;
-        } else {
-            userVote = 0;
         }
-    } else {
-        userVote = 0;
     }
 
     return (
@@ -88,7 +82,7 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
                 <UserInfo userAuthor={userAuthor} />
                 <div className="reply-content">
                     {editReplyId === reply.id ? (
-                        <div>
+                        <div className="edit-reply">
                             <input
                                 type="text"
                                 value={editReplyContent}
@@ -98,39 +92,40 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
                             <button onClick={() => setEditReplyId(null)}>Cancel</button>
                         </div>
                     ) : (
-                        <div>
+                        <div className="reply-text">
                             <p>{reply.content}</p>
-                            <div className="reply-actions">
-                                <div className="upvote-downvote">
-                                    <p>Created At: {new Date(reply.createdAt).toLocaleDateString()}</p>
-                                    {reply.updatedAt && <p>Last Edited: {new Date(reply.updatedAt).toLocaleDateString()}</p>}
-                                    <div
-                                        onClick={userData ? () => handleVote(reply.id, userVote, 1) : null}
-                                        className={`upvote-button ${userVote === 1 ? 'active' : ''}`}
-                                    >
-                                        <FaArrowAltCircleUp />
-                                    </div>
-                                    <span>Upvotes: {reply.upvotes ? reply.upvotes.length : 0}</span>
-                                    <div
-                                        onClick={userData ? () => handleVote(reply.id, userVote, -1) : null}
-                                        className={`downvote-button ${userVote === -1 ? 'active' : ''}`}
-                                    >
-                                        <FaArrowAltCircleDown />
-                                    </div>
-                                    <span>Downvotes: {reply.downvotes ? reply.downvotes.length : 0}</span>
-                                </div>
-                                {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === reply.author)) && (
-                                    <div className="edit-delete-buttons">
-                                        <DeleteButton onClick={() => handleDeleteReply(reply.id)} />
-                                        <EditButton onClick={() => {
-                                            setEditReplyId(reply.id);
-                                            setEditReplyContent(reply.content);
-                                        }} />
-                                    </div>
+                            <p className="thread-dates">
+                                Created At: {new Date(reply.createdAt).toLocaleString().slice(0, -3)}
+                                {reply.updatedAt && (
+                                    <> | Last Edited: {new Date(reply.updatedAt).toLocaleString().slice(0, -3)}</>
                                 )}
-                            </div>
+                            </p>
                         </div>
                     )}
+                    <div className="reply-actions">
+                        <VoteButtons
+                            itemId={reply.id}
+                            itemType="reply"
+                            fetchItem={fetchReplies}
+                            initialUserVote={userVote}
+                            upvotes={reply.upvotes?.length || 0}
+                            downvotes={reply.downvotes?.length || 0}
+                        />
+                        <div className="edit-delete-report-buttons">
+                            {userData && (
+                                <button className="report-button" onClick={handleReportReply}>Report</button>
+                            )}
+                            {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === reply.author)) && (
+                                <>
+                                    <EditButton onClick={() => {
+                                        setEditReplyId(reply.id);
+                                        setEditReplyContent(reply.content);
+                                    }} />
+                                    <DeleteButton onClick={() => handleDeleteReply(reply.id)} />
+                                </>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         </li>
@@ -142,7 +137,6 @@ Reply.propTypes = {
         id: PropTypes.string.isRequired,
         content: PropTypes.string.isRequired,
         author: PropTypes.string.isRequired,
-        authorAvatar: PropTypes.string,
         createdAt: PropTypes.string.isRequired,
         updatedAt: PropTypes.string,
         upvotes: PropTypes.arrayOf(PropTypes.string),

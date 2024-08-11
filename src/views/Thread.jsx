@@ -1,24 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-    getThreadById,
-    updateThread,
-    deleteThread,
-    handleThreadVote,
-    incrementThreadViews
-} from '../services/thread.service';
 import { AppContext } from '../state/app.context';
-import Replies from '../components/Replies';
-import UserRoleEnum from '../common/role.enum';
-import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
-import './CSS/Thread.css';
-import { getUserByUsername, isUserBanned } from '../services/users.service';
-import UserInfo from '../components/UserInfo';
+import { getThreadById, updateThread, deleteThread, incrementThreadViews, reportThread } from '../services/thread.service';
+import { createOrUpdateThreadTag, getThreadsIdsByTag, removeThreadIdFromTag } from '../services/tag.service';
+import { getUserByUsername } from '../services/users.service';
 import { removeThreadIdFromCategory } from '../services/category.service';
+import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
+import { FaEye } from 'react-icons/fa';
+import UserRoleEnum from '../common/role.enum';
+import Replies from '../components/Replies';
+import UserInfo from '../components/UserInfo';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
-import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
-import { createOrUpdateThreadTag, getThreadsIdsByTag, removeThreadIdFromTag } from '../services/tag.service';
+import VoteButtons from '../components/VoteButtons';
+import './CSS/Thread.css';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -32,7 +27,6 @@ export default function Thread() {
     const [editThreadTags, setEditThreadTags] = useState('');
     const [userAuthor, setUserAuthor] = useState({});
     const [userVote, setUserVote] = useState(0);
-    const [fetchTrigger, setFetchTrigger] = useState(false);
 
     useEffect(() => {
         incrementViews();
@@ -40,12 +34,12 @@ export default function Thread() {
 
     useEffect(() => {
         fetchThread();
-    }, [fetchTrigger]);
+    }, []);
 
     const incrementViews = async () => {
         try {
             await incrementThreadViews(threadId);
-            setFetchTrigger(prev => !prev);
+            fetchThread();
         } catch (error) {
             console.error('Error incrementing thread views:', error);
         }
@@ -128,7 +122,7 @@ export default function Thread() {
             }
 
             setEditMode(false);
-            setFetchTrigger(prev => !prev);
+            fetchThread();
         } catch (error) {
             console.error('Error editing thread:', error);
             alert('An error occurred while editing the thread. Please try again.');
@@ -147,21 +141,16 @@ export default function Thread() {
         }
     };
 
-    const handleVote = async (vote) => {
-        const newVote = userVote === vote ? 0 : vote;
 
-        try {
-            const banned = await isUserBanned(userData.uid);
-            if (banned) {
-                alert('You are banned from voting!');
-                return;
+    const handleReportThread = async () => {
+        const reason = prompt('Please enter the reason for reporting this thread:');
+        if (reason) {
+            try {
+                await reportThread(threadId, userData.username, thread.content, reason);
+                alert('Thread reported successfully.');
+            } catch (error) {
+                console.error('Error reporting thread:', error);
             }
-
-            await handleThreadVote(threadId, newVote, userData.username);
-            setUserVote(newVote);
-            setFetchTrigger(prev => !prev);
-        } catch (error) {
-            console.error(`Error handling ${vote === 1 ? 'upvote' : 'downvote'}`, error);
         }
     };
 
@@ -183,17 +172,24 @@ export default function Thread() {
                     <h1>{thread.title}</h1>
                 )}
                 <p className="thread-dates">
-                    Created At: {new Date(thread.createdAt).toLocaleDateString()}
+                    Created At: {new Date(thread.createdAt).toLocaleString().slice(0, -3)}
                     {thread.updatedAt && (
-                        <> | Last Edited: {new Date(thread.updatedAt).toLocaleDateString()}</>
+                        <> | Last Edited: {new Date(thread.updatedAt).toLocaleString().slice(0, -3)}</>
                     )}
                 </p>
-                {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && (
-                    <div className="button-container">
-                        <EditButton onClick={() => setEditMode(true)} />
-                        <DeleteButton onClick={handleDeleteThread} />
-                    </div>
-                )}
+
+
+                <div className="button-container">
+                    {userData && (
+                        <button onClick={handleReportThread}>Report</button>
+                    )}
+                    {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && (
+                        <>
+                            <EditButton onClick={() => setEditMode(true)} />
+                            <DeleteButton onClick={handleDeleteThread} />
+                        </>
+                    )}
+                </div>
             </div>
             <div className="thread-body">
                 <UserInfo userAuthor={userAuthor} />
@@ -210,24 +206,17 @@ export default function Thread() {
                 </div>
             </div>
             <div className="thread-actions">
-                <div
-                    onClick={userData ? () => handleVote(1) : null}
-                    className={`vote-button upvote-button ${userVote === 1 ? 'active' : ''}`}
-                >
-                    <FaArrowAltCircleUp />
-                </div>
-                <span>Upvotes: {thread.upvotes?.length || 0}</span>
-                <div
-                    onClick={userData ? () => handleVote(-1) : null}
-                    className={`vote-button downvote-button ${userVote === -1 ? 'active' : ''}`}
-                >
-                    <FaArrowAltCircleDown />
-                </div>
-                <span>Downvotes: {thread.downvotes?.length || 0}</span>
-                <div className="views">
-                    <FaEye />
-                    <span>Views: {thread.views || 0}</span>
-                </div>
+                <VoteButtons
+                    itemId={threadId}
+                    itemType="thread"
+                    fetchItem={fetchThread}
+                    initialUserVote={userVote}
+                    upvotes={thread.upvotes?.length || 0}
+                    downvotes={thread.downvotes?.length || 0}
+                />
+                <FaEye />
+                <span>Views: {thread.views || 0}</span>
+
             </div>
             <div className="thread-tags">
                 {editMode ? (
@@ -252,13 +241,15 @@ export default function Thread() {
                     </p>
                 )}
             </div>
-            {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && editMode && (
-                <div className="thread-edit">
-                    <button onClick={handleEditThread}>Save Changes</button>
-                    <button onClick={() => setEditMode(false)}>Cancel</button>
-                </div>
-            )}
+            {
+                (userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && editMode && (
+                    <div className="thread-edit">
+                        <button onClick={handleEditThread}>Save Changes</button>
+                        <button onClick={() => setEditMode(false)}>Cancel</button>
+                    </div>
+                )
+            }
             <Replies threadId={threadId} />
-        </div>
+        </div >
     );
 }
