@@ -5,7 +5,7 @@ import { addReplyIdToThread } from '../services/thread.service';
 import Reply from './Reply';
 import PropTypes from 'prop-types';
 import './CSS/Replies.css';
-import { isUserBanned } from '../services/users.service';
+import { isUserBanned } from '../services/admin.service';
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);

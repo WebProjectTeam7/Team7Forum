@@ -6,13 +6,14 @@ import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
 import './CSS/Thread.css';
-import { getUserByUsername, isUserBanned } from '../services/users.service';
+import { getUserByUsername } from '../services/users.service';
 import UserInfo from '../components/UserInfo';
 import { removeThreadIdFromCategory } from '../services/category.service';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
 import { createOrUpdateThreadTag, getThreadsIdsByTag, removeThreadIdFromTag } from '../services/tag.service';
+import { isUserBanned } from '../services/admin.service';
 
 export default function Thread() {
     const { threadId } = useParams();

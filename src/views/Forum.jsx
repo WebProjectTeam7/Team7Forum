@@ -6,7 +6,7 @@ import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/Forum.css';
 import ThreadItem from '../components/ThreadItem';
-import { isUserBanned } from '../services/users.service';
+import { isUserBanned } from '../services/admin.service';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 

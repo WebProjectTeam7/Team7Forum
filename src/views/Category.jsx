@@ -6,7 +6,7 @@ import { AppContext } from '../state/app.context';
 import { getCategoryById, addThreadIdToCategory } from '../services/category.service';
 import './CSS/Category.css';
 import ThreadItem from '../components/ThreadItem';
-import { isUserBanned } from '../services/users.service';
+import { isUserBanned } from '../services/admin.service';
 import InfoButton from '../components/InfoButton';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
 
