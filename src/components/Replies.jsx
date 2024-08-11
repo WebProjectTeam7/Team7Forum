@@ -3,9 +3,12 @@ import { createReply, getRepliesByThreadId } from '../services/reply.service';
 import { AppContext } from '../state/app.context';
 import { addReplyIdToThread } from '../services/thread.service';
 import Reply from './Reply';
+import Pagination from './Pagination';
 import PropTypes from 'prop-types';
 import './CSS/Replies.css';
 import { isUserBanned } from '../services/users.service';
+
+const REPLIES_PER_PAGE = 3;
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);
@@ -13,10 +16,11 @@ export default function Replies({ threadId }) {
     const [replies, setReplies] = useState([]);
     const [replyContent, setReplyContent] = useState('');
     const [fetchTrigger, setFetchTrigger] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         fetchReplies();
-    }, [fetchTrigger]);
+    }, [fetchTrigger, currentPage]);
 
     const fetchReplies = async () => {
         try {
@@ -47,14 +51,19 @@ export default function Replies({ threadId }) {
         }
     };
 
+    const startIndex = (currentPage - 1) * REPLIES_PER_PAGE;
+    const paginatedReplies = replies.slice(startIndex, startIndex + REPLIES_PER_PAGE);
+    const totalPages = Math.ceil(replies.length / REPLIES_PER_PAGE);
+
     return (
         <div className="replies-container">
             <h2>Replies</h2>
             <ul className="replies">
-                {replies.map((reply) => (
+                {paginatedReplies.map((reply) => (
                     <Reply key={reply.id} reply={reply} threadId={threadId} fetchReplies={fetchReplies} />
                 ))}
             </ul>
+
             {userData && (
                 <div className="reply-input">
                     <input
@@ -66,6 +75,11 @@ export default function Replies({ threadId }) {
                     <button onClick={handleCreateReply}>Add Reply</button>
                 </div>
             )}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+            />
         </div>
     );
 }
