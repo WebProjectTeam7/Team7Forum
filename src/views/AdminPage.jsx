@@ -6,7 +6,9 @@ import './CSS/AdminPage.css';
 import DeleteButton from '../components/deletebutton';
 import { deleteUser } from 'firebase/auth';
 import { AppContext } from '../state/app.context';
-import { banUser, getRemainingBanTime, unbanUser } from '../services/admin.service';
+import { banUser, deleteReport, getRemainingBanTime, getReports, unbanUser } from '../services/admin.service';
+import { getThreadById } from '../services/thread.service';
+import { getReplyById } from '../services/reply.service';
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
@@ -16,10 +18,12 @@ export default function AdminPage() {
     const [view, setView] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
     const { userData } = useContext(AppContext);
+    const [reports, setReports] = useState([]);
 
     useEffect(() => {
         fetchAllUsers();
         fetchBannedUsers();
+        fetchReports();
     }, []);
 
     const handleRoleChange = async (uid, newRole) => {
@@ -120,16 +124,57 @@ export default function AdminPage() {
         }
     };
 
+    const fetchReports = async () => {
+        try {
+            const fetchedReports = await getReports();
+            setReports(fetchedReports);
+        } catch (error) {
+            console.error('Error fetching reports:', error);
+        }
+    };
+
+    const handleDeleteReport = async (reportId) => {
+        try {
+            await deleteReport(reportId);
+            setReports(reports.filter(report => report.id !== reportId));
+        } catch (error) {
+            console.error('Error deleting report:', error);
+        }
+    };
+
+    const handleGoToPost = async (targetId, type) => {
+        try {
+            if (type === 'thread') {
+                const thread = await getThreadById(targetId);
+                if (thread) {
+                    navigate(`/forum/thread/${targetId}`);
+                } else {
+                    alert('Thread not found');
+                }
+            } else if (type === 'reply') {
+                const reply = await getReplyById(targetId);
+                if (reply) {
+                    navigate(`/forum/thread/${reply.threadId}`);
+                } else {
+                    alert('Reply not found');
+                }
+            }
+        } catch (error) {
+            console.error('Error navigating to post:', error);
+        }
+    };
+
     return (
         <div className="admin-page-container">
-            <h1>All Users</h1>
+            <h1>Admin Panel</h1>
             <div className="nav">
                 <button onClick={() => setView('all')}>All Users</button>
                 <button onClick={() => setView('banned')}>Banned Users</button>
+                <button onClick={() => setView('reports')}>Reports</button>
             </div>
             <input
                 type="text"
-                placeholder="Search by username"
+                placeholder="Search by username, email, or name"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-bar"
@@ -222,6 +267,40 @@ export default function AdminPage() {
                         ))}
                     </tbody>
                 </table>
+            )}
+            {view === 'reports' && (
+                <div>
+                    <h2>Reports</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reported By</th>
+                                <th>Type</th>
+                                <th>Content</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {reports.length > 0 ? (
+                                reports.map(report => (
+                                    <tr key={report.id}>
+                                        <td>{report.reporter}</td>
+                                        <td>{report.type}</td>
+                                        <td>{report.content}</td>
+                                        <td>
+                                            <button onClick={() => handleDeleteReport(report.id)}>Dismiss</button>
+                                            <button onClick={() => handleGoToPost(report.targetId, report.type)}>Go to Post</button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4">No reports available</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
     );

@@ -54,6 +54,20 @@ export const getRepliesByUserId = async (userId) => {
     }
 };
 
+export const getReplyById = async (replyId) => {
+    try {
+        const replyRef = query(ref(db, 'replies'), orderByChild('id'), equalTo(replyId));
+        const snapshot = await get(replyRef);
+        if (!snapshot.exists()) {
+            return null;
+        }
+        const data = snapshot.val();
+        return data ? Object.values(data)[0] : null;
+    } catch (error) {
+        console.error('Error fetching reply:', error);
+        throw new Error('Failed to retrieve reply');
+    }
+};
 
 // UPDATE
 

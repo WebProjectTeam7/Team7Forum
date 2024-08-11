@@ -1,6 +1,8 @@
 import { get, ref, query, equalTo, orderByChild, update, remove } from 'firebase/database';
 import { db } from '../config/firebase-config';
+import { MILLISECONDS_IN_AN_HOUR, MILLISECONDS_IN_A_DAY } from '../common/components.constants';
 
+// DELETE USER
 export const deleteUser = async (uid) => {
     const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
     try {
@@ -15,6 +17,8 @@ export const deleteUser = async (uid) => {
         throw new Error('Failed to delete user: ' + error.message);
     }
 };
+
+// BAN
 
 export const banUser = async (uid, days) => {
     const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
@@ -75,7 +79,32 @@ export const getRemainingBanTime = (banEndDate) => {
     const diff = end - now;
     if (diff <= 0) return 'Ban has expired';
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const days = Math.floor(diff / MILLISECONDS_IN_A_DAY);
+    const hours = Math.floor((diff % MILLISECONDS_IN_A_DAY) / MILLISECONDS_IN_AN_HOUR);
     return `${days} days ${hours} hours`;
+};
+
+// REPORTS
+
+export const getReports = async () => {
+    try {
+        const reportsRef = ref(db, 'reports');
+        const snapshot = await get(reportsRef);
+        if (!snapshot.exists()) {
+            return [];
+        }
+        return Object.values(snapshot.val());
+    } catch (error) {
+        console.error('Error fetching reports:', error);
+    }
+};
+
+export const deleteReport = async (reportId) => {
+    try {
+        const reportRef = ref(db, `reports/${reportId}`);
+        await remove(reportRef);
+        alert('Report deleted')
+    } catch (error) {
+        console.error('Error deleting report:', error);
+    }
 };
