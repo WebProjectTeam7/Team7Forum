@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './CSS/BeerModal.css';
 
 
-export default function BeerModal({ beer, onClose, onSave }) {
+export default function CreateBeerModal({ beer, onClose, onSave }) {
     const [name, setName] = useState('');
     const [alc, setAlc] = useState(0.0);
     const [type, setType] = useState('');
@@ -128,7 +128,7 @@ export default function BeerModal({ beer, onClose, onSave }) {
     );
 }
 
-BeerModal.propTypes = {
+CreateBeerModal.propTypes = {
     beer: PropTypes.shape({
         name: PropTypes.string,
         alc: PropTypes.number,
@@ -142,6 +142,6 @@ BeerModal.propTypes = {
     onSave: PropTypes.func.isRequired,
 };
 
-BeerModal.defaultProps = {
+CreateBeerModal.defaultProps = {
     beer: null,
 };
