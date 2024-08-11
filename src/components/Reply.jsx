@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp } from 'react-icons/fa';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
-import { handleReplyVote, updateReply, deleteReply } from '../services/reply.service';
+import { handleReplyVote, updateReply, deleteReply, reportReply } from '../services/reply.service';
 import { removeReplyIdFromThread } from '../services/thread.service';
 import { getUserByUsername } from '../services/users.service';
 import './CSS/Replies.css';
@@ -69,6 +69,18 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
         }
     };
 
+    const handleReportReply = async () => {
+        const reason = prompt('Please enter the reason for reporting this reply:');
+        if (reason) {
+            try {
+                await reportReply(reply.id, userData.username, reply.content, reason);
+                alert('Reply reported successfully.');
+            } catch (error) {
+                console.error('Error reporting reply:', error);
+            }
+        }
+    };
+
     let userVote;
     if (userData) {
         if (reply.upvotes?.includes(userData.username)) {
@@ -118,6 +130,9 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
                                         <FaArrowAltCircleDown />
                                     </div>
                                     <span>Downvotes: {reply.downvotes ? reply.downvotes.length : 0}</span>
+                                    {userData && (
+                                        <button onClick={handleReportReply}>Report</button>
+                                    )}
                                 </div>
                                 {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === reply.author)) && (
                                     <div className="edit-delete-buttons">

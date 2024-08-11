@@ -1,24 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-    getThreadById,
-    updateThread,
-    deleteThread,
-    handleThreadVote,
-    incrementThreadViews
-} from '../services/thread.service';
+import { getThreadById, updateThread, deleteThread, handleThreadVote, incrementThreadViews, reportThread } from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import Replies from '../components/Replies';
 import UserRoleEnum from '../common/role.enum';
 import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaEye } from 'react-icons/fa';
 import './CSS/Thread.css';
-import { getUserByUsername, isUserBanned } from '../services/users.service';
+import { getUserByUsername } from '../services/users.service';
 import UserInfo from '../components/UserInfo';
 import { removeThreadIdFromCategory } from '../services/category.service';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
 import { createOrUpdateThreadTag, getThreadsIdsByTag, removeThreadIdFromTag } from '../services/tag.service';
+import { isUserBanned } from '../services/admin.service';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -165,6 +160,18 @@ export default function Thread() {
         }
     };
 
+    const handleReportThread = async () => {
+        const reason = prompt('Please enter the reason for reporting this thread:');
+        if (reason) {
+            try {
+                await reportThread(threadId, userData.username, thread.content, reason);
+                alert('Thread reported successfully.');
+            } catch (error) {
+                console.error('Error reporting thread:', error);
+            }
+        }
+    };
+
     if (!thread) {
         return <div>Loading...</div>;
     }
@@ -223,11 +230,12 @@ export default function Thread() {
                 >
                     <FaArrowAltCircleDown />
                 </div>
-                <span>Downvotes: {thread.downvotes?.length || 0}</span>
-                <div className="views">
-                    <FaEye />
-                    <span>Views: {thread.views || 0}</span>
-                </div>
+                <span>Downvotes: {thread.downvotes ? thread.downvotes.length : 0}</span>
+                <FaEye />
+                <span>Views: {thread.views || 0}</span>
+                {userData && (
+                    <button onClick={handleReportThread}>Report</button>
+                )}
             </div>
             <div className="thread-tags">
                 {editMode ? (

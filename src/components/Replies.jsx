@@ -6,7 +6,7 @@ import Reply from './Reply';
 import Pagination from './Pagination';
 import PropTypes from 'prop-types';
 import './CSS/Replies.css';
-import { isUserBanned } from '../services/users.service';
+import { isUserBanned } from '../services/admin.service';
 
 const REPLIES_PER_PAGE = 3;
 
