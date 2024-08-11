@@ -4,19 +4,23 @@ import { db } from '../config/firebase-config';
 
 // CREATE
 
-export const createThreadTag = async (tag, threadId) => {
+export const createOrUpdateThreadTag = async (tag, threadId) => {
     try {
-        const threadsIds = await getThreadsIdsByTag(tag);
+        const tagRef = ref(db, `tags/${tag}/threadsIds`);
+        const snapshot = await get(tagRef);
+
+        let threadsIds = snapshot.exists() ? snapshot.val() : [];
         if (threadsIds.includes(threadId)) {
             return;
         }
-        const newTagRef = ref(db, `tags/${tag}`);
-        await set(newTagRef, { threadsIds: [...threadsIds, threadId] });
+        threadsIds.push(threadId);
+        await set(tagRef, threadsIds);
     } catch (error) {
-        console.error('Error creating thread tag:', error);
-        throw new Error('Failed to create thread tag');
+        console.error('Error creating/updating thread tag:', error);
+        throw new Error('Failed to create/update thread tag');
     }
 };
+
 
 // RETRIEVE
 
@@ -27,9 +31,9 @@ export const getThreadsIdsByTag = async (tag) => {
         if (!snapshot.exists()) {
             return [];
         }
-        return Object.values(snapshot.val());
+        return snapshot.val();
     } catch (error) {
-        console.error('Error fetching threadIds', error);
+        console.error('Error fetching threadIds by tag:', error);
         throw new Error('Failed to retrieve threadIds by tag');
     }
 };
@@ -45,23 +49,43 @@ export const removeThreadIdFromTag = async (tag, threadId) => {
             throw new Error('Tag does not exist.');
         }
 
-        const threadsIds = snapshot.val();
+        let threadsIds = snapshot.val();
 
-        if (!threadsIds.includes(threadId)) {
-            throw new Error('Thread ID not found in tag.');
-        }
+        threadsIds = threadsIds.filter(id => id !== threadId);
 
-        const newThreadsIds = threadsIds.filter(id => id !== threadId);
-
-        if (newThreadsIds.length === 0) {
+        if (threadsIds.length === 0) {
             await remove(ref(db, `tags/${tag}`));
         } else {
-            await set(tagRef, newThreadsIds);
+            await set(tagRef, threadsIds);
         }
     } catch (error) {
-        console.error('Error deleting thread ID from tag:', error);
-        throw new Error('Failed to delete thread ID from tag');
+        console.error('Error removing thread ID from tag:', error);
+        throw new Error('Failed to remove thread ID from tag');
     }
 };
 
 // DELETE
+
+// CLEANUP
+
+export const cleanupUnusedTags = async () => {
+    try {
+        const tagsRef = ref(db, 'tags');
+        const snapshot = await get(tagsRef);
+
+        if (snapshot.exists()) {
+            const tagsData = snapshot.val();
+
+            for (const tag in tagsData) {
+                const threadsIds = tagsData[tag].threadsIds;
+
+                if (!threadsIds || threadsIds.length === 0) {
+                    await remove(ref(db, `tags/${tag}`));
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error cleaning up unused tags:', error);
+        throw new Error('Failed to clean up unused tags');
+    }
+};

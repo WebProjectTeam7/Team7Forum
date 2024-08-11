@@ -165,7 +165,7 @@ export default function MyProfile() {
             <div className="profile-field avatar-container">
                 <label>Avatar:</label>
                 <img
-                    src={avatarPreviewUrl || userData.avatar || defaultAvatarUrl}
+                    src={avatarPreviewUrl || userData.avatar || '/src/image/default-profile.png'}
                     alt="Avatar"
                     className="avatar-img"
                 />

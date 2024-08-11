@@ -1,9 +1,8 @@
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { getThreadsByCategoryId, createThread } from '../services/thread.service';
-import { createThreadTag } from '../services/tag.service';
+import { createOrUpdateThreadTag } from '../services/tag.service';
 import { AppContext } from '../state/app.context';
-import UserRoleEnum from '../common/role.enum';
 import { getCategoryById, addThreadIdToCategory } from '../services/category.service';
 import './CSS/Category.css';
 import ThreadItem from '../components/ThreadItem';
@@ -14,7 +13,6 @@ import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
 export default function Category() {
     const { categoryId } = useParams();
     const { user, userData } = useContext(AppContext);
-    const isAdmin = userData && userData.role === UserRoleEnum.ADMIN;
 
     const [threads, setThreads] = useState([]);
     const [category, setCategory] = useState(null);
@@ -65,14 +63,14 @@ export default function Category() {
 
             try {
                 const tagsArray = [...new Set(newThreadTags.split(',')
-                    .filter(tag => tag.trim().length > 0)
-                    .map(tag => tag.toLowerCase())
+                    .map(tag => tag.toLowerCase().trim())
+                    .filter(tag => tag.length > 0)
                 )];
 
                 const newThreadId =
                     await createThread(categoryId, newThreadTitle, newThreadContent, tagsArray, user.uid, userData.username);
 
-                await Promise.all(tagsArray.map(tag => createThreadTag(tag.toLowerCase(), newThreadId)));
+                await Promise.all(tagsArray.map(tag => createOrUpdateThreadTag(tag.toLowerCase(), newThreadId)));
                 await addThreadIdToCategory(categoryId, newThreadId);
 
                 setFetchTrigger(!fetchTrigger);

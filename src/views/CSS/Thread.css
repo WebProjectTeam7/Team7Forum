@@ -20,7 +20,8 @@
 
 .thread-info {
     flex: 1;
-    max-width: 16.6667%; /* 1/6th of the space */
+    max-width: 16.6667%;
+    /* 1/6th of the space */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,7 +44,8 @@
 }
 
 .thread-content {
-    flex: 5; /* The remaining space */
+    flex: 5;
+    /* The remaining space */
     margin-left: 20px;
     padding: 20px;
     background-color: #fff;
@@ -138,7 +140,8 @@ body.dark-mode .thread-actions button:hover {
 
 body.dark-mode .upvote-button.active,
 body.dark-mode .downvote-button.active {
-    color: #81c784; /* Lighter green for active state */
+    color: #81c784;
+    /* Lighter green for active state */
 }
 
 body.dark-mode .thread-edit input,
@@ -160,4 +163,14 @@ body.dark-mode .thread-edit button:hover {
 .button-container {
     display: flex;
     gap: 5px;
+}
+
+.tag-link {
+    color: blue;
+    cursor: pointer;
+}
+
+.tag-link:hover {
+    color: darkblue;
+    text-decoration: underline;
 }

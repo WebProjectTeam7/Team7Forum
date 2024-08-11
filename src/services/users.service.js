@@ -10,6 +10,7 @@ export const createUser = async (username, uid, email, firstName, lastName, role
         await set(userRef, user);
         return user;
     } catch (error) {
+        console.error('Error creating user:', error);
         throw new Error('Failed to create user: ' + error.message);
     }
 };
@@ -25,23 +26,30 @@ export const getUserByUsername = async (username) => {
         }
         return snapshot.val();
     } catch (error) {
+        console.error('Error retrieving user by username:', error);
         throw new Error('Failed to retrieve user: ' + error.message);
     }
 };
 
-export const getUsersByUsername = async () => {
+export const getUsersByUsernameMatch = async (keyWord) => {
     const usersRef = ref(db, 'users');
     try {
         const snapshot = await get(usersRef);
         if (!snapshot.exists()) {
-            throw new Error('No users found');
+            return [];
         }
-        const allUsers = snapshot.val();
-        return Object.keys(allUsers).map(key => ({
-            key,
-            ...allUsers[key]
-        }));
+
+        const users = [];
+        snapshot.forEach(childSnapshot => {
+            const userData = childSnapshot.val();
+            if (userData.username && userData.username.toLowerCase().includes(keyWord.toLowerCase())) {
+                users.push({ id: childSnapshot.key, ...userData });
+            }
+        });
+
+        return users;
     } catch (error) {
+        console.error('Error fetching users by username match:', error);
         throw new Error('Failed to retrieve users: ' + error.message);
     }
 };
@@ -55,6 +63,7 @@ export const getUserData = async (uid) => {
         }
         return snapshot.val();
     } catch (error) {
+        console.error('Error retrieving user data:', error);
         throw new Error('Failed to retrieve user data: ' + error.message);
     }
 };
@@ -68,6 +77,7 @@ export const getAllUsers = async (role = null) => {
         }
         return Object.values(snapshot.val());
     } catch (error) {
+        console.error('Error fetching all users:', error);
         throw new Error('Failed to retrieve users: ' + error.message);
     }
 };
@@ -81,6 +91,7 @@ export const getUsersCount = async () => {
         }
         return Object.keys(snapshot.val()).length;
     } catch (error) {
+        console.error('Error retrieving users count:', error);
         throw new Error('Failed to retrieve users count: ' + error.message);
     }
 };
@@ -97,6 +108,7 @@ export const updateUser = async (uid, updatedData) => {
         const userId = Object.keys(snapshot.val())[0];
         await update(ref(db, `users/${userId}`), updatedData);
     } catch (error) {
+        console.error('Error updating user:', error);
         throw new Error('Failed to update user: ' + error.message);
     }
 };
@@ -111,6 +123,7 @@ export const switchUserRole = async (uid, newRole) => {
         const userId = Object.keys(snapshot.val())[0];
         await update(ref(db, `users/${userId}`), { role: newRole });
     } catch (error) {
+        console.error('Error switching user role:', error);
         throw new Error('Failed to switch user role: ' + error.message);
     }
 };
@@ -127,6 +140,7 @@ export const deleteUser = async (uid) => {
         const userId = Object.keys(snapshot.val())[0];
         await remove(ref(db, `users/${userId}`));
     } catch (error) {
+        console.error('Error deleting user:', error);
         throw new Error('Failed to delete user: ' + error.message);
     }
 };

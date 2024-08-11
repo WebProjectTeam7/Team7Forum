@@ -8,7 +8,7 @@ import BeerModal from '../components/BeerModal';
 import './CSS/Beerpedia.css';
 import UserRoleEnum from '../common/role.enum';
 export default function Beerpedia() {
-    const { user,userData } = useContext(AppContext);
+    const { user, userData } = useContext(AppContext);
     const [beers, setBeers] = useState([]);
     const [editMode, setEditMode] = useState(null);
     const [editedBeerData, setEditedBeerData] = useState({});
@@ -28,11 +28,13 @@ export default function Beerpedia() {
     };
 
     const handleDelete = async (beerId) => {
-        try {
-            await deleteBeer(beerId);
-            fetchBeers();
-        } catch (error) {
-            console.error('Error deleting beer:', error);
+        if (window.confirm('Are you sure you want to delete this entry?')) {
+            try {
+                await deleteBeer(beerId);
+                fetchBeers();
+            } catch (error) {
+                console.error('Error deleting beer:', error);
+            }
         }
     };
 
