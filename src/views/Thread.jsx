@@ -244,11 +244,9 @@ export default function Thread() {
                     ) : (
                         <>
                             <p>{thread.content}</p>
-                            <div className="image-preview">
-                                {thread.imagesUrls && thread.imagesUrls.map((url, index) => (
-                                    <img key={index} src={url} alt={`Thread image ${index}`} />
-                                ))}
-                            </div>
+                            {thread.imagesUrls && thread.imagesUrls.map((url, index) => (
+                                <img className="image-preview" key={index} src={url} alt={`Thread image ${index}`} />
+                            ))}
                         </>
                     )}
                 </div>
