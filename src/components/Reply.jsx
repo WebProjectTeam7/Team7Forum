@@ -21,10 +21,6 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
     const [imageErrors, setImageErrors] = useState([]);
     const [userAuthor, setUserAuthor] = useState({});
 
-    useEffect(() => {
-        fetchUserAuthor(reply.author);
-    }, [reply.author]);
-
     const fetchUserAuthor = async (username) => {
         try {
             const user = await getUserByUsername(username);
@@ -33,6 +29,10 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
             console.error('Error fetching user:', error);
         }
     };
+
+    useEffect(() => {
+        fetchUserAuthor(reply.author);
+    }, [reply.author]);
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
@@ -154,9 +154,9 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
                         <div className="reply-text">
                             <p>{reply.content}</p>
                             {reply.imagesUrls && reply.imagesUrls.length > 0 && (
-                                <div className="image-previews">
+                                <div className="images-previews">
                                     {reply.imagesUrls.map((url, index) => (
-                                        <div key={index} className="image-preview">
+                                        <div key={index} className="images-preview">
                                             <img src={url} alt={`Reply Image ${index + 1}`} />
                                         </div>
                                     ))}
