@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { updateUser,getUserByUsername } from '../services/users.service';
+import { updateUser, getUserByUsername } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 import { useNavigate } from 'react-router-dom';
 import { auth, storage } from '../config/firebase-config';
@@ -11,6 +11,9 @@ import { deleteUser, getRemainingBanTime } from '../services/admin.service';
 import successGif from '../image/successfully-update-profile.gif';
 import errorGif from '../image/error.gif';
 import Modal from '../views/Modal';
+import CustomFileInput from '../components/CustomFileInput';
+import BeerButton from '../components/BeerButton';
+import DeleteButton from '../components/DeleteButton';
 
 const useDefaultAvatarUrl = () => {
     const [defaultAvatarUrl, setDefaultAvatarUrl] = useState(null);
@@ -18,7 +21,7 @@ const useDefaultAvatarUrl = () => {
     useEffect(() => {
         const fetchDefaultAvatarUrl = async () => {
             try {
-                const defaultAvatarRef = storageRef(storage, 'istockphoto-1406111499-612x612.jpg'); // Add the url form firebase here
+                const defaultAvatarRef = storageRef(storage, 'istockphoto-1406111499-612x612.jpg'); // Add the url from Firebase here
                 const url = await getDownloadURL(defaultAvatarRef);
                 setDefaultAvatarUrl(url);
             } catch (error) {
@@ -184,7 +187,7 @@ export default function MyProfile() {
                     alt="Avatar"
                     className="avatar-img"
                 />
-                <input type="file" accept="image/*" onChange={handleAvatarChange} />
+                <CustomFileInput onChange={handleAvatarChange} />
                 <button className="upload-avatar-button" onClick={uploadAvatar} disabled={!avatarFile || isUploading}>
                     Upload Avatar
                 </button>
@@ -240,8 +243,11 @@ export default function MyProfile() {
                 <label>Role: </label>
                 <span>{userData.role}</span>
             </div>
-            <button className="save-button" onClick={saveChanges}>Save Changes</button>
-            <button className="delete-button" onClick={deleteAccount}>Delete Account</button>
+            {/* Button Container */}
+            <div className="button-container">
+                <BeerButton text="Save" onClick={saveChanges} />
+                <DeleteButton onClick={deleteAccount} />
+            </div>
 
             {/* MODAL */}
             <Modal isVisible={showModal} onClose={() => setShowModal(false)} message={modalMessage} gifUrl={modalGif} />
