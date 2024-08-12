@@ -1,5 +1,7 @@
 import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
-import { db } from '../config/firebase-config';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../config/firebase-config';
+
 
 // CREATE
 
@@ -125,5 +127,17 @@ export const switchUserRole = async (uid, newRole) => {
     } catch (error) {
         console.error('Error switching user role:', error);
         throw new Error('Failed to switch user role: ' + error.message);
+    }
+};
+
+export const uploadUserAvatar = async (uid, imageFile) => {
+    try {
+        const avatarRef = storageRef(storage, `avatars/${uid}`);
+        const snapshot = await uploadBytes(avatarRef, imageFile);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        throw new Error('Failed to upload image');
     }
 };
