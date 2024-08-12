@@ -196,19 +196,21 @@ export default function Beerpedia() {
                                 />
                             )}
                         </div>
-                        <div className="beer-actions">
-                            {editMode === beer.id ? (
-                                <>
-                                    <button onClick={() => handleSaveEdit(beer.id)}>Save</button>
-                                    <button onClick={() => setEditMode(null)}>Cancel</button>
-                                </>
-                            ) : (
-                                <>
-                                    <EditButton onClick={() => handleEdit(beer.id)}>Edit</EditButton>
-                                    <DeleteButton onClick={() => handleDelete(beer.id)}>Delete</DeleteButton>
-                                </>
-                            )}
-                        </div>
+                        {userData && (userData.role === UserRoleEnum.ADMIN || userData.role === UserRoleEnum.MODERATOR) && (
+                            <div className="beer-actions">
+                                {editMode === beer.id ? (
+                                    <>
+                                        <button onClick={() => handleSaveEdit(beer.id)}>Save</button>
+                                        <button onClick={() => setEditMode(null)}>Cancel</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <EditButton onClick={() => handleEdit(beer.id)}>Edit</EditButton>
+                                        <DeleteButton onClick={() => handleDelete(beer.id)}>Delete</DeleteButton>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>

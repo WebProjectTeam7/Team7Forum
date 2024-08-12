@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import './CSS/BeerModal.css';
+import './CSS/CreateBeerModal.css';
 
 
 export default function CreateBeerModal({ beer, onClose, onSave }) {
