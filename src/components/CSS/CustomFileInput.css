@@ -1,0 +1,8 @@
+.hidden-file-input {
+    display: none;
+}
+
+.custom-file-input {
+    position: relative;
+    display: inline-block;
+}
