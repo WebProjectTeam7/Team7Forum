@@ -42,7 +42,7 @@
 }
 
 .beer-box {
-    background-color: #f9f9f9;
+    background-color: #f9f9f9b4;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -68,7 +68,7 @@
 }
 
 .beer-details {
-    font-size: 0.9em;
+    font-size: 17px;
 }
 
 .beer-details h2 {
@@ -136,8 +136,8 @@ body.dark-mode .create-button:hover {
 }
 
 body.dark-mode .beer-box {
-    background-color: #34495e;
-    color: #ecf0f1;
+    background-color: #34495ece;
+    color: #fcfeffad;
 }
 
 body.dark-mode .beer-actions button {

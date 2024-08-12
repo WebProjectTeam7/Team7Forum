@@ -13,12 +13,11 @@
 }
 
 .modal-content {
-    background-color: rgb(150, 143, 143);
+    background-color: rgba(221, 218, 218, 0.733);
     padding: 20px;
     border-radius: 10px;
-    max-width: 500px;
+    max-width:max-content;
     width: 100%;
-    /* background-image: url("/src/image/nav.jpg"); */
 }
 
 image-preview {
@@ -37,23 +36,6 @@ image-preview {
 h2 {
     margin-top: 0;
 }
-
-/* .form-group {
-    margin-bottom: 15px;
-} */
-
-/* .form-group label {
-    display: block;
-    margin-bottom: 5px;
-} */
-/* 
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-} */
 
 .modal-actions {
     display: flex;

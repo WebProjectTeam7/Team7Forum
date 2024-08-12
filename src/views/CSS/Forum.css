@@ -54,7 +54,7 @@ h1 {
 .edit-category,
 .category-buttons {
     display: flex;
-    gap: 10px;
+    gap: 15px;
 }
 
 .edit-category input,
@@ -68,13 +68,15 @@ h1 {
 .edit-category button,
 .create-category button,
 .category-buttons .small-button {
-    padding: 5px 10px;
+    padding: 15px 15px;
     border: none;
     border-radius: 5px;
     background-color: #007bff;
     color: white;
     cursor: pointer;
 }
+
+.sa
 
 .cancel-button,
 .delete-button button,

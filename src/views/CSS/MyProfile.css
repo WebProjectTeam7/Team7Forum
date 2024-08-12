@@ -22,6 +22,7 @@
     padding: 10px;
     border-bottom: 1px solid #eaeaea;
     background-color: rgba(255, 255, 255, 0.2);
+    margin-top: 30px;
 }
 
 .profile-field label {
@@ -29,26 +30,28 @@
     font-weight: bold;
     color: #555;
     margin-bottom: 5px;
+    font-size: 15px;
 }
 
 .profile-field span {
     display: inline-block;
     margin-right: 10px;
     color: #333;
+    font-size: 20px;
 }
 
 .profile-field input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
+    padding: 0px;
+    margin-top: 30px;
     display: inline-block;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    margin-left: 15px;
 }
 
 .edit-button {
-    background-color: #4CAF50;
+    background-color: #5487b6;
     color: white;
     padding: 8px 12px;
     margin-top: 10px;
@@ -58,7 +61,7 @@
 }
 
 .edit-button:hover {
-    background-color: #45a049;
+    background-color: #363d80;
 }
 
 .save-button {
@@ -80,7 +83,7 @@
 .delete-button {
     display: block;
     width: 100%;
-    background-color: #4CAF50;
+    background-color: #e05744;
     color: white;
     padding: 14px 20px;
     margin-top: 20px;
@@ -90,7 +93,7 @@
 }
 
 .delete-button:hover {
-    background-color: #45a049;
+    background-color: #8d2323;
 }
 
 /* Avatar-related styles */
@@ -106,6 +109,7 @@
     object-fit: cover;
     border: 2px solid #ccc;
     margin-bottom: 10px;
+    margin-left: 10px;
 }
 
 .avatar-input {
@@ -135,6 +139,9 @@
     cursor: pointer;
     display: block;
     width: 50%;
+    margin-left: 20px;
+    margin-right: 20px;
+    
 }
 
 .upload-avatar-button:hover {
