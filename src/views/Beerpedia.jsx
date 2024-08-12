@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext } from 'react';
-import { getAllBeers, deleteBeer, createBeer, editBeer, rateBeer } from '../services/beer.service';
 import { AppContext } from '../state/app.context';
+import { getAllBeers, deleteBeer, createBeer, editBeer, rateBeer } from '../services/beer.service';
+import UserRoleEnum from '../common/role.enum';
 import BeerRating from '../components/BeerRating';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import CreateBeerModal from '../components/CreateBeerModal';
 import './CSS/Beerpedia.css';
 import UserRoleEnum from '../common/role.enum';
-
 export default function Beerpedia() {
     const { user, userData } = useContext(AppContext);
     const [beers, setBeers] = useState([]);
