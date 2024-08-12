@@ -10,7 +10,7 @@ import { MAX_FILE_SIZE, MAX_IMAGES, THREADS_PER_PAGE } from '../common/views.con
 import ThreadItem from '../components/ThreadItem';
 import InfoButton from '../components/InfoButton';
 import Pagination from '../components/Pagination';
-import './CSS/Category.css';
+import './CSS/Forum.css';
 
 
 export default function Category() {
@@ -167,11 +167,13 @@ export default function Category() {
                 ) : (
                     <li>No threads available</li>
                 )}
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={(page) => setCurrentPage(page)}
-                />
+                <div className="pagination-div" >
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={(page) => setCurrentPage(page)}
+                    />
+                </div>
                 {userData && (
                     <div className="admin-actions">
                         <button onClick={() => setShowCreateThread(!showCreateThread)}>
