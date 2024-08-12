@@ -29,7 +29,7 @@ Create a Firebase project ([Firebase console - create a project ](https://consol
 
 ![1723363663276](image/README/1723363663276.png)
 
-![1723363712185](image/README/1723363712185.png)
+![1723448665970](image/README/1723448665970.png)
 
 **Install the project dependencies:**
 
