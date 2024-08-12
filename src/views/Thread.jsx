@@ -15,6 +15,7 @@ import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import VoteButtons from '../components/VoteButtons';
 import './CSS/Thread.css';
+import { BAN_REASON_LENGTH } from '../common/components.constants';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -175,6 +176,12 @@ export default function Thread() {
 
     const handleReportThread = async () => {
         const reason = prompt('Please enter the reason for reporting this thread:');
+
+        if (reason && reason.length > BAN_REASON_LENGTH) {
+            alert('The report reason must be 20 characters or less.');
+            return;
+        }
+
         if (reason) {
             try {
                 await reportThread(threadId, userData.username, thread.content, reason);
