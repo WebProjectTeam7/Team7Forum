@@ -1,7 +1,7 @@
 /* From Uiverse.io by andrew-demchenk0 */
 .add_item_button {
     position: relative;
-    width: 135px !important;
+    width: 134px;
     height: 40px;
     cursor: pointer;
     display: flex;
@@ -47,7 +47,7 @@
   
   .add_item_button:hover .add_item_button__icon {
     width: 100% !important;
-    transform: translateX(-17px);
+    transform: translateX(-20px);
   }
   
   .add_item_button:active .add_item_button__icon {
