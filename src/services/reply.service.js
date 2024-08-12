@@ -35,7 +35,7 @@ export const getRepliesByThreadId = async (threadId) => {
         if (!snapshot.exists()) {
             return [];
         }
-        return Object.values(snapshot.val()).sort((a, b) => new Date(b.createdAt) - new DataTransfer(a.createdAt));
+        return Object.values(snapshot.val());
     } catch (error) {
         console.error('Error retrieving replies by thread ID:', error);
         throw new Error('Failed to retrieve replies');

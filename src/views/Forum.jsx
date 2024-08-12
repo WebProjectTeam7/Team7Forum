@@ -4,11 +4,12 @@ import { getCategories, createCategory, updateCategory, deleteCategory } from '.
 import { getThreadsByCategoryId } from '../services/thread.service';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
-import './CSS/Forum.css';
 import ThreadItem from '../components/ThreadItem';
 import { isUserBanned } from '../services/admin.service';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
+import './CSS/Forum.css';
+
 
 const THREADS_LIMIT_BY_CATEGORY = 3;
 

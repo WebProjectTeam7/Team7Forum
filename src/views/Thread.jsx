@@ -32,6 +32,13 @@ export default function Thread() {
     const [attachedImages, setAttachedImages] = useState([]);
     const [imageErrors, setImageErrors] = useState([]);
 
+    useEffect(() => {
+        incrementViews();
+    }, []);
+
+    useEffect(() => {
+        fetchThread();
+    }, [threadId]);
 
     const incrementViews = async () => {
         try {
@@ -42,9 +49,6 @@ export default function Thread() {
         }
     };
 
-    useEffect(() => {
-        incrementViews();
-    }, []);
 
     const fetchThread = async () => {
         try {
@@ -65,9 +69,6 @@ export default function Thread() {
         }
     };
 
-    useEffect(() => {
-        fetchThread();
-    }, [threadId]);
 
     const fetchUserAuthor = async (username) => {
         try {

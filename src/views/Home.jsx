@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getThreadsByFilterInOrder } from '../services/thread.service';
-import './CSS/Category.css';
-import ThreadItem from '../components/ThreadItem';
 import { HOME_PAGE_CHART_COUNT } from '../common/views.constants';
+import ThreadItem from '../components/ThreadItem';
+import './CSS/Category.css';
 
 
 export default function Home() {
