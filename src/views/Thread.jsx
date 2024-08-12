@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../state/app.context';
@@ -7,6 +6,7 @@ import { createOrUpdateThreadTag, getThreadsIdsByTag, removeThreadIdFromTag } fr
 import { getUserByUsername } from '../services/users.service';
 import { removeThreadIdFromCategory } from '../services/category.service';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
+import { MAX_FILE_SIZE, MAX_IMAGES } from '../common/views.constants';
 import { FaEye } from 'react-icons/fa';
 import UserRoleEnum from '../common/role.enum';
 import Replies from '../components/Replies';
@@ -28,9 +28,8 @@ export default function Thread() {
     const [editThreadTags, setEditThreadTags] = useState('');
     const [userAuthor, setUserAuthor] = useState({});
     const [userVote, setUserVote] = useState(0);
-    const [selectedImages, setSelectedImages] = useState([]);
-    const [imagePreviews, setImagePreviews] = useState([]);
-    const [removedImages, setRemovedImages] = useState([]);
+    const [attachedImages, setAttachedImages] = useState([]);
+    const [imageErrors, setImageErrors] = useState([]);
 
     useEffect(() => {
         incrementViews();
@@ -38,7 +37,7 @@ export default function Thread() {
 
     useEffect(() => {
         fetchThread();
-    }, []);
+    }, [threadId]);
 
     const incrementViews = async () => {
         try {
@@ -57,14 +56,11 @@ export default function Thread() {
             setEditThreadContent(fetchedThread.content);
             setEditThreadTags(fetchedThread.tags ? fetchedThread.tags.join(', ') : '');
             fetchUserAuthor(fetchedThread.authorName);
-
+            setAttachedImages(fetchedThread.imagesUrls || []);
             if (userData) {
                 const vote = fetchedThread.upvotes?.includes(userData.username) ? 1 :
                     fetchedThread.downvotes?.includes(userData.username) ? -1 : 0;
                 setUserVote(vote);
-            }
-            if (fetchedThread.imagesUrls) {
-                setImagePreviews(fetchedThread.imagesUrls);
             }
         } catch (error) {
             console.error('Error fetching thread:', error);
@@ -94,17 +90,27 @@ export default function Thread() {
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        setSelectedImages(files);
-        const previews = files.map(file => URL.createObjectURL(file));
-        setImagePreviews(prev => [...prev, ...previews]);
+        const newImages = [];
+        const errors = [];
+
+        if (attachedImages.length + files.length > MAX_IMAGES) {
+            errors.push(`You can only upload a maximum of ${MAX_IMAGES} images.`);
+        }
+
+        files.forEach((file) => {
+            if (file.size > MAX_FILE_SIZE) {
+                errors.push(`The file ${file.name} is too large.`);
+            } else {
+                newImages.push(file);
+            }
+        });
+
+        setImageErrors(errors);
+        setAttachedImages((prevImages) => [...prevImages, ...newImages].slice(0, MAX_IMAGES));
     };
 
-    const handleRemoveImage = (index, isExisting) => {
-        if (isExisting) {
-            setRemovedImages(prev => [...prev, imagePreviews[index]]);
-        }
-        setImagePreviews(prev => prev.filter((_, i) => i !== index));
-        setSelectedImages(prev => prev.filter((_, i) => i !== index - (imagePreviews.length - selectedImages.length)));
+    const handleRemoveImage = (index) => {
+        setAttachedImages((prevImages) => prevImages.filter((_, i) => i !== index));
     };
 
     const handleEditThread = async () => {
@@ -124,18 +130,19 @@ export default function Thread() {
         }
 
         try {
-            let uploadedImagesUrls = [];
-            if (selectedImages.length > 0) {
-                uploadedImagesUrls = await uploadThreadImages(threadId, selectedImages);
+            let imagesUrls = attachedImages.filter(img => typeof img === 'string');
+            const newImages = attachedImages.filter(img => typeof img !== 'string');
+            if (newImages.length > 0) {
+                const uploadedUrls = await uploadThreadImages(threadId, newImages);
+                imagesUrls = [...imagesUrls, ...uploadedUrls];
             }
-
             const updatedData = {
                 title: editThreadTitle,
                 content: editThreadContent,
                 tags: [...new Set(editThreadTags.split(',')
                     .map(tag => tag.toLowerCase().trim())
                     .filter(tag => tag.length > 0))],
-                imagesUrls: [...imagePreviews, ...uploadedImagesUrls].filter(url => !removedImages.includes(url)),
+                imagesUrls,
             };
             await updateThread(threadId, updatedData);
             if (updatedData.tags.length > 0) {
@@ -145,6 +152,7 @@ export default function Thread() {
                 const tagsToRemove = thread.tags.filter(tag => !updatedData.tags.includes(tag));
                 await Promise.all(tagsToRemove.map(tag => removeThreadIdFromTag(tag, threadId)));
             }
+            setImageErrors([]);
             setEditMode(false);
             fetchThread();
         } catch (error) {
@@ -229,25 +237,32 @@ export default function Thread() {
                                 accept="image/*"
                                 onChange={handleImageChange}
                             />
+                            {imageErrors.length > 0 && (
+                                <div className="image-errors">
+                                    {imageErrors.map((error, index) => (
+                                        <p key={index} className="error-message">{error}</p>
+                                    ))}
+                                </div>
+                            )}
                             <div className="image-previews">
-                                {imagePreviews.map((url, index) => (
-                                    <>
-                                        <div key={index} className="image-preview">
-                                            <img src={url} alt="Preview" />
-                                        </div>
-                                        <button onClick={() =>
-                                            handleRemoveImage(index, index < imagePreviews.length - selectedImages.length)}>Remove</button>
-                                    </>
+                                {attachedImages.map((image, index) => (
+                                    <div key={index} className="image-preview">
+                                        <img src={typeof image === 'string' ? image : URL.createObjectURL(image)}
+                                            alt={`Preview ${index + 1}`} />
+                                        <button onClick={() => handleRemoveImage(index)}>Remove</button>
+                                    </div>
                                 ))}
                             </div>
                         </div>
                     ) : (
-                        <>
+                        <div className="thread-text">
                             <p>{thread.content}</p>
                             {thread.imagesUrls && thread.imagesUrls.map((url, index) => (
-                                <img className="image-preview" key={index} src={url} alt={`Thread image ${index}`} />
+                                <div key={index} className="images-preview">
+                                    <img src={url} alt={`Thread Image ${index + 1}`} />
+                                </div>
                             ))}
-                        </>
+                        </div>
                     )}
                 </div>
             </div>
@@ -280,7 +295,7 @@ export default function Thread() {
                                 className="tag-link"
                                 onClick={() => handleTagClick(tag)}
                             >
-                                {tag}{index < thread.tags.length - 1 ? ', ' : ''}
+                                {tag}
                             </span>
                         ))}
                     </p>

@@ -179,6 +179,24 @@
     margin: 5px 0;
 }
 
+.sort-bar {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.sort-bar label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.sort-bar select {
+    padding: 5px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
 /* Dark Mode */
 body.dark-mode .replies-container {
     background-color: #1e1e1e;
@@ -254,4 +272,18 @@ body.dark-mode .reply-input button {
 
 body.dark-mode .reply-input button:hover {
     background-color: #0056b3;
+}
+
+.images-preview {
+    display: inline-block; 
+    margin: 5px; 
+}
+
+.images-preview img {
+    max-width: 250px; 
+    max-height: 250px; 
+    width: auto; 
+    height: auto; 
+    border-radius: 5px; 
+    object-fit: cover;
 }
