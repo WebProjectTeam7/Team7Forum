@@ -11,6 +11,7 @@ import EditButton from './EditButton';
 import DeleteButton from './DeleteButton';
 import VoteButtons from './VoteButtons';
 import './CSS/Replies.css';
+import { BAN_REASON_LENGTH } from '../common/components.constants';
 
 
 const Reply = ({ reply, threadId, fetchReplies }) => {
@@ -93,6 +94,12 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
 
     const handleReportReply = async () => {
         const reason = prompt('Please enter the reason for reporting this reply:');
+
+        if (reason && reason.length > BAN_REASON_LENGTH) {
+            alert('The report reason must be 20 characters or less.');
+            return;
+        }
+
         if (reason) {
             try {
                 await reportReply(reply.id, userData.username, reply.content, reason);

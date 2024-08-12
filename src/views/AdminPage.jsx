@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { getAllUsers, switchUserRole,} from '../services/users.service';
+import { getAllUsers, switchUserRole, } from '../services/users.service';
 import { useNavigate } from 'react-router-dom';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/AdminPage.css';
@@ -9,6 +9,7 @@ import { AppContext } from '../state/app.context';
 import { banUser, deleteReport, getRemainingBanTime, getReports, unbanUser } from '../services/admin.service';
 import { getThreadById } from '../services/thread.service';
 import { getReplyById } from '../services/reply.service';
+import { format } from 'date-fns';
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
@@ -269,14 +270,17 @@ export default function AdminPage() {
                 </table>
             )}
             {view === 'reports' && (
-                <div>
+                <div className="reports-container">
                     <h2>Reports</h2>
-                    <table>
+                    <table className="reports-table">
                         <thead>
                             <tr>
+                                <th>Reported User</th>
                                 <th>Reported By</th>
+                                <th>Date</th>
                                 <th>Type</th>
                                 <th>Content</th>
+                                <th>Reason</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -284,9 +288,12 @@ export default function AdminPage() {
                             {reports.length > 0 ? (
                                 reports.map(report => (
                                     <tr key={report.id}>
+                                        <td>{report.reportedUser}</td>
                                         <td>{report.reporter}</td>
+                                        <td>{format(new Date(report.reportedAt), 'PPpp')}</td>
                                         <td>{report.type}</td>
-                                        <td>{report.content}</td>
+                                        <td className="content-cell">{report.content}</td>
+                                        <td>{report.reason}</td>
                                         <td>
                                             <button onClick={() => handleDeleteReport(report.id)}>Dismiss</button>
                                             <button onClick={() => handleGoToPost(report.targetId, report.type)}>Go to Post</button>
@@ -295,13 +302,14 @@ export default function AdminPage() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="4">No reports available</td>
+                                    <td colSpan="7">No reports available</td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
             )}
+
         </div>
     );
 }

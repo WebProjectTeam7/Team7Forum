@@ -129,7 +129,7 @@
     margin-left: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #4CAF50;
+    background-color: #84af4c;
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -193,6 +193,97 @@
 
 .admin-page-container th {
     background-color: rgba(170, 168, 168, 0.486);
+}
+
+.reports-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.reports-table th,
+.reports-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.reports-table th:nth-child(1),
+.reports-table td:nth-child(1) {
+    width: 10%; 
+}
+
+.reports-table th:nth-child(2),
+.reports-table td:nth-child(2) {
+    width: 10%; 
+}
+
+.reports-table th:nth-child(3),
+.reports-table td:nth-child(3) {
+    width: 15%; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+.reports-table th:nth-child(4),
+.reports-table td:nth-child(4) {
+    width: 10%; 
+}
+
+.reports-table th:nth-child(5),
+.reports-table td:nth-child(5) {
+    width: 35%; 
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+.reports-table th:nth-child(6),
+.reports-table td:nth-child(6) {
+    width: 10%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reports-table th:nth-child(7),
+.reports-table td:nth-child(7) {
+    width: 20%;
+}
+
+
+.reports-table td:nth-child(7) button {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+
+.reports-table th {
+    background-color: rgba(170, 168, 168, 0.486);
+    color: #555;
+    font-weight: bold;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.reports-table td:nth-child(7) button {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.reports-table td.content-cell {
+    max-width: 100px; 
+    max-height: 60px;
+    overflow: auto; 
+    white-space: nowrap; 
+}
+
+.reports-table td.content-cell {
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 /* Dark Mode */

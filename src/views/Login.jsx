@@ -6,6 +6,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/auth.service';
 import './CSS/Register.css';
 import { useEffect } from 'react';
+import errorGif from '../image/error.gif';
+import './CSS/Modal.css';
 
 export default function Login() {
     const [user, setUser] = useState({
@@ -16,6 +18,8 @@ export default function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const [remember, setRemember] = useState(false);
+    const [noCredentials, setNoCredentials] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -41,7 +45,8 @@ export default function Login() {
     const login = async (e) => {
         e.preventDefault();
         if (!user.email || !user.password) {
-            return alert('No credentials provided!');
+            setNoCredentials(true);
+            return;
         }
 
         try {
@@ -61,11 +66,17 @@ export default function Login() {
             });
             navigate(location.state?.from.pathname ?? '/');
         } catch (error) {
-            alert(error.message);
+            setErrorMessage(error.message);
         }
     };
 
+    const closeModal = () => {
+        setNoCredentials(false);
+        setErrorMessage('');
+    };
+
     return (
+        <div>
         <form onSubmit={login}>
             <h1>Login</h1>
             <label htmlFor="email">Email: </label>
@@ -78,5 +89,27 @@ export default function Login() {
         </div><br />
             <button type="submit">Login</button>
         </form>
+
+    {noCredentials && (
+        <div className="modal-overlay">
+        <div className="modal-content">
+            <h2>No credentials provided!</h2>
+            <p>Please fill in all fields.</p>
+            <button onClick={closeModal}>OK</button>
+        </div>
+        </div>
+)}
+
+    {errorMessage && (
+        <div className="modal-overlay">
+        <div className="modal-content">
+            <h2>Error</h2>
+            <img src={errorGif} alt="Error" />
+            <p>{errorMessage}</p>
+            <button onClick={closeModal}>OK</button>
+        </div>
+        </div>
+        )}
+        </div>
     );
 }

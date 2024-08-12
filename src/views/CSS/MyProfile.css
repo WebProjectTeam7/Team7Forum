@@ -22,6 +22,7 @@
     padding: 10px;
     border-bottom: 1px solid #eaeaea;
     background-color: rgba(255, 255, 255, 0.2);
+    margin-top: 30px;
 }
 
 .profile-field label {
@@ -29,26 +30,27 @@
     font-weight: bold;
     color: #555;
     margin-bottom: 5px;
+    font-size: 15px;
 }
 
 .profile-field span {
     display: inline-block;
     margin-right: 10px;
     color: #333;
+    font-size: 20px;
 }
 
 .profile-field input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    display: inline-block;
+    padding: 0px;
+    margin-top: 30px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    margin-left: 15px;
 }
 
 .edit-button {
-    background-color: #4CAF50;
+    background-color: #5487b6;
     color: white;
     padding: 8px 12px;
     margin-top: 10px;
@@ -58,39 +60,24 @@
 }
 
 .edit-button:hover {
-    background-color: #45a049;
+    background-color: #363d80;
 }
 
-.save-button {
-    display: block;
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
+.button-container {
+    display: flex;
+    justify-content: space-between;
     margin-top: 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
-.save-button:hover {
-    background-color: #45a049;
+.button-container .beer-button {
+    margin-right: auto;
+    background-color: #4CC713;
+    height: 40px;
+    width: 100px;
 }
 
-.delete-button {
-    display: block;
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.delete-button:hover {
-    background-color: #45a049;
+.button-container .delete-button {
+    margin-left: auto;
 }
 
 /* Avatar-related styles */
@@ -100,22 +87,12 @@
 }
 
 .avatar-img {
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #ccc;
     margin-bottom: 10px;
-}
-
-.avatar-input {
-    display: inline-block;
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin: 0 auto;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
 }
 
 .avatar-upload-label {
@@ -126,20 +103,79 @@
 }
 
 .upload-avatar-button {
-    background-color: #4CAF50;
+    display: inline-block;
+    position: relative;
+    padding: 14px 25px;
+    background-color: #4CC713;
     color: white;
-    padding: 8px 12px;
-    margin-top: 10px;
+    font-family: sans-serif;
+    text-decoration: none;
+    font-size: 0.9em;
+    text-align: center;
+    text-indent: 15px;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    border-radius: 2em;
+    font-weight: bold;
+  }
+  
+  .upload-avatar-button:before, .upload-avatar-button:after {
+    content: ' ';
     display: block;
-    width: 50%;
-}
-
-.upload-avatar-button:hover {
-    background-color: #45a049;
-}
+    position: absolute;
+    left: 15px;
+    top: 52%;
+  }
+  
+  .upload-avatar-button:before {
+    width: 10px;
+    height: 2px;
+    border-style: solid;
+    border-width: 0 2px 2px;
+  }
+  
+  .upload-avatar-button:after {
+    width: 0;
+    height: 0;
+    margin-left: 3px;
+    margin-top: -7px;
+    border-style: solid;
+    border-width: 4px 4px 0 4px;
+    border-color: transparent;
+    border-top-color: inherit;
+    animation: downloadArrow 1s linear infinite;
+    animation-play-state: paused;
+  }
+  
+  .upload-avatar-button:hover:before {
+    border-color: #bdd3ef;
+  }
+  
+  .upload-avatar-button:hover:after {
+    border-top-color: #eff1f7;
+    animation-play-state: running;
+  }
+  
+  @keyframes downloadArrow {
+    0% {
+      margin-top: -7px;
+      opacity: 1;
+    }
+  
+    0.001% {
+      margin-top: -15px;
+      opacity: 0.4;
+    }
+  
+    50% {
+      opacity: 1;
+    }
+  
+    100% {
+      margin-top: 0;
+      opacity: 0.4;
+    }
+  }
+  
 
 /* Dark Mode */
 body.dark-mode .profile-container {
@@ -164,12 +200,12 @@ body.dark-mode .profile-field label {
 body.dark-mode .profile-field span {
     color: #e0e0e0;
 }
-
+/* 
 body.dark-mode .profile-field input {
     border: 1px solid #666;
     background: #444;
     color: #e0e0e0;
-}
+} */
 
 body.dark-mode .edit-button,
 body.dark-mode .save-button,

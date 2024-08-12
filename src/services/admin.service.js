@@ -1,6 +1,8 @@
 import { get, ref, query, equalTo, orderByChild, update, remove } from 'firebase/database';
 import { db } from '../config/firebase-config';
 import { MILLISECONDS_IN_AN_HOUR, MILLISECONDS_IN_A_DAY } from '../common/components.constants';
+import { getThreadById } from './thread.service';
+import { getReplyById } from './reply.service';
 
 // DELETE USER
 export const deleteUser = async (uid) => {
@@ -93,7 +95,29 @@ export const getReports = async () => {
         if (!snapshot.exists()) {
             return [];
         }
-        return Object.values(snapshot.val());
+        const reports = await Promise.all(Object.entries(snapshot.val()).map(async ([id, report]) => {
+            let reportedUser = null;
+
+            try {
+                if (report.type === 'thread') {
+                    const thread = await getThreadById(report.targetId);
+                    reportedUser = thread.authorName;
+                } else if (report.type === 'reply') {
+                    const reply = await getReplyById(report.targetId);
+                    reportedUser = reply.author;
+                }
+            } catch (error) {
+                console.error(`Error fetching reported user for report ID ${id}:`, error);
+            }
+
+            return {
+                id,
+                reportedUser,
+                ...report,
+            };
+        }));
+
+        return reports;
     } catch (error) {
         console.error('Error fetching reports:', error);
     }

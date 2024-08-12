@@ -189,3 +189,90 @@ This command will usually start a local server and you should see output in your
 
 * Shows the main thread content and user posts.
 * Provides options to add new posts or reply to existing ones.
+
+### 3. Environment Variables (.env)
+
+The `.env` file contains sensitive configuration data required to connect and configure Firebase services in your application. These environment variables should not be uploaded to public repositories as they contain sensitive information.
+
+Example content of a `.env` file:
+
+![1723465766563](image/README/1723465766563.png)
+
+##### 3.1 Explanation of Variables:
+
+* **VITE_API_KEY** : Your Firebase API key.
+* **VITE_AUTH_DOMAIN** : The Firebase Authentication domain for your project.
+* **VITE_PROJECT_ID** : The project ID in Firebase.
+* **VITE_STORAGE_BUCKET** : The address of Firebase Storage for your project.
+* **VITE_MESSAGING_SENDER_ID** : Sender ID for Firebase Cloud Messaging.
+* **VITE_FIREBASE_APP_ID** : The app ID in Firebase.
+* **VITE_FIREBASE_DATABASE_URL** : The URL of Firebase Realtime Database.
+
+##### 3.2 Environment Variables Sample (.env_sample)
+
+The `.env_sample` file serves as a template for the `.env` configuration file. This file should be shared with the team so they know which environment variables are needed without exposing actual values.
+
+Example content of a `.env_sample` file:
+
+![1723465926631](image/README/1723465926631.png)
+
+**Instructions:**
+
+* Each variable should be filled with the corresponding value from the Firebase console or other project configuration.
+* Ensure this file does not contain actual sensitive data, only the names of the variables.
+
+##### 3.3 Firebase Configuration (firebase-config.js)
+
+The `firebase-config.js` file initializes Firebase services in your application using data from the `.env` file. This file contains the logic to connect with Firebase Authentication, Realtime Database, and Storage.
+
+Example content of the `firebase-config.js` file:
+
+![1723466010161](image/README/1723466010161.png)
+
+**Explanation:**
+
+* **initializeApp(firebaseConfig)** : Initializes Firebase with the configuration data from the `.env` file.
+* **getAuth(app)** : Enables the use of Firebase Authentication in your application.
+* **getDatabase(app)** : Provides access to Firebase Realtime Database.
+* **getStorage(app)** : Provides access to Firebase Storage.
+
+This file should be included in your project to effectively and securely use Firebase services.
+
+### 4. Entity-Relationship Diagram (ERD)
+
+This ERD will represent the relationships between your data entities such as users, beers, categories, and posts.
+
+![1723466835094](image/README/1723466835094.png)
+
+##### 4.1 Explanation:
+
+* **Users** : Stores user information such as username, email, first name, last name, role, and optionally an avatar URL. The `uid` is the primary key.
+* **Beers** : Contains information about different beers including name, description, alcohol content (alc), origin, producer, type, and an average rating. Each beer has a unique `id` (primary key).
+* **Categories** : Represents different categories for beers or posts, with each category having a unique `id` and a title.
+* **Posts** : Stores posts made by users. Each post has an `id` (primary key), title, content, creation date, and a reference to the author (which is a foreign key pointing to the `Users` table). It also has a `dislikedBy` attribute that indicates which users disliked the post.
+
+##### 4.2 Relationships:
+
+* **One-to-Many Relationship between Users and Beers** : Each user can create or rate multiple beers.
+* **One-to-Many Relationship between Categories and Beers** : Each category can contain multiple beers.
+* **One-to-Many Relationship between Users and Posts** : Each user can create multiple posts.
+* **One-to-Many Relationship between Posts and Users (dislikedBy)** : Each post can be disliked by multiple users.
+
+### 5. Project Structure
+
+![1723468966544](image/README/1723468966544.png)
+
+##### 5.1 Breakdown:
+
+* **/public/** : Contains all the files accessible by the client. This includes your main HTML files, stylesheets, scripts, and images.
+* **/images/** : Store images that are used in your web app, such as beer images.
+* **/styles/** : CSS files that style your HTML pages.
+* **/scripts/** : JavaScript files to manage the app's client-side logic.
+* **/src/** : Contains source code for reusable components and any complex application logic.
+* **/components/** : Reusable components like beer cards that you can render multiple times.
+* **firebase.js** : Firebase initialization and configuration, handling the connection to your Firebase Realtime Database.
+* **/functions/** : If you're using Firebase Functions for backend operations, this folder will contain the code for your serverless functions.
+* **/config/** : Store configuration files, such as Firebase settings.
+* **.gitignore** : Specifies files and directories that should not be tracked by Git.
+* **README.md** : Documentation about your project, explaining what it does and how to set it up.
+* **package.json** : If using Node.js, this file will manage dependencies and scripts for your project.
