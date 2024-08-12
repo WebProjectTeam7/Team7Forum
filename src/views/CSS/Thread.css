@@ -401,3 +401,71 @@ body.dark-mode .thread-input button:hover {
     border-radius: 5px; 
     object-fit: cover;
 }
+
+/* General Styles for Tags Section */
+.thread-tags {
+    margin-top: 20px;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.thread-tags strong {
+    font-weight: bold;
+    color: var(--strong-text-color);
+}
+
+.tag-link {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: var(--tag-background-color);
+    color: var(--tag-text-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tag-link:hover {
+    background-color: var(--tag-hover-background-color);
+    color: var(--tag-hover-text-color);
+}
+
+/* Light Mode Variables */
+:root {
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --strong-text-color: #333333;
+    --tag-background-color: #e0e0e0;
+    --tag-text-color: #000000;
+    --tag-hover-background-color: #cccccc;
+    --tag-hover-text-color: #000000;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    --background-color: #1e1e1e;
+    --text-color: #e0e0e0;
+    --strong-text-color: #cccccc;
+    --tag-background-color: #333333;
+    --tag-text-color: #ffffff;
+    --tag-hover-background-color: #555555;
+    --tag-hover-text-color: #ffffff;
+}
+
+body.dark-mode .thread-tags {
+    color: var(--text-color);
+}
+
+body.dark-mode .thread-tags strong {
+    color: var(--strong-text-color);
+}
+
+body.dark-mode .tag-link {
+    background-color: var(--tag-background-color);
+    color: var(--tag-text-color);
+}
+
+body.dark-mode .tag-link:hover {
+    background-color: var(--tag-hover-background-color);
+    color: var(--tag-hover-text-color);
+}

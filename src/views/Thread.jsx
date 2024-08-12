@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../state/app.context';
@@ -7,6 +6,7 @@ import { createOrUpdateThreadTag, getThreadsIdsByTag, removeThreadIdFromTag } fr
 import { getUserByUsername } from '../services/users.service';
 import { removeThreadIdFromCategory } from '../services/category.service';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
+import { MAX_FILE_SIZE, MAX_IMAGES } from '../common/views.constants';
 import { FaEye } from 'react-icons/fa';
 import UserRoleEnum from '../common/role.enum';
 import Replies from '../components/Replies';
@@ -15,7 +15,6 @@ import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import VoteButtons from '../components/VoteButtons';
 import './CSS/Thread.css';
-import { MAX_FILE_SIZE, MAX_IMAGES } from '../common/views.constants';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -49,7 +48,6 @@ export default function Thread() {
         }
     };
 
-
     const fetchThread = async () => {
         try {
             const fetchedThread = await getThreadById(threadId);
@@ -68,7 +66,6 @@ export default function Thread() {
             console.error('Error fetching thread:', error);
         }
     };
-
 
     const fetchUserAuthor = async (username) => {
         try {
@@ -298,7 +295,7 @@ export default function Thread() {
                                 className="tag-link"
                                 onClick={() => handleTagClick(tag)}
                             >
-                                {tag}{index < thread.tags.length - 1 ? ', ' : ''}
+                                {tag}
                             </span>
                         ))}
                     </p>
