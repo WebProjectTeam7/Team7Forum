@@ -1,10 +1,11 @@
 /* General styles */
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
     margin: 0;
     padding: 0;
-}
+ }
 
 h1, h2 {
     color: #333;
@@ -17,7 +18,7 @@ h1 {
 
 /* Category container */
 .category-container {
-    width: 50%;
+    width: 60%;
     margin: 20px auto;
     background: rgba(249, 249, 249, 0.3);
     padding: 20px;

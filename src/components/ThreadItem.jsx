@@ -1,14 +1,13 @@
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import '../views/CSS/Category.css';
+import './CSS/ThreadItem.css';
 
 const ThreadItem = ({ thread }) => {
     return (
         <li key={thread.id} className="thread-item">
             <div className="thread-info">
-                <img src="\src\image\thread-image.jpg" alt="Thread" className="thread-image" />
-                <div>
-                    <p className="thread-author">{thread.author}</p>
+                <div className="thread-image-container">
+                    <img src="\src\image\thread-image.jpg" alt="Thread" className="thread-image" />
                 </div>
             </div>
             <div className="thread-content">

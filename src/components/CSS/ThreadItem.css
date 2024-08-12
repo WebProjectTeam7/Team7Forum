@@ -1,0 +1,151 @@
+/* ThreadItem component styles */
+
+.thread-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px; /* Reduced padding */
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+    height: 160px; /* Reduced height */
+}
+
+.thread-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.thread-info {
+    flex-shrink: 0;
+    width: 80%; 
+    height: 80%;
+    margin-right: 10px; 
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    overflow: hidden;
+}
+
+.thread-image-container {
+    width: 80%;
+    height: 80%;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.thread-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover; 
+    border-radius: 8px;
+    transition: none;
+}
+
+.thread-content {
+    flex-grow: 1;
+    padding: 8px; /* Same padding as thread-item */
+    height: 140px; /* Same height as thread-info */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.thread-content h3 {
+    font-size: 1.1em;
+    margin: 0 0 8px; /* Slightly reduced margin */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.thread-content h3 a {
+    text-decoration: none;
+    color: #007bff;
+    transition: color 0.2s;
+}
+
+.thread-content h3 a:hover {
+    color: #0056b3;
+}
+
+.thread-content p {
+    font-size: 0.95em;
+    color: #555;
+    margin: 0 0 8px;
+    line-height: 1.4;
+}
+
+.thread-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.85em;
+    color: #777;
+}
+
+.thread-stats span {
+    background-color: #f0f2f5;
+    padding: 5px 8px;
+    border-radius: 5px;
+}
+
+/* Dark Mode */
+body.dark-mode .thread-item {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .thread-item:hover {
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .thread-content h3 a {
+    color: #90caf9;
+}
+
+body.dark-mode .thread-content h3 a:hover {
+    color: #64b5f6;
+}
+
+body.dark-mode .thread-content p {
+    color: #ccc;
+}
+
+body.dark-mode .thread-stats span {
+    background-color: #333;
+    color: #ccc;
+}
+
+body.dark-mode .thread-image {
+    border: 2px solid #555;
+}
+
+@media (max-width: 768px) {
+    .thread-item {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto; /* Let height adjust for mobile view */
+    }
+
+    .thread-info {
+        margin-right: 0;
+        margin-bottom: 10px;
+        width: 100%; /* Full width for mobile */
+        height: auto; /* Adjust height for mobile */
+    }
+
+    .thread-content {
+        height: auto; /* Adjust height for mobile */
+    }
+
+    .thread-content h3 {
+        font-size: 1.1em;
+    }
+
+    .thread-stats {
+        justify-content: space-between;
+        width: 100%;
+    }
+}

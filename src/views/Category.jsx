@@ -6,9 +6,10 @@ import { getCategoryById, addThreadIdToCategory } from '../services/category.ser
 import { createOrUpdateThreadTag } from '../services/tag.service';
 import { isUserBanned } from '../services/admin.service';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
-import { MAX_FILE_SIZE, MAX_IMAGES } from '../common/views.constants';
+import { MAX_FILE_SIZE, MAX_IMAGES, THREADS_PER_PAGE } from '../common/views.constants';
 import ThreadItem from '../components/ThreadItem';
 import InfoButton from '../components/InfoButton';
+import Pagination from '../components/Pagination';
 import './CSS/Category.css';
 
 
@@ -24,20 +25,42 @@ export default function Category() {
     const [attachedImages, setAttachedImages] = useState([]);
     const [imageErrors, setImageErrors] = useState([]);
     const [showCreateThread, setShowCreateThread] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [sortOrder, setSortOrder] = useState('newest');
 
     useEffect(() => {
         fetchThreads();
-    }, []);
+    }, [currentPage, sortOrder]);
 
     const fetchThreads = async () => {
         try {
             const fetchedCategory = await getCategoryById(categoryId);
             setCategory(fetchedCategory);
             const fetchedThreads = await getThreadsByCategoryId(categoryId);
-            setThreads(fetchedThreads);
+            sortThreads(fetchedThreads);
         } catch (error) {
             console.error('Error fetching threads:', error);
         }
+    };
+
+    const sortThreads = (threads) => {
+        switch (sortOrder) {
+            case 'newest':
+                setThreads(threads.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+                break;
+            case 'oldest':
+                setThreads(threads.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)));
+                break;
+            case 'mostCommented':
+                setThreads(threads.sort((a, b) => (b.replies?.length || 0) - (a.replies?.length || 0)));
+                break;
+            default:
+                setThreads(threads);
+        }
+    };
+
+    const handleSortChange = (e) => {
+        setSortOrder(e.target.value);
     };
 
     const handleImageChange = (e) => {
@@ -120,17 +143,35 @@ export default function Category() {
         }
     };
 
+    const startIndex = (currentPage - 1) * THREADS_PER_PAGE;
+    const paginatedThreads = threads.slice(startIndex, startIndex + THREADS_PER_PAGE);
+    const totalPages = Math.ceil(threads.length / THREADS_PER_PAGE);
+
+
     return (
         <div className="category-container">
             <h1>{category?.title || 'Loading...'}</h1>
             <ul className="threads">
-                {threads.length > 0 ? (
-                    threads.map((thread) => (
+                <div className="sort-bar">
+                    <label htmlFor="sortOrder">Sort by: </label>
+                    <select id="sortOrder" value={sortOrder} onChange={handleSortChange}>
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="mostCommented">Most Commented</option>
+                    </select>
+                </div>
+                {paginatedThreads.length > 0 ? (
+                    paginatedThreads.map((thread) => (
                         <ThreadItem key={thread.id} thread={thread} />
                     ))
                 ) : (
                     <li>No threads available</li>
                 )}
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)}
+                />
                 {userData && (
                     <div className="admin-actions">
                         <button onClick={() => setShowCreateThread(!showCreateThread)}>
