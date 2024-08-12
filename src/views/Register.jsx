@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { useContext, useState } from 'react';
 import { registerUser } from '../services/auth.service';
 import { AppContext } from '../state/app.context';
@@ -10,6 +11,7 @@ import InfoButton from '../components/InfoButton';
 import { FaEye } from 'react-icons/fa';
 import WelcomeGifNotification  from '../components/NotificationAfterRegister';
 import ErrorComponent from '../components/ServerError';
+import './CSS/Modal.css';
 
 export default function Register() {
     const { setAppState } = useContext(AppContext);
@@ -27,7 +29,8 @@ export default function Register() {
     const [alertMessage, setAlertMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [showGift, setShowGift] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [noCredentials, setNoCredentials] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
@@ -47,7 +50,8 @@ export default function Register() {
 
         setLoading(true);
         setAlertMessage('');
-        setErrorMessage(true);
+        setErrorMessage(null);
+        setNoCredentials(false);
 
         const alertArr = [];
 
@@ -77,15 +81,20 @@ export default function Register() {
 
         if (alertArr.length > 0) {
             setAlertMessage(alertArr.join('\n'));
+            setNoCredentials(true);
             setLoading(false);
-            return alert(alertMessage);
+            return;
         }
 
         try {
             // TODO
             // const userFromDB = await getUserByUsername(user.username);
             // if (userFromDB) {
-            //     return alert(`User {${user.username}} already exists!`);
+            //     setAlertMessage(`User ${user.username} already exists!`);
+            //     setErrorMessage('User already exists.');
+            //     setShowGift(true);
+            //     setLoading(false);
+            //     return;
             // }
             const credential = await registerUser(user.email, user.password);
             await createUser(user.username, credential.user.uid, user.email, user.firstName, user.lastName, user.role);
@@ -96,7 +105,8 @@ export default function Register() {
                 navigate('/');
             },7000);
         } catch (error) {
-            alert(error.message);
+            setErrorMessage(error.message);
+            setShowGift(true);
         } finally {
             setLoading(false);
         }
@@ -106,8 +116,14 @@ export default function Register() {
         setShowGift(false);
     };
 
+    const closeModal = () => {
+        setNoCredentials(false);
+        setErrorMessage('');
+    };
+
     return (
         <>
+         <div>
             <form onSubmit={register}>
                 <h1>Register</h1>
 
@@ -197,8 +213,29 @@ export default function Register() {
                 {/* SUBMIT */}
                 <button>Register</button>
             </form>
+                {/* Modals for errors and notifications */}
+            {noCredentials && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>Validation Error</h2>
+                        <p>{alertMessage}</p>
+                        <button onClick={closeModal}>OK</button>
+                    </div>
+                </div>
+            )}
+
+            {errorMessage && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>Error</h2>
+                        <p>{errorMessage}</p>
+                        <button onClick={closeModal}>OK</button>
+                    </div>
+                </div>
+            )}
             {errorMessage && <ErrorComponent />}
             <WelcomeGifNotification show={showGift} onClose={handleCloseNotification} />
+            </div>
         </>
     );
 }
