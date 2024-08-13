@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../state/app.context';
 import { useParams } from 'react-router-dom';
 import { getThreadsByCategoryId, createThread, uploadThreadImages } from '../services/thread.service';
@@ -17,6 +18,7 @@ import './CSS/Forum.css';
 export default function Category() {
     const { categoryId } = useParams();
     const { user, userData } = useContext(AppContext);
+    const navigate = useNavigate();
 
     const [threads, setThreads] = useState([]);
     const [category, setCategory] = useState(null);
@@ -138,6 +140,9 @@ export default function Category() {
                 setNewThreadTags('');
                 setAttachedImages([]);
                 setShowCreateThread(false);
+
+                navigate(`/forum/thread/${newThreadId}`);
+
             } catch (error) {
                 console.error('Error creating thread:', error);
             }
