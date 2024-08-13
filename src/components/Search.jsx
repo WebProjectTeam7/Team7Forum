@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getThreadsByTitleExact, getThreadsByTitleMatch, getThreadsByContentMatch, getThreadById, } from '../services/thread.service';
 import { getUserByUsername, getUsersByUsernameMatch } from '../services/users.service';
 import { getThreadsIdsByTag } from '../services/tag.service';
+import './CSS/Search.css';
 
 export default function Search() {
     const [searchQuery, setSearchQuery] = useState('');

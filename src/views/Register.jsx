@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { useContext, useState } from 'react';
 import { registerUser } from '../services/auth.service';
 import { AppContext } from '../state/app.context';
@@ -103,7 +102,7 @@ export default function Register() {
             setTimeout(() => {
                 setShowGift(false);
                 navigate('/');
-            }, 7000);
+            }, 2000);
         } catch (error) {
             setErrorMessage(error.message);
             setShowGift(true);

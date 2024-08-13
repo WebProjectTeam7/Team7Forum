@@ -1,4 +1,5 @@
 import { useEffect, useState, useContext, useRef } from 'react';
+import Swal from 'sweetalert2';
 import { AppContext } from '../state/app.context';
 import { getAllBeers, deleteBeer, createBeer, editBeer, rateBeer } from '../services/beer.service';
 import UserRoleEnum from '../common/role.enum';
@@ -31,9 +32,19 @@ export default function Beerpedia() {
     };
 
     const handleDelete = async (beerId) => {
-        if (window.confirm('Are you sure you want to delete this entry?')) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to delete this beer?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        });
+
+        if (result.isConfirmed) {
             try {
                 await deleteBeer(beerId);
+                Swal.fire('Deleted!', 'Beer has been deleted.', 'success');
                 fetchBeers();
             } catch (error) {
                 console.error('Error deleting beer:', error);
@@ -63,11 +74,12 @@ export default function Beerpedia() {
 
     const handleRating = async (beerId, rating) => {
         if (!user || userData.isBanned) {
-            alert('You don`t have permision to vote!');
+            Swal.fire('Permission Denied', 'You do not have permission to rate beers.', 'warning');
             return;
         }
         try {
             await rateBeer(beerId, userData.username, rating);
+            Swal.fire('Thank you!', 'Your rating has been submitted.', 'success');
             fetchBeers();
         } catch (error) {
             console.error('Error rating beer:', error);
@@ -91,6 +103,7 @@ export default function Beerpedia() {
 
             await createBeer(validBeerData, beerData.imageFile);
             setIsModalOpen(false);
+            Swal.fire('Success', 'New beer created successfully.', 'success');
             fetchBeers();
         } catch (error) {
             console.error('Error creating beer:', error);
@@ -110,6 +123,7 @@ export default function Beerpedia() {
 
             await editBeer(beerId, updatedData, editedBeerData.imageFile);
             setEditMode(null);
+            Swal.fire('Success', 'Beer updated successfully.', 'success');
             fetchBeers();
         } catch (error) {
             console.error('Error saving beer:', error);

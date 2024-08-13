@@ -16,6 +16,7 @@ import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import VoteButtons from '../components/VoteButtons';
 import './CSS/Thread.css';
+import Swal from 'sweetalert2';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -126,7 +127,7 @@ export default function Thread() {
         }
 
         if (alertArr.length > 0) {
-            alert(alertArr.join('\n'));
+            Swal.fire('Warning', alertArr.join('\n'), 'warning');
             return;
         }
 
@@ -157,13 +158,22 @@ export default function Thread() {
             setEditMode(false);
             fetchThread();
         } catch (error) {
-            console.error('Error editing thread:', error);
-            alert('An error occurred while editing the thread. Please try again.');
+            Swal.fire('Error', 'An error occurred while editing the thread. Please try again.', 'error'); // Use SweetAlert2 for errors
         }
     };
 
     const handleDeleteThread = async () => {
-        if (window.confirm('Are you sure you want to delete this thread?')) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this thread!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (result.isConfirmed) {
             try {
                 await deleteThread(threadId);
                 await removeThreadIdFromCategory(thread.categoryId, threadId);
@@ -175,17 +185,27 @@ export default function Thread() {
     };
 
     const handleReportThread = async () => {
-        const reason = prompt('Please enter the reason for reporting this thread:');
-
-        if (reason && reason.length > REPORT_REASON_LENGTH) {
-            alert('The report reason must be 20 characters or less.');
-            return;
-        }
+        const { value: reason } = await Swal.fire({
+            title: 'Report Thread',
+            input: 'textarea',
+            inputPlaceholder: 'Enter the reason for reporting this thread...',
+            inputAttributes: {
+                'aria-label': 'Enter the reason for reporting this thread'
+            },
+            inputValidator: (value) => {
+                if (!value || value.length > REPORT_REASON_LENGTH) {
+                    return `The report reason must be 20 characters or less.`;
+                }
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Report',
+            cancelButtonText: 'Cancel'
+        });
 
         if (reason) {
             try {
                 await reportThread(threadId, userData.username, thread.content, reason);
-                alert('Thread reported successfully.');
+                Swal.fire('Reported', 'Thread reported successfully.', 'success'); // Use SweetAlert2 for success messages
             } catch (error) {
                 console.error('Error reporting thread:', error);
             }

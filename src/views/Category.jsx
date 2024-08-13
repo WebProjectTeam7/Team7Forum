@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { AppContext } from '../state/app.context';
-import { useParams } from 'react-router-dom';
 import { getThreadsByCategoryId, createThread, uploadThreadImages } from '../services/thread.service';
 import { getCategoryById, addThreadIdToCategory } from '../services/category.service';
 import { createOrUpdateThreadTag } from '../services/tag.service';
@@ -95,9 +95,10 @@ export default function Category() {
         if (newThreadTitle.trim() && newThreadContent.trim()) {
             const banned = await isUserBanned(userData.uid);
             if (banned) {
-                alert('You are banned from creating threads!');
+                Swal.fire('Permission Denied', 'You are banned from creating threads!', 'warning');
                 return;
             }
+
             const alertArr = [];
             if (!TITLE_REGEX.test(newThreadTitle)) {
                 alertArr.push('Invalid title length, must be between 3 and 64 characters!');
@@ -106,9 +107,10 @@ export default function Category() {
             //     alertArr.push('Invalid content length, must be between 3 and 8192 characters!');
             // }
             if (alertArr.length > 0) {
-                alert(alertArr.join('\n'));
+                Swal.fire('Invalid Input', alertArr.join('\n'), 'warning');
                 return;
             }
+
             try {
                 const tagsArray = [...new Set(newThreadTags.split(',')
                     .map(tag => tag.toLowerCase().trim())
@@ -141,6 +143,7 @@ export default function Category() {
                 setAttachedImages([]);
                 setShowCreateThread(false);
 
+                Swal.fire('Success', 'Thread created successfully.', 'success');
                 navigate(`/forum/thread/${newThreadId}`);
 
             } catch (error) {

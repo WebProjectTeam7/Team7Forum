@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import { getThreadsByFilterInOrder } from '../services/thread.service';
 import { HOME_PAGE_CHART_COUNT, THREADS_PER_PAGE } from '../common/views.constants';
 import ThreadList from '../components/ThreadList';
@@ -24,7 +25,7 @@ export default function Home() {
             const fetchedMostRecentThreads = await getThreadsByFilterInOrder('createdAt', 'desc', HOME_PAGE_CHART_COUNT);
             setMostRecentThreads(fetchedMostRecentThreads.reverse());
         } catch (error) {
-            console.error('Error fetching threads:', error);
+            Swal.fire('Error', 'Error fetching threads: ' + error.message, 'error');
         } finally {
             setLoading(false);
         }

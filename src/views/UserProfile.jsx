@@ -6,6 +6,7 @@ import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import { banUser, getRemainingBanTime } from '../services/admin.service';
 import ThreadsByUser from '../components/ThreadsByUser';
+import Swal from 'sweetalert2';
 
 export default function UserProfile() {
     const [user, setUser] = useState(null);
@@ -31,15 +32,15 @@ export default function UserProfile() {
 
     const handleBanUser = async () => {
         if (!banDuration) {
-            alert('Please enter a valid number of days.');
+            Swal.fire('Warning', 'Please enter a valid number of days.', 'warning');
             return;
         }
         try {
             await banUser(user.uid, parseInt(banDuration));
-            alert('User banned successfully.');
+            Swal.fire('Success', 'User banned successfully.', 'success');
             setBanDuration('');
         } catch (e) {
-            alert(e.message);
+            Swal.fire('Error', e.message, 'error');
         }
     };
 
