@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/AdminPage.css';
 import DeleteButton from '../components/deletebutton';
-import { deleteUser } from 'firebase/auth';
 import { AppContext } from '../state/app.context';
 import { banUser, deleteReport, getRemainingBanTime, getReports, unbanUser } from '../services/admin.service';
 import { getThreadById } from '../services/thread.service';
