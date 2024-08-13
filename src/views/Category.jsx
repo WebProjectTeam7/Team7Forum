@@ -176,7 +176,7 @@ export default function Category() {
                 </div>
                 {userData && (
                     <div className="admin-actions">
-                        <button onClick={() => setShowCreateThread(!showCreateThread)}>
+                        <button onClick={() => setShowCreateThread(!showCreateThread)} disabled={userData.isBanned}>
                             {showCreateThread ? 'Cancel' : 'Create Thread'}
                         </button>
                         {showCreateThread && (

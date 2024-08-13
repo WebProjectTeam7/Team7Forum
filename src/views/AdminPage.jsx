@@ -1,15 +1,16 @@
 import { useState, useEffect, useContext } from 'react';
-import { getAllUsers, switchUserRole, } from '../services/users.service';
+import { getAllUsers, switchUserRole, deleteUser } from '../services/users.service';
 import { useNavigate } from 'react-router-dom';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/AdminPage.css';
 import DeleteButton from '../components/deletebutton';
-import { deleteUser } from 'firebase/auth';
 import { AppContext } from '../state/app.context';
 import { banUser, deleteReport, getRemainingBanTime, getReports, unbanUser } from '../services/admin.service';
 import { getThreadById } from '../services/thread.service';
 import { getReplyById } from '../services/reply.service';
 import { format } from 'date-fns';
+import banUserImage from '../image/ban-user.png';
+import SuccessModal from './SuccessModal';
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
@@ -20,6 +21,9 @@ export default function AdminPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const { userData } = useContext(AppContext);
     const [reports, setReports] = useState([]);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalImage, setModalImage] = useState('');
 
     useEffect(() => {
         fetchAllUsers();
@@ -61,7 +65,10 @@ export default function AdminPage() {
     const handleUnbanUser = async (uid) => {
         try {
             await unbanUser(uid);
-            alert('User unbanned successfully.');
+            setModalMessage('User unbanned successfully.');
+            setModalImage(banUserImage);
+            setShowSuccessModal(true);
+            setTimeout(() => setShowSuccessModal(false), 5000);
             fetchBannedUsers();
         } catch (e) {
             alert(e.message);
@@ -167,6 +174,12 @@ export default function AdminPage() {
 
     return (
         <div className="admin-page-container">
+            {showSuccessModal && (
+                <SuccessModal
+                    message={modalMessage}
+                    image={modalImage}
+                    onClose={() => setShowSuccessModal(false)} />
+            )}
             <h1>Admin Panel</h1>
             <div className="nav">
                 <button onClick={() => setView('all')}>All Users</button>

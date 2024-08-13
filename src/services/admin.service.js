@@ -4,22 +4,6 @@ import { MILLISECONDS_IN_AN_HOUR, MILLISECONDS_IN_A_DAY } from '../common/compon
 import { getThreadById } from './thread.service';
 import { getReplyById } from './reply.service';
 
-// DELETE USER
-export const deleteUser = async (uid) => {
-    const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
-    try {
-        const snapshot = await get(userRef);
-        if (!snapshot.exists()) {
-            throw new Error('User not found');
-        }
-        const userId = Object.keys(snapshot.val())[0];
-        await remove(ref(db, `users/${userId}`));
-    } catch (error) {
-        console.error('Error deleting user:', error);
-        throw new Error('Failed to delete user: ' + error.message);
-    }
-};
-
 // BAN
 
 export const banUser = async (uid, days) => {
@@ -34,8 +18,12 @@ export const banUser = async (uid, days) => {
 
         const banEndDate = new Date();
         banEndDate.setDate(banEndDate.getDate() + days);
-        await update(ref(db, `users/${userId}`), { isBanned: true, banEndDate: banEndDate.toISOString() });
+        const updatedUserData = { ...userData, isBanned: true, banEndDate: banEndDate.toISOString() };
+        await update(ref(db, `users/${userId}`), updatedUserData);
+
+        return updatedUserData;
     }
+    throw new Error('User not found');
 };
 
 export const unbanUser = async (uid) => {
@@ -59,8 +47,8 @@ export const isUserBanned = async (uid) => {
     const snapshot = await get(userRef);
     if (snapshot.exists()) {
         const userData = Object.values(snapshot.val())[0];
-        if (userData.banExpiration) {
-            const banEndDate = new Date(userData.banExpiration);
+        if (userData.isBanned) {
+            const banEndDate = new Date(userData.banEndDate);
             const currentDate = new Date();
             if (currentDate < banEndDate) {
                 return true;
