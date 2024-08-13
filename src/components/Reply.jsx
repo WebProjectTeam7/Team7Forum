@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../state/app.context';
 import PropTypes from 'prop-types';
 import { updateReply, deleteReply, reportReply, uploadReplyImages } from '../services/reply.service';
@@ -12,7 +12,7 @@ import DeleteButton from './DeleteButton';
 import VoteButtons from './VoteButtons';
 import './CSS/Replies.css';
 import { REPORT_REASON_LENGTH } from '../common/components.constants';
-
+import AddItemButton from './AddItemButton';
 
 const Reply = ({ reply, threadId, fetchReplies }) => {
     const { userData } = useContext(AppContext);
@@ -119,6 +119,11 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
         }
     }
 
+    const fileInputRef = React.createRef();
+    const handleClick = () => {
+        fileInputRef.current.click();
+    };
+
     return (
         <li className="reply-item">
             <div className="reply-body">
@@ -135,7 +140,10 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
                                 accept="image/*"
                                 onChange={handleImageChange}
                                 multiple
+                                ref={fileInputRef} 
+                                style={{ display: 'none' }}
                             />
+                            <AddItemButton text="Add Images" onClick={handleClick} />
                             {imageErrors.length > 0 && (
                                 <div className="image-errors">
                                     {imageErrors.map((error, index) => (

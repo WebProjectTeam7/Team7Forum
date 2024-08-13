@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { AppContext } from '../state/app.context';
 import { useParams } from 'react-router-dom';
 import { getThreadsByCategoryId, createThread, uploadThreadImages } from '../services/thread.service';
@@ -11,7 +11,8 @@ import ThreadItem from '../components/ThreadItem';
 import InfoButton from '../components/InfoButton';
 import Pagination from '../components/Pagination';
 import './CSS/Forum.css';
-
+import AddItemButton from '../components/AddItemButton';
+import BeerButton from '../components/BeerButton';
 
 export default function Category() {
     const { categoryId } = useParams();
@@ -147,6 +148,11 @@ export default function Category() {
     const paginatedThreads = threads.slice(startIndex, startIndex + THREADS_PER_PAGE);
     const totalPages = Math.ceil(threads.length / THREADS_PER_PAGE);
 
+    const fileInputRef = React.createRef();
+
+    const handleClick = () => {
+        fileInputRef.current.click();
+    };
 
     return (
         <div className="category-container">
@@ -176,9 +182,16 @@ export default function Category() {
                 </div>
                 {userData && (
                     <div className="admin-actions">
-                        <button onClick={() => setShowCreateThread(!showCreateThread)} disabled={userData.isBanned}>
-                            {showCreateThread ? 'Cancel' : 'Create Thread'}
-                        </button>
+                        <BeerButton className="create-threads-beer-buton"
+                            text={showCreateThread ? 'Cancel' : 'Create Thread'}
+                            onClick={() => {
+                                if (!userData.isBanned) {
+                                    setShowCreateThread(!showCreateThread);
+                                } else {
+                                    alert('You are banned from creating threads!');
+                                }
+                            }}
+                        />
                         {showCreateThread && (
                             <div className="create-thread">
                                 <InfoButton text="Title must be between 3 to 64 characters." />
@@ -200,12 +213,7 @@ export default function Category() {
                                     onChange={(e) => setNewThreadTags(e.target.value)}
                                     placeholder="Tags (comma-separated)"
                                 />
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    multiple
-                                />
+                                <AddItemButton text="Add Images" onClick={handleClick} />
                                 {imageErrors.length > 0 && (
                                     <div className="image-errors">
                                         {imageErrors.map((error, index) => (
