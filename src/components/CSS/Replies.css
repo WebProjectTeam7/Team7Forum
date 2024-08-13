@@ -197,6 +197,25 @@
     border: 1px solid #ccc;
 }
 
+.beer-button {
+    width: 130px !important;
+    height: 40px !important;
+    border: 0;
+    background: rgba(30, 30, 30, 0.5);
+    padding: 0%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    font-size: 17px;
+    font-family: inherit;
+    border-radius: 12px;
+    box-shadow: 0px 0px 5px rgb(173, 175, 28);
+}
+
+
 /* Dark Mode */
 body.dark-mode .replies-container {
     background-color: #1e1e1e;
