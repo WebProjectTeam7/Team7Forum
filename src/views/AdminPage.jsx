@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { getAllUsers, switchUserRole, } from '../services/users.service';
+import { getAllUsers, switchUserRole, deleteUser as deleteUserFromDB} from '../services/users.service';
 import { useNavigate } from 'react-router-dom';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/AdminPage.css';
@@ -51,8 +51,11 @@ export default function AdminPage() {
             return;
         }
         try {
-            await banUser(uid, Number(duration, 10));
+            const updatedUser = await banUser(uid, Number(duration, 10));
             alert('User banned successfully.');
+
+            setUsers(prevUsers => prevUsers.filter(user => user.uid !== uid));
+            setBannedUsers(prevBannedUsers => [...prevBannedUsers, updatedUser]);
         } catch (e) {
             alert(e.message);
         }
@@ -115,7 +118,7 @@ export default function AdminPage() {
 
         if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
             try {
-                await deleteUser(uid);
+                await deleteUserFromDB(uid);
                 alert('User deleted successfully.');
                 fetchAllUsers();
                 fetchBannedUsers();
@@ -224,7 +227,7 @@ export default function AdminPage() {
                                 <td>
                                     <button
                                         className="see-profile-button"
-                                        onClick={() => navigate(`/user-profile/${user.username}`)}>See profile
+                                        onClick={() => navigate(`/user-profile/${user.username}`)}>Profile
                                     </button>
                                 </td>
                                 <td>
