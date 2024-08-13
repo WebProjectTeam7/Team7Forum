@@ -130,6 +130,7 @@ input {
 
 header h2 {
   font-size: 20px;
+  color: rgb(73, 67, 67) !important;
 }
 
 header h3 {
