@@ -1,7 +1,7 @@
 import './CSS/BeerButton.css';
 import PropTypes from 'prop-types';
 
-export default function Button ({ text, onClick }) {
+export default function BeerButton ({ text, onClick }) {
     return (
         <button onClick={onClick} className="beer-button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
@@ -63,7 +63,7 @@ export default function Button ({ text, onClick }) {
     );
 }
 
-Button.propTypes = {
+BeerButton.propTypes = {
     text: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
 };

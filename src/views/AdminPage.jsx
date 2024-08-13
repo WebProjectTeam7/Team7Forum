@@ -292,7 +292,7 @@ export default function AdminPage() {
                                         <td>{report.reporter}</td>
                                         <td>{format(new Date(report.reportedAt), 'PPpp')}</td>
                                         <td>{report.type}</td>
-                                        <td class="content-cell">{report.content}</td>
+                                        <td className="content-cell">{report.content}</td>
                                         <td>{report.reason}</td>
                                         <td>
                                             <button onClick={() => handleDeleteReport(report.id)}>Dismiss</button>

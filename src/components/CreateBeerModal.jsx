@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import './CSS/CreateBeerModal.css';
+import AddItemButton from './AddItemButton';
 
 
 export default function CreateBeerModal({ beer, onClose, onSave }) {
@@ -12,6 +13,7 @@ export default function CreateBeerModal({ beer, onClose, onSave }) {
     const [description, setDescription] = useState('');
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (beer) {
@@ -37,6 +39,10 @@ export default function CreateBeerModal({ beer, onClose, onSave }) {
         } else {
             setImagePreview(null);
         }
+    };
+
+    const handleAddImageClick = () => {
+        fileInputRef.current.click();
     };
 
     const handleSubmit = (e) => {
@@ -111,7 +117,10 @@ export default function CreateBeerModal({ beer, onClose, onSave }) {
                             type="file"
                             accept="image/*"
                             onChange={handleFileChange}
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
                         />
+                        <AddItemButton text="Add Image" onClick={handleAddImageClick} />
                     </div>
                     {imagePreview && (
                         <div className="image-preview">

@@ -1,0 +1,63 @@
+/* From Uiverse.io by andrew-demchenk0 */
+.add_item_button {
+    position: relative;
+    width: 134px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 1px solid #34974d !important;
+    background-color: #3aa856 !important;
+    overflow: hidden;
+  }
+  
+  .add_item_button, .add_item_button__icon, .add_item_button__text {
+    transition: all 0.3s;
+  }
+  
+  .add_item_button .add_item_button__text {
+    transform: translateX(1px);
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .add_item_button .add_item_button__icon {
+    position: absolute;
+    transform: translateX(80px);
+    height: 100%;
+    width: 39px;
+    background-color: #34974d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .add_item_button .svg {
+    width: 30px;
+    stroke: #fff;
+  }
+  
+  .add_item_button:hover {
+    background: #34974d;
+  }
+  
+  .add_item_button:hover .add_item_button__text {
+    color: transparent;
+  }
+  
+  .add_item_button:hover .add_item_button__icon {
+    width: 100% !important;
+    transform: translateX(-20px);
+  }
+  
+  .add_item_button:active .add_item_button__icon {
+    background-color: #2e8644;
+  }
+  
+  .add_item_button:active {
+    border: 1px solid #2e8644;
+  }
+  
+  .hidden-file-input {
+    display: none;
+}

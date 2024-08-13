@@ -131,9 +131,9 @@
     align-self: flex-start; /* Fixed button width */
 }
 
-.reply-input button:hover {
+/* .reply-input button:hover {
     background-color: #0056b3;
-}
+} */
 
 .image-previews {
     display: flex;
@@ -253,9 +253,9 @@ body.dark-mode .edit-delete-buttons button {
     color: #fff;
 }
 
-body.dark-mode .edit-delete-buttons button:hover {
+/* body.dark-mode .edit-delete-buttons button:hover {
     background-color: #0056b3;
-}
+} */
 
 body.dark-mode .reply-input textarea,
 body.dark-mode .reply-input input[type="file"],
@@ -265,10 +265,10 @@ body.dark-mode .reply-input input[type="text"] {
     border: 1px solid #555;
 }
 
-body.dark-mode .reply-input button {
+/* body.dark-mode .reply-input button {
     background-color: #007bff;
     color: #fff;
-}
+} */
 
 body.dark-mode .reply-input button:hover {
     background-color: #0056b3;

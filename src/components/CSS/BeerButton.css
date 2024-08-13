@@ -15,10 +15,10 @@
   }
   
   .beer-button svg {
-    position: absolute;
-    left: 0.1em;
+    position: relative;
+    left: 0.01em;
     width: 40px;
-    height: 40px;
+    height: 30px;
     transform: rotateY(-180deg);
     transition: transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
   }

@@ -8,6 +8,8 @@ import Reply from './Reply';
 import Pagination from './Pagination';
 import PropTypes from 'prop-types';
 import './CSS/Replies.css';
+import BeerButton from './BeerButton';
+import CustomFileInput from './CustomFileInput';
 
 
 export default function Replies({ threadId }) {
@@ -145,12 +147,7 @@ export default function Replies({ threadId }) {
                             placeholder="Add a reply"
                             rows="4"
                         />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            multiple
-                        />
+                        <CustomFileInput onChange={handleImageChange} />
                         {imageErrors.length > 0 && (
                             <div className="image-errors">
                                 {imageErrors.map((error, index) => (
@@ -166,7 +163,7 @@ export default function Replies({ threadId }) {
                                 </div>
                             ))}
                         </div>
-                        <button onClick={handleCreateReply}>Add Reply</button>
+                        <BeerButton text="Add Reply" onClick={handleCreateReply} />
                     </div>
                 )
             }

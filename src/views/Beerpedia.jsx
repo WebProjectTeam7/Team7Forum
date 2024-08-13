@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { AppContext } from '../state/app.context';
 import { getAllBeers, deleteBeer, createBeer, editBeer, rateBeer } from '../services/beer.service';
 import UserRoleEnum from '../common/role.enum';
@@ -7,6 +7,7 @@ import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import CreateBeerModal from '../components/CreateBeerModal';
 import './CSS/Beerpedia.css';
+import AddItemButton from '../components/AddItemButton';
 
 export default function Beerpedia() {
     const { user, userData } = useContext(AppContext);
@@ -14,6 +15,7 @@ export default function Beerpedia() {
     const [editMode, setEditMode] = useState(null);
     const [editedBeerData, setEditedBeerData] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         fetchBeers();
@@ -114,6 +116,10 @@ export default function Beerpedia() {
         }
     };
 
+    const handleAddImageClick = () => {
+        fileInputRef.current.click();
+    };
+
     return (
         <div className="beerpedia-container">
             <h1>Beerpedia</h1>
@@ -177,7 +183,10 @@ export default function Beerpedia() {
                                         type="file"
                                         accept="image/*"
                                         onChange={handleFileChange}
+                                        ref={fileInputRef}
+                                        style={{ display: 'none' }}
                                     />
+                                    <AddItemButton text="Image" className="beerpedia-add-image" onClick={handleAddImageClick} />
                                 </>
                             ) : (
                                 <>
