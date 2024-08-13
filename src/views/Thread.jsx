@@ -7,6 +7,7 @@ import { getUserByUsername } from '../services/users.service';
 import { removeThreadIdFromCategory } from '../services/category.service';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
 import { MAX_FILE_SIZE, MAX_IMAGES } from '../common/views.constants';
+import { REPORT_REASON_LENGTH } from '../common/components.constants';
 import { FaEye } from 'react-icons/fa';
 import UserRoleEnum from '../common/role.enum';
 import Replies from '../components/Replies';
@@ -15,7 +16,6 @@ import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import VoteButtons from '../components/VoteButtons';
 import './CSS/Thread.css';
-import { REPORT_REASON_LENGTH } from '../common/components.constants';
 
 export default function Thread() {
     const { threadId } = useParams();
@@ -220,7 +220,7 @@ export default function Thread() {
                     {userData && (
                         <button onClick={handleReportThread}>Report</button>
                     )}
-                    {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && (
+                    {(userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.authorName)) && (
                         <>
                             <EditButton onClick={() => setEditMode(true)} />
                             <DeleteButton onClick={handleDeleteThread} />
@@ -309,7 +309,7 @@ export default function Thread() {
                 )}
             </div>
             {
-                (userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.author)) && editMode && (
+                (userData && (userData.role === UserRoleEnum.ADMIN || userData.username === thread.authorName)) && editMode && (
                     <div className="thread-edit">
                         <button onClick={handleEditThread}>Save Changes</button>
                         <button onClick={() => setEditMode(false)}>Cancel</button>

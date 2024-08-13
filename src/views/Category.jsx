@@ -100,9 +100,9 @@ export default function Category() {
             if (!TITLE_REGEX.test(newThreadTitle)) {
                 alertArr.push('Invalid title length, must be between 3 and 64 characters!');
             }
-            if (!CONTENT_REGEX.test(newThreadContent)) {
-                alertArr.push('Invalid content length, must be between 3 and 8192 characters!');
-            }
+            // if (!CONTENT_REGEX.test(newThreadContent)) {
+            //     alertArr.push('Invalid content length, must be between 3 and 8192 characters!');
+            // }
             if (alertArr.length > 0) {
                 alert(alertArr.join('\n'));
                 return;
