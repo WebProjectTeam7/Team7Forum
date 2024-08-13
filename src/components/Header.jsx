@@ -42,6 +42,7 @@ export default function Header() {
             <h1>Beer Foam</h1>
             <h2>your beer forum</h2>
             {userData && <span>Welcome, {userData.username}</span>}
+            <BeerSwitch />
             <nav>
                 <Search />
                 <NavLink to="/">Home</NavLink>
@@ -54,7 +55,6 @@ export default function Header() {
                     <NavLink to="/admin-page">Admin Page</NavLink>
                 )}
                 {user && <button onClick={logout}>Logout</button>}
-                <BeerSwitch />
             </nav>
             <h3>{threadsCount} posts from {usersCount} users</h3>
         </header>

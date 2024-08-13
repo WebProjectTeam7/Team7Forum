@@ -16,12 +16,14 @@ header {
   background-size: cover;
   background-position: center;
   position: relative;
-  overflow: auto;
- 
-  padding-top: 50px;
+  overflow: hidden;
+  justify-content: center;
+  padding-top: 10px;
   box-sizing: border-box;
-  padding-left: 0px
+  /* padding: 50px 20px 0; */
+  width: 100%;
 }
+
 
 header h1 {
   font-family: fantasy;
@@ -44,7 +46,7 @@ header span {
 nav {
   display: flex;
   align-items: center;
-  gap: 44px;
+  gap: 20px;
   flex-wrap: wrap;
   justify-content: flex-start;
   font-size: 27px;
@@ -69,7 +71,7 @@ nav a:hover {
 }
 
 nav button {
-  background-image: url(/src/image/bubbles.png);
+  /* background-image: url(/src/image/bubbles.png); */
   color: #d4eeff;
   padding: 4px 10px;
   cursor: pointer;
@@ -97,6 +99,7 @@ nav .beer-switch {
   margin-left: auto;
   display: flex;
   align-items: center;
+  margin-top: 100px !important;
 }
 
 @media (max-width: 768px) {
@@ -120,11 +123,15 @@ input {
   margin-top: 3px;
   margin-bottom: 3px;
   margin-right: 7px;
-  width: 240px;
+  width: 220px;
   margin-left: 0;
   align-self: flex-start;
 }
 
 header h2 {
   font-size: 20px;
+}
+
+header h3 {
+  color: #000000 !important;
 }

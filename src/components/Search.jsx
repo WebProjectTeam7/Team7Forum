@@ -6,7 +6,7 @@ import { getThreadsIdsByTag } from '../services/tag.service';
 
 export default function Search() {
     const [searchQuery, setSearchQuery] = useState('');
-    const [filter, setFilter] = useState('thread-title-exact');
+    const [filter, setFilter] = useState('All');
     const navigate = useNavigate();
 
     const handleSearch = async () => {

@@ -64,7 +64,25 @@ export const getThreadsByFilterInOrder = async (orderBy = 'createdAt', order = '
     }
 };
 
-export const getThreadsByCategoryId = async (categoryId, limit = 100, order = 'desc') => {
+export const getThreadsByUsername = async (username) => {
+    try {
+        const threadRef = query(
+            ref(db, 'threads'),
+            orderByChild('authorName'),
+            equalTo(username),
+        );
+        const snapshot = await get(threadRef);
+        if (!snapshot.exists()) {
+            return [];
+        }
+        return Object.values(snapshot.val());
+    } catch (error) {
+        console.error('Error fetching threads by user uid', error);
+        throw new Error('Failed to fetch threads by user');
+    }
+};
+
+export const getThreadsByCategoryId = async (categoryId, limit = 1000, order = 'desc') => {
     try {
         const threadsRef = query(
             ref(db, 'threads'),

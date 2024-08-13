@@ -11,8 +11,8 @@ import EditButton from './EditButton';
 import DeleteButton from './DeleteButton';
 import VoteButtons from './VoteButtons';
 import './CSS/Replies.css';
-import { BAN_REASON_LENGTH } from '../common/components.constants';
-
+import { REPORT_REASON_LENGTH } from '../common/components.constants';
+import CustomFileInput from '../components/CustomFileInput';
 
 const Reply = ({ reply, threadId, fetchReplies }) => {
     const { userData } = useContext(AppContext);
@@ -95,7 +95,7 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
     const handleReportReply = async () => {
         const reason = prompt('Please enter the reason for reporting this reply:');
 
-        if (reason && reason.length > BAN_REASON_LENGTH) {
+        if (reason && reason.length > REPORT_REASON_LENGTH) {
             alert('The report reason must be 20 characters or less.');
             return;
         }
@@ -130,12 +130,7 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
                                 value={editReplyContent}
                                 onChange={(e) => setEditReplyContent(e.target.value)}
                             />
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                multiple
-                            />
+                            <CustomFileInput onChange={handleImageChange} />
                             {imageErrors.length > 0 && (
                                 <div className="image-errors">
                                     {imageErrors.map((error, index) => (

@@ -71,6 +71,21 @@ export const getReplyById = async (replyId) => {
     }
 };
 
+export const getThreadsIdsByUsername = async (username) => {
+    try {
+        const replyRef = query(ref(db, 'replies'), orderByChild('author'), equalTo(username));
+        const snapshot = await get(replyRef);
+        if (!snapshot.exists()) {
+            return [];
+        }
+        const data = snapshot.val();
+        const threadIds = Object.values(data).map(reply => reply.threadId);
+        return threadIds;
+    } catch (error) {
+        console.error('Error fetching thread IDs by username:', error);
+        throw new Error('Failed to fetch thread IDs');
+    }
+};
 
 // UPDATE
 

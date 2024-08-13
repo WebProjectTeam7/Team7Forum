@@ -45,13 +45,15 @@ export default function Forum() {
     };
 
     const handleCreateCategory = async () => {
-        if (newCategoryTitle.trim()) {
-            const banned = await isUserBanned(userData.uid);
 
-            if (banned) {
-                alert('You are banned from creating threads!');
-                return;
-            }
+        const banned = await isUserBanned(userData.uid);
+
+        if (banned) {
+            alert('You are banned from creating threads!');
+            return;
+        }
+
+        if (newCategoryTitle.trim()) {
 
             try {
                 const newCategoryId = await createCategory(newCategoryTitle);
@@ -140,7 +142,7 @@ export default function Forum() {
             ))}
             {isAdmin && (
                 <div className="admin-actions">
-                    <button onClick={() => setShowCreateCategory(!showCreateCategory)}>
+                    <button onClick={() => setShowCreateCategory(!showCreateCategory)} disabled={userData.isBanned}>
                         {showCreateCategory ? 'Cancel' : 'Create Category'}
                     </button>
                     {showCreateCategory && (

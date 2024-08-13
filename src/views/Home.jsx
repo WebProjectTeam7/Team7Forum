@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { getThreadsByFilterInOrder } from '../services/thread.service';
-import { HOME_PAGE_CHART_COUNT } from '../common/views.constants';
-import ThreadItem from '../components/ThreadItem';
+import { HOME_PAGE_CHART_COUNT, THREADS_PER_PAGE } from '../common/views.constants';
+import ThreadList from '../components/ThreadList';
 import './CSS/Category.css';
-
 
 export default function Home() {
     const [mostCommentedThreads, setMostCommentedThreads] = useState([]);
     const [mostRecentThreads, setMostRecentThreads] = useState([]);
+    const [mostCommentedCurrentPage, setMostCommentedCurrentPage] = useState(1);
+    const [mostRecentCurrentPage, setMostRecentCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -29,37 +30,27 @@ export default function Home() {
         }
     };
 
+    const mostCommentedTotalPages = Math.ceil(mostCommentedThreads.length / THREADS_PER_PAGE);
+    const mostRecentTotalPages = Math.ceil(mostRecentThreads.length / THREADS_PER_PAGE);
+
     return (
         <div className="category-container">
-            <h1>Top {HOME_PAGE_CHART_COUNT} Most Commented Threads</h1>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <ul className="threads">
-                    {mostCommentedThreads.length > 0 ? (
-                        mostCommentedThreads.map((thread) => (
-                            <ThreadItem key={thread.id} thread={thread} />
-                        ))
-                    ) : (
-                        <li>No threads available</li>
-                    )}
-                </ul>
-            )}
-
-            <h1>Top {HOME_PAGE_CHART_COUNT} Most Recent Threads</h1>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <ul className="threads">
-                    {mostRecentThreads.length > 0 ? (
-                        mostRecentThreads.map((thread) => (
-                            <ThreadItem key={thread.id} thread={thread} />
-                        ))
-                    ) : (
-                        <li>No threads available</li>
-                    )}
-                </ul>
-            )}
+            <ThreadList
+                title={`Top ${HOME_PAGE_CHART_COUNT} Most Commented Threads`}
+                threads={mostCommentedThreads}
+                currentPage={mostCommentedCurrentPage}
+                totalPages={mostCommentedTotalPages}
+                onPageChange={setMostCommentedCurrentPage}
+                loading={loading}
+            />
+            <ThreadList
+                title={`Top ${HOME_PAGE_CHART_COUNT} Most Recent Threads`}
+                threads={mostRecentThreads}
+                currentPage={mostRecentCurrentPage}
+                totalPages={mostRecentTotalPages}
+                onPageChange={setMostRecentCurrentPage}
+                loading={loading}
+            />
         </div>
     );
 }
