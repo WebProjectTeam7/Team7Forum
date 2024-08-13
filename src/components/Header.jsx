@@ -47,9 +47,9 @@ export default function Header() {
                 <Search />
                 <NavLink to="/">Home</NavLink>
                 <NavLink to="/forum">Forum</NavLink>
+                <NavLink to="/beerpedia">Beerpedia</NavLink>
                 {!user && <NavLink to="/login">Login</NavLink>}
                 {!user && <NavLink to="/register">Register</NavLink>}
-                <NavLink to="/beerpedia">Beerpedia</NavLink>
                 {user && <NavLink to="/my-profile">My Profile</NavLink>}
                 {userData && userData.role === UserRoleEnum.ADMIN && (
                     <NavLink to="/admin-page">Admin Page</NavLink>
