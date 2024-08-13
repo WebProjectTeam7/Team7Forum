@@ -3,9 +3,9 @@
   align-items: center;
   justify-content: center;
   gap: 0px;
-  margin-left: 90%;
-  margin-top: -20px;
-  margin-bottom: -80px;
+  /* margin-left: 90%; */
+  /* margin-top: -20px; */
+  /* margin-bottom: -80px; */
 }
 
 .icon {
@@ -23,8 +23,8 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 200px;
-  height: 30px;
+  width: 100px;
+  height: 50px;
   margin: 0px 10px;
 }
 
@@ -49,10 +49,10 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
+  height: 30px;
+  width: 30px;
   left: 5px;
-  bottom: 4.5px;
+  bottom: 7.5px;
   background-color: white;
   transition: 0.4s;
   border-radius: 50%;
@@ -64,7 +64,7 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-  transform: translateX(173px);
+  transform: translateX(60px);
 }
 
 input:checked + .slider:before {

@@ -1,7 +1,7 @@
 #root {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
-  margin-left: -10px;
+  margin-left: auto;
   margin-right: auto;
   padding: 0; 
 }
