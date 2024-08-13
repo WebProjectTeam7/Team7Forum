@@ -47,8 +47,8 @@ export const isUserBanned = async (uid) => {
     const snapshot = await get(userRef);
     if (snapshot.exists()) {
         const userData = Object.values(snapshot.val())[0];
-        if (userData.banExpiration) {
-            const banEndDate = new Date(userData.banExpiration);
+        if (userData.isBanned) {
+            const banEndDate = new Date(userData.banEndDate);
             const currentDate = new Date();
             if (currentDate < banEndDate) {
                 return true;

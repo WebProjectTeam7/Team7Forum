@@ -85,12 +85,15 @@ export default function Replies({ threadId }) {
     };
 
     const handleCreateReply = async () => {
+
+        const banned = await isUserBanned(userData.uid);
+        if (banned) {
+            alert('You are banned from posting replies!');
+            return;
+        }
+
         if (replyContent.trim() || attachedImages.length) {
-            const banned = await isUserBanned(userData.uid);
-            if (banned) {
-                alert('You are banned from posting replies!');
-                return;
-            }
+
             try {
                 let content = replyContent;
                 let imageUrls = [];
@@ -163,7 +166,7 @@ export default function Replies({ threadId }) {
                                 </div>
                             ))}
                         </div>
-                        <BeerButton text="Add Reply" onClick={handleCreateReply} />
+                        <BeerButton text="Add Reply" onClick={handleCreateReply} disabled={userData.isBanned} />
                     </div>
                 )
             }
