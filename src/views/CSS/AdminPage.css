@@ -340,3 +340,48 @@ body.dark-mode .unban-button {
 body.dark-mode .unban-button:hover {
     background-color: #218838 !important;
 }
+
+/* Container for the role dropdown within the table cell */
+.role-dropdown {
+    padding: 0;
+    margin: 0;
+}
+
+/* Styling for the select element inside the table cell */
+.role-dropdown select {
+    width: 60px; /* Set a fixed width for the select */
+    height: 30px; /* Set a fixed height for the select */
+    padding: 5px;
+    border: 1px solid #ccc; /* Border for better visibility */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #fff; /* Background color */
+    font-size: 14px; /* Font size for readability */
+    color: #333; /* Text color */
+    cursor: pointer; /* Pointer cursor for better UX */
+    -webkit-appearance: none; /* Remove default styling in WebKit browsers */
+    -moz-appearance: none; /* Remove default styling in Firefox */
+    appearance: none; /* Remove default styling in other browsers */
+}
+
+/* Optional: Remove default dropdown arrow in IE */
+.role-dropdown select::-ms-expand {
+    display: none;
+}
+
+/* Optional: Add a custom arrow if needed */
+.role-dropdown select::after {
+    content: '▼'; /* Custom arrow symbol */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #333;
+}
+
+/* Dark Mode specific styles */
+body.dark-mode .role-dropdown select {
+    background-color: #444;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}

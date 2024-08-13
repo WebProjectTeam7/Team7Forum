@@ -1,17 +1,17 @@
 import { useState, useEffect, useContext } from 'react';
-import { getAllUsers, switchUserRole, deleteUser } from '../services/users.service';
 import { useNavigate } from 'react-router-dom';
-import UserRoleEnum from '../common/role.enum';
-import './CSS/AdminPage.css';
-import DeleteButton from '../components/deletebutton';
-import { AppContext } from '../state/app.context';
+import { getAllUsers, switchUserRole, deleteUser } from '../services/users.service';
 import { banUser, deleteReport, getRemainingBanTime, getReports, unbanUser } from '../services/admin.service';
+import { AppContext } from '../state/app.context';
 import { getThreadById } from '../services/thread.service';
 import { getReplyById } from '../services/reply.service';
 import { format } from 'date-fns';
+import DeleteButton from '../components/deletebutton';
+import UserRoleEnum from '../common/role.enum';
 import banUserImage from '../image/ban-user.png';
 import SuccessModal from './SuccessModal';
 import Swal from 'sweetalert2';
+import './CSS/AdminPage.css';
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
@@ -225,7 +225,7 @@ export default function AdminPage() {
                                 <td>{user.email}</td>
                                 <td>{user.firstName}</td>
                                 <td>{user.lastName}</td>
-                                <td>
+                                <td className='role-dropdown'>
                                     <select
                                         value={user.role}
                                         onChange={(e) => handleRoleChange(user.uid, e.target.value)}
