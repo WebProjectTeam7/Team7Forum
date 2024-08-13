@@ -224,7 +224,7 @@ export default function AdminPage() {
                                 <td>
                                     <button
                                         className="see-profile-button"
-                                        onClick={() => navigate(`/user-profile/${user.username}`)}>See profile
+                                        onClick={() => navigate(`/user-profile/${user.username}`)}>Profile
                                     </button>
                                 </td>
                                 <td>
