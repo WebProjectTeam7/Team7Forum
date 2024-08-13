@@ -1,10 +1,40 @@
 /* General styles */
+.create-threads-beer-button {
+    background-color: white; /* Removed {!important} as it's not needed here */
+}
 
+/* Forum Activity */
+.forum-activity {
+    background-color: var(--light-background);
+    color: var(--light-text);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--padding);
+    margin: 16px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.forum-activity h2 {
+    margin-top: 0;
+    color: var(--highlight-color);
+}
+
+.forum-activity p {
+    margin: 8px 0;
+}
+
+.forum-activity strong {
+    color: var(--highlight-color);
+}
+
+/* Body */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f2f5;
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 h1,
@@ -17,7 +47,7 @@ h1 {
     margin-left: 20px;
 }
 
-/* Category container */
+/* Category Container */
 .category-container {
     width: 50%;
     margin: 20px auto;
@@ -27,12 +57,12 @@ h1 {
     border-radius: 8px;
 }
 
+/* Pagination */
 .pagination-div {
     margin-bottom: 20px;
 }
 
-
-/* Threads section */
+/* Threads Section */
 .threads {
     list-style: none;
     padding: 0 0 0 20px;
@@ -44,6 +74,8 @@ h1 {
     justify-content: space-between;
     align-items: center;
     background: rgba(249, 249, 249, 0.3);
+    border-radius: 8px;
+    padding: 10px;
 }
 
 .threads li a {
@@ -69,7 +101,7 @@ h1 {
     background-color: #c82333;
 }
 
-/* Admin actions */
+/* Admin Actions */
 .admin-actions {
     display: flex;
     flex-direction: column;
@@ -85,17 +117,29 @@ h1 {
     border: 1px solid #ddd;
     border-radius: 4px;
     width: 100%;
+    background-color: #ffffff; /* Added background color for light mode */
+    color: #000000; /* Added text color for light mode */
+}
+
+.admin-actions button {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .admin-actions button:hover {
-    background-color: rgba(38, 61, 35, 0.301);
+    background-color: #0056b3;
 }
 
-.beer-button{
-    width: 130px !important;
+/* Beer Button */
+.beer-button {
+    width: 130px;
     border: 0;
-    background: rgba(30, 30, 30, 0.5);
-    padding: 0% !important;
+    background: rgba(248, 247, 247, 0.881);
+    padding: 0;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -106,29 +150,29 @@ h1 {
     font-family: inherit;
     border-radius: 12px;
     box-shadow: 0px 0px 5px rgb(173, 175, 28);
-  }
-  
-  .beer-button svg {
+}
+
+.beer-button svg {
     position: relative;
     left: 0.01em;
     width: 40px;
     height: 30px;
     transform: rotateY(-180deg);
     transition: transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
-  }
-  
-  .beer-button:hover svg {
-    transform: rotateY(-180deg) translateX(-0.45em) !important;
-  }
-  
-  .beer-button:active {
+}
+
+.beer-button:hover svg {
+    transform: rotateY(-180deg) translateX(-0.45em);
+}
+
+.beer-button:active {
     transform: scale(0.98);
-  }
-  
-  .beer- button span {
-    margin-left: 20px; 
-    color: black; 
-  }
+}
+
+.beer-button span {
+    margin-left: 20px;
+    color: black;
+}
 
 /* Dark Mode */
 body.dark-mode {
@@ -138,7 +182,7 @@ body.dark-mode {
 
 body.dark-mode h1,
 body.dark-mode h2 {
-    color: #180202;
+    color: #e0e0e0;
 }
 
 body.dark-mode .category-container {
@@ -152,6 +196,7 @@ body.dark-mode .threads {
 
 body.dark-mode .threads li {
     margin: 10px 0;
+    background: rgba(30, 30, 30, 0.3);
 }
 
 body.dark-mode .threads li a {
@@ -182,9 +227,10 @@ body.dark-mode .admin-actions textarea {
 }
 
 body.dark-mode .admin-actions button {
-    background-color: rgb(12, 100, 59);
+    background-color: #007bff;
+    color: #ffffff;
 }
 
 body.dark-mode .admin-actions button:hover {
-    background-color: rgba(38, 61, 35, 0.301);
+    background-color: #0056b3;
 }

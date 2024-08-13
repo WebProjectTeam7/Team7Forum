@@ -64,12 +64,12 @@ export const getThreadsByFilterInOrder = async (orderBy = 'createdAt', order = '
     }
 };
 
-export const getThreadsByUserId = async (userId) => {
+export const getThreadsByUsername = async (username) => {
     try {
         const threadRef = query(
             ref(db, 'threads'),
-            orderByChild('authorId'),
-            equalTo(userId),
+            orderByChild('authorName'),
+            equalTo(username),
         );
         const snapshot = await get(threadRef);
         if (!snapshot.exists()) {
