@@ -32,7 +32,7 @@
 }
 
 .delete-svg {
-  width: 25px;
+  width: 28px;
   transition: fill 0.3s;
 }
 
@@ -46,7 +46,7 @@
 
 .delete-btn:hover .delete-icon {
   width: 50px;
-  transform: translateX(0);
+  transform: translateX(-2px);
 }
 
 .delete-btn:active .delete-icon {
