@@ -10,6 +10,9 @@ import { banUser, deleteReport, getRemainingBanTime, getReports, unbanUser } fro
 import { getThreadById } from '../services/thread.service';
 import { getReplyById } from '../services/reply.service';
 import { format } from 'date-fns';
+import banUserImage from '../image/ban-user.png';
+import SuccessModal from './SuccessModal';
+import delUser from '../image/del-user.gif';
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
@@ -20,6 +23,9 @@ export default function AdminPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const { userData } = useContext(AppContext);
     const [reports, setReports] = useState([]);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalImage, setModalImage] = useState('');
 
     useEffect(() => {
         fetchAllUsers();
@@ -52,7 +58,11 @@ export default function AdminPage() {
         }
         try {
             await banUser(uid, Number(duration, 10));
-            alert('User banned successfully.');
+            setModalMessage('User banned successfully.');
+            setModalImage(banUserImage);
+            setShowSuccessModal(true);
+            setTimeout(() => setShowSuccessModal(false), 5000);
+            fetchBannedUsers();
         } catch (e) {
             alert(e.message);
         }
@@ -61,7 +71,10 @@ export default function AdminPage() {
     const handleUnbanUser = async (uid) => {
         try {
             await unbanUser(uid);
-            alert('User unbanned successfully.');
+            setModalMessage('User unbanned successfully.');
+            setModalImage(banUserImage);
+            setShowSuccessModal(true);
+            setTimeout(() => setShowSuccessModal(false), 5000);
             fetchBannedUsers();
         } catch (e) {
             alert(e.message);
@@ -115,10 +128,19 @@ export default function AdminPage() {
 
         if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
             try {
+                // console.log('Deleting user...');
                 await deleteUser(uid);
-                alert('User deleted successfully.');
-                fetchAllUsers();
-                fetchBannedUsers();
+                // console.log('User deleted');
+                setModalMessage('User deleted successfully.');
+                setModalImage(delUser);
+                setShowSuccessModal(true);
+                // console.log('Setting showSuccessModal to true');
+                setTimeout(() => {
+                    setShowSuccessModal(false);
+                // console.log('Setting showSuccessModal to false');
+                }, 5000);
+                await fetchAllUsers();
+                await fetchBannedUsers();
             } catch (e) {
                 alert(e.message);
             }
@@ -167,6 +189,12 @@ export default function AdminPage() {
 
     return (
         <div className="admin-page-container">
+            {showSuccessModal && (
+                <SuccessModal
+                    message={modalMessage}
+                    image={modalImage}
+                    onClose={() => setShowSuccessModal(false)} />
+            )}
             <h1>Admin Panel</h1>
             <div className="nav">
                 <button onClick={() => setView('all')}>All Users</button>
