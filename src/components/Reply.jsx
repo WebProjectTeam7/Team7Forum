@@ -13,6 +13,7 @@ import VoteButtons from './VoteButtons';
 import './CSS/Replies.css';
 import { REPORT_REASON_LENGTH } from '../common/components.constants';
 import CustomFileInput from '../components/CustomFileInput';
+import Swal from 'sweetalert2';
 
 const Reply = ({ reply, threadId, fetchReplies }) => {
     const { userData } = useContext(AppContext);
@@ -28,6 +29,7 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
             setUserAuthor(user);
         } catch (error) {
             console.error('Error fetching user:', error);
+            Swal.fire('Error', 'An error occurred while fetching user details. Please try again later.', 'error'); // SweetAlert2 for user alerts
         }
     };
 
@@ -81,7 +83,16 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
     };
 
     const handleDeleteReply = async (replyId) => {
-        if (window.confirm('Are you sure you want to delete this reply?')) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this reply!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        });
+
+        if (result.isConfirmed) {
             try {
                 await deleteReply(replyId);
                 await removeReplyIdFromThread(threadId, replyId);
@@ -93,17 +104,28 @@ const Reply = ({ reply, threadId, fetchReplies }) => {
     };
 
     const handleReportReply = async () => {
-        const reason = prompt('Please enter the reason for reporting this reply:');
-
-        if (reason && reason.length > REPORT_REASON_LENGTH) {
-            alert('The report reason must be 20 characters or less.');
-            return;
-        }
+        const { value: reason } = await Swal.fire({
+            title: 'Report Reply',
+            input: 'textarea',
+            inputPlaceholder: 'Enter the reason for reporting this reply',
+            inputAttributes: {
+                'aria-label': 'Enter the reason for reporting this reply',
+            },
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to enter a reason!';
+                } else if (value.length > REPORT_REASON_LENGTH) {
+                    return `The report reason must be ${REPORT_REASON_LENGTH} characters or less.`;
+                }
+            },
+            confirmButtonText: 'Submit',
+            showCancelButton: true,
+        });
 
         if (reason) {
             try {
                 await reportReply(reply.id, userData.username, reply.content, reason);
-                alert('Reply reported successfully.');
+                Swal.fire('Reported', 'Reply reported successfully.', 'success');
             } catch (error) {
                 console.error('Error reporting reply:', error);
             }

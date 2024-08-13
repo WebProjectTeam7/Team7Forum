@@ -5,6 +5,7 @@ import { AppContext } from '../state/app.context';
 import { handleThreadVote } from '../services/thread.service';
 import { handleReplyVote } from '../services/reply.service';
 import { isUserBanned } from '../services/admin.service';
+import Swal from 'sweetalert2';
 
 const VoteButtons = ({ itemId, itemType, fetchItem, initialUserVote, upvotes, downvotes }) => {
     const { userData } = useContext(AppContext);
@@ -12,7 +13,7 @@ const VoteButtons = ({ itemId, itemType, fetchItem, initialUserVote, upvotes, do
 
     const handleVote = async (vote) => {
         if (!userData) {
-            alert('You need to be logged in to vote.');
+            Swal.fire('Login Required', 'You need to be logged in to vote.', 'info');
             return;
         }
 
@@ -20,7 +21,7 @@ const VoteButtons = ({ itemId, itemType, fetchItem, initialUserVote, upvotes, do
         try {
             const banned = await isUserBanned(userData.uid);
             if (banned) {
-                alert('You are banned from voting!');
+                Swal.fire('Banned', 'You are banned from voting!', 'warning');
                 return;
             }
             if (itemType === 'thread') {
