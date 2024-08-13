@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { getAllUsers, switchUserRole, deleteUser as deleteUserFromDB} from '../services/users.service';
+import { getAllUsers, switchUserRole, deleteUser } from '../services/users.service';
 import { useNavigate } from 'react-router-dom';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/AdminPage.css';
@@ -12,7 +12,6 @@ import { getReplyById } from '../services/reply.service';
 import { format } from 'date-fns';
 import banUserImage from '../image/ban-user.png';
 import SuccessModal from './SuccessModal';
-import delUser from '../image/del-user.gif';
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
