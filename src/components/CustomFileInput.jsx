@@ -19,7 +19,7 @@ export default function CustomFileInput({ onChange }) {
                 multiple
                 className="hidden-file-input"
             />
-            <AddItemButton text="Add Image" onClick={handleClick} />
+            <AddItemButton text="Image" onClick={handleClick} />
         </div>
     );
 }

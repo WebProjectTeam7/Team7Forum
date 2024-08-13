@@ -1,9 +1,6 @@
 import { useState, useContext } from 'react';
 import { AppContext } from '../state/app.context';
-import { useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
-import { updateUser, getUserByUsername, uploadUserAvatar, deleteUser } from '../services/users.service';
-import { auth } from '../config/firebase-config';
+import { updateUser, uploadUserAvatar } from '../services/users.service';
 import { getRemainingBanTime } from '../services/admin.service';
 import { MAX_FILE_SIZE } from '../common/views.constants';
 import successGif from '../image/successfully-update-profile.gif';
@@ -11,12 +8,10 @@ import errorGif from '../image/error.gif';
 import Modal from '../views/Modal';
 import CustomFileInput from '../components/CustomFileInput';
 import BeerButton from '../components/BeerButton';
-import DeleteButton from '../components/DeleteButton';
 import ThreadsByUser from '../components/ThreadsByUser';
 import './CSS/MyProfile.css';
 
 export default function MyProfile() {
-    const navigate = useNavigate();
     const { user, userData, setAppState } = useContext(AppContext);
 
     const [editMode, setEditMode] = useState({
@@ -26,7 +21,6 @@ export default function MyProfile() {
     });
 
     const [avatarFile, setAvatarFile] = useState(null);
-    const [isUploading, setIsUploading] = useState(false);
     const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(null);
     const [modalMessage, setModalMessage] = useState('');
     const [modalGif, setModalGif] = useState('');
@@ -44,13 +38,11 @@ export default function MyProfile() {
 
     const saveChanges = async () => {
         try {
-            let avatarURL = userData.avatar;
-            if (avatarFile) {
-                avatarURL = await uploadAvatar();
-            }
-
             const updatedData = { ...userData };
-            if (avatarURL) {
+            let avatarURL = userData.avatar;
+
+            if (avatarFile) {
+                avatarURL = await uploadUserAvatar(userData.uid, avatarFile);
                 updatedData.avatar = avatarURL;
             }
 
@@ -67,28 +59,6 @@ export default function MyProfile() {
             setModalMessage('Error updating profile: ' + error.message);
             setModalGif(errorGif);
             setShowModal(true);
-        }
-    };
-
-    const deleteAccount = async () => {
-        if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-            try {
-                await deleteUser(user.uid);
-                await signOut(auth);
-                setModalMessage('Account deleted successfully');
-                setModalGif(successGif);
-                setShowModal(true);
-                setAppState((prev) => ({
-                    ...prev,
-                    user: null,
-                    userData: {},
-                }));
-                navigate('/register');
-            } catch (error) {
-                setModalMessage('Error deleting account: ' + error.message);
-                setModalGif(errorGif);
-                setShowModal(true);
-            }
         }
     };
 
@@ -112,36 +82,6 @@ export default function MyProfile() {
         setAvatarPreviewUrl(URL.createObjectURL(file));
     };
 
-    const uploadAvatar = async () => {
-        try {
-            setIsUploading(true);
-            if (avatarFile) {
-                const avatarURL = await uploadUserAvatar(userData.uid, avatarFile);
-                await updateUser(user.uid, { avatar: avatarURL });
-                const updatedUserData = await getUserByUsername(userData.username);
-                setAppState((prev) => ({
-                    ...prev,
-                    userData: updatedUserData,
-                }));
-
-                return avatarURL;
-            }
-
-            return null;
-        } catch (error) {
-            console.error('Error uploading avatar:', error);
-            alert('Error uploading avatar: ' + error.message);
-            return null;
-        } finally {
-            setIsUploading(false);
-            if (avatarPreviewUrl) {
-                URL.revokeObjectURL(avatarPreviewUrl);
-            }
-            setAvatarPreviewUrl(null);
-        }
-
-    };
-
     if (!userData) return <div>Loading...</div>;
 
     return (
@@ -163,9 +103,6 @@ export default function MyProfile() {
                         className="avatar-img"
                     />
                     <CustomFileInput onChange={handleAvatarChange} />
-                    <button className="upload-avatar-button" onClick={uploadAvatar} disabled={!avatarFile || isUploading}>
-                        Upload Avatar
-                    </button>
                 </div>
 
                 {/* USERNAME */}
@@ -221,7 +158,6 @@ export default function MyProfile() {
                 {/* Button Container */}
                 <div className="button-container">
                     <BeerButton text="Save" onClick={saveChanges} />
-                    <DeleteButton onClick={deleteAccount} />
                 </div>
 
                 {/* MODAL */}
