@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { getAllUsers, switchUserRole, } from '../services/users.service';
+import { getAllUsers, switchUserRole, deleteUser as deleteUserFromDB} from '../services/users.service';
 import { useNavigate } from 'react-router-dom';
 import UserRoleEnum from '../common/role.enum';
 import './CSS/AdminPage.css';
@@ -58,11 +58,7 @@ export default function AdminPage() {
         }
         try {
             await banUser(uid, Number(duration, 10));
-            setModalMessage('User banned successfully.');
-            setModalImage(banUserImage);
-            setShowSuccessModal(true);
-            setTimeout(() => setShowSuccessModal(false), 5000);
-            fetchBannedUsers();
+            alert('User banned successfully.');
         } catch (e) {
             alert(e.message);
         }
@@ -128,19 +124,10 @@ export default function AdminPage() {
 
         if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
             try {
-                // console.log('Deleting user...');
                 await deleteUser(uid);
-                // console.log('User deleted');
-                setModalMessage('User deleted successfully.');
-                setModalImage(delUser);
-                setShowSuccessModal(true);
-                // console.log('Setting showSuccessModal to true');
-                setTimeout(() => {
-                    setShowSuccessModal(false);
-                // console.log('Setting showSuccessModal to false');
-                }, 5000);
-                await fetchAllUsers();
-                await fetchBannedUsers();
+                alert('User deleted successfully.');
+                fetchAllUsers();
+                fetchBannedUsers();
             } catch (e) {
                 alert(e.message);
             }
@@ -252,7 +239,7 @@ export default function AdminPage() {
                                 <td>
                                     <button
                                         className="see-profile-button"
-                                        onClick={() => navigate(`/user-profile/${user.username}`)}>See profile
+                                        onClick={() => navigate(`/user-profile/${user.username}`)}>Profile
                                     </button>
                                 </td>
                                 <td>

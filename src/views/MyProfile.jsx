@@ -1,10 +1,10 @@
 import { useState, useContext } from 'react';
 import { AppContext } from '../state/app.context';
 import { useNavigate } from 'react-router-dom';
-import { updateUser, getUserByUsername, uploadUserAvatar } from '../services/users.service';
+import { updateUser, getUserByUsername, uploadUserAvatar, deleteUser } from '../services/users.service';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase-config';
-import { deleteUser, getRemainingBanTime } from '../services/admin.service';
+import {  getRemainingBanTime } from '../services/admin.service';
 import { MAX_FILE_SIZE } from '../common/views.constants';
 import successGif from '../image/successfully-update-profile.gif';
 import errorGif from '../image/error.gif';
@@ -13,7 +13,6 @@ import CustomFileInput from '../components/CustomFileInput';
 import BeerButton from '../components/BeerButton';
 import DeleteButton from '../components/DeleteButton';
 import './CSS/MyProfile.css';
-
 
 export default function MyProfile() {
     const navigate = useNavigate();

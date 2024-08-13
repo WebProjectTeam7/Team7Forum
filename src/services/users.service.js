@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, remove } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../config/firebase-config';
 
@@ -139,5 +139,21 @@ export const uploadUserAvatar = async (uid, imageFile) => {
     } catch (error) {
         console.error('Error uploading image:', error);
         throw new Error('Failed to upload image');
+    }
+};
+
+// DELETE USER
+export const deleteUser = async (uid) => {
+    const userRef = query(ref(db, 'users'), orderByChild('uid'), equalTo(uid));
+    try {
+        const snapshot = await get(userRef);
+        if (!snapshot.exists()) {
+            throw new Error('User not found');
+        }
+        const userId = Object.keys(snapshot.val())[0];
+        await remove(ref(db, `users/${userId}`));
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        throw new Error('Failed to delete user: ' + error.message);
     }
 };
