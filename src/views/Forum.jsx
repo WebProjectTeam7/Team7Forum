@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/category.service';
 import { getThreadsByCategoryId } from '../services/thread.service';
 import { AppContext } from '../state/app.context';

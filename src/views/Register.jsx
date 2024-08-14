@@ -9,8 +9,8 @@ import RoleEnum from '../common/role.enum';
 import InfoButton from '../components/InfoButton';
 import { FaEye } from 'react-icons/fa';
 import WelcomeGifNotification from '../components/NotificationAfterRegister';
-import ErrorComponent from '../components/ServerError';
-import './CSS/Modal.css';
+import Swal from 'sweetalert2';
+import './CSS/Register.css';
 
 export default function Register() {
     const { setAppState } = useContext(AppContext);
@@ -25,11 +25,8 @@ export default function Register() {
     });
 
     const [hidePassword, setHidePassword] = useState(true);
-    const [alertMessage, setAlertMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [showGift, setShowGift] = useState(false);
-    const [noCredentials, setNoCredentials] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
 
     const togglePasswordVisibility = () => {
         setHidePassword(!hidePassword);
@@ -37,7 +34,7 @@ export default function Register() {
 
     const navigate = useNavigate();
 
-    const updateUser = prop => e => {
+    const updateUser = (prop) => (e) => {
         setUser({
             ...user,
             [prop]: e.target.value,
@@ -48,10 +45,6 @@ export default function Register() {
         e.preventDefault();
 
         setLoading(true);
-        setAlertMessage('');
-        setErrorMessage(null);
-        setNoCredentials(false);
-
         const alertArr = [];
 
         if (!USER_REGEX.test(user.username)) {
@@ -79,8 +72,12 @@ export default function Register() {
         }
 
         if (alertArr.length > 0) {
-            setAlertMessage(alertArr.join('\n'));
-            setNoCredentials(true);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: alertArr.join('\n'),
+                confirmButtonText: 'OK',
+            });
             setLoading(false);
             return;
         }
@@ -88,12 +85,17 @@ export default function Register() {
         try {
             const userFromDB = await getUserByUsername(user.username);
             if (userFromDB) {
-                setAlertMessage(`User ${user.username} already exists!`);
-                setErrorMessage('User already exists.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Failed',
+                    text: `User ${user.username} already exists!`,
+                    confirmButtonText: 'OK',
+                });
                 setShowGift(true);
                 setLoading(false);
                 return;
             }
+
             const credential = await registerUser(user.email, user.password);
             await createUser(user.username, credential.user.uid, user.email, user.firstName, user.lastName, user.role);
             setAppState({ user: credential.user, userData: null });
@@ -103,7 +105,12 @@ export default function Register() {
                 navigate('/');
             }, 2000);
         } catch (error) {
-            setErrorMessage(error.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Registration Error',
+                text: error.message,
+                confirmButtonText: 'OK',
+            });
             setShowGift(true);
         } finally {
             setLoading(false);
@@ -112,11 +119,6 @@ export default function Register() {
 
     const handleCloseNotification = () => {
         setShowGift(false);
-    };
-
-    const closeModal = () => {
-        setNoCredentials(false);
-        setErrorMessage('');
     };
 
     return (
@@ -175,7 +177,6 @@ export default function Register() {
                         onChange={updateUser('lastName')}
                         type="text"
                         name="lastName"
-                        id="lastName"
                     />
 
                     <br /><br />
@@ -211,27 +212,7 @@ export default function Register() {
                     {/* SUBMIT */}
                     <button>Register</button>
                 </form>
-                {/* Modals for errors and notifications */}
-                {noCredentials && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <h2>Validation Error</h2>
-                            <p>{alertMessage}</p>
-                            <button onClick={closeModal}>OK</button>
-                        </div>
-                    </div>
-                )}
 
-                {errorMessage && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <h2>Error</h2>
-                            <p>{errorMessage}</p>
-                            <button onClick={closeModal}>OK</button>
-                        </div>
-                    </div>
-                )}
-                {errorMessage && <ErrorComponent />}
                 <WelcomeGifNotification show={showGift} onClose={handleCloseNotification} />
             </div>
         </>

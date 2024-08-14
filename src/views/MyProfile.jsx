@@ -3,9 +3,7 @@ import { AppContext } from '../state/app.context';
 import { updateUser, uploadUserAvatar } from '../services/users.service';
 import { getRemainingBanTime } from '../services/admin.service';
 import { MAX_FILE_SIZE } from '../common/views.constants';
-import successGif from '../image/successfully-update-profile.gif';
-import errorGif from '../image/error.gif';
-import Modal from '../views/Modal';
+import Swal from 'sweetalert2';
 import CustomFileInput from '../components/CustomFileInput';
 import BeerButton from '../components/BeerButton';
 import ThreadsByUser from '../components/ThreadsByUser';
@@ -22,9 +20,6 @@ export default function MyProfile() {
 
     const [avatarFile, setAvatarFile] = useState(null);
     const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(null);
-    const [modalMessage, setModalMessage] = useState('');
-    const [modalGif, setModalGif] = useState('');
-    const [showModal, setShowModal] = useState(false);
 
     const updateUserData = (prop) => (e) => {
         setAppState((prev) => ({
@@ -51,14 +46,21 @@ export default function MyProfile() {
                 ...prev,
                 userData: updatedData,
             }));
-            setModalMessage('Profile updated successfully');
-            setModalGif(successGif);
-            setShowModal(true);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile Updated',
+                text: 'Your profile has been updated successfully!',
+                confirmButtonText: 'OK',
+            });
         } catch (error) {
             console.error('Error updating profile:', error);
-            setModalMessage('Error updating profile: ' + error.message);
-            setModalGif(errorGif);
-            setShowModal(true);
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: `Error updating profile: ${error.message}`,
+                confirmButtonText: 'OK',
+            });
         }
     };
 
@@ -72,9 +74,14 @@ export default function MyProfile() {
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file.size > MAX_FILE_SIZE) {
-            alert('The selected file is too large. Please choose a file under 200KB.');
             setAvatarFile(null);
             setAvatarPreviewUrl(null);
+            Swal.fire({
+                icon: 'warning',
+                title: 'File Too Large',
+                text: 'The selected file is too large. Please choose a file under 200KB.',
+                confirmButtonText: 'OK',
+            });
             return;
         }
 
@@ -130,7 +137,6 @@ export default function MyProfile() {
                     ) : (
                         <span>{userData.firstName}</span>
                     )}
-
                 </div>
                 <button className="edit-button" onClick={() => toggleEditMode('firstName')}>Edit First Name</button>
 
@@ -155,13 +161,11 @@ export default function MyProfile() {
                     <label>Role: </label>
                     <span>{userData.role}</span>
                 </div>
+
                 {/* Button Container */}
                 <div className="button-container">
                     <BeerButton text="Save" onClick={saveChanges} />
                 </div>
-
-                {/* MODAL */}
-                <Modal isVisible={showModal} onClose={() => setShowModal(false)} message={modalMessage} gifUrl={modalGif} />
             </div>
             {userData && <ThreadsByUser username={userData.username} />}
         </>

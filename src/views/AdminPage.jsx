@@ -16,6 +16,7 @@ import './CSS/AdminPage.css';
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
+
     const [banDuration, setBanDuration] = useState({});
     const [bannedUsers, setBannedUsers] = useState([]);
     const [view, setView] = useState('all');
