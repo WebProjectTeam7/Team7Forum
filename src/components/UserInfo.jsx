@@ -13,7 +13,7 @@ const UserInfo = ({ userAuthor }) => {
         <div className="reply-info">
             <img src={(userAuthor && userAuthor.avatar) || '/src/image/default-profile.png'} alt="Author Avatar" className="author-avatar" />
             <div className="reply-author-date">
-                <p>Author: <a href={`/user-profile/${userAuthor.username}`} onClick={handleNavigate}>{(userAuthor && userAuthor.username) || ''}</a></p>
+                <p>Author: <a href={`/user-profile/${userAuthor && userAuthor.username}`} onClick={handleNavigate}>{(userAuthor && userAuthor.username) || ''}</a></p>
                 <p>Role: {(userAuthor && userAuthor.role) || ''}</p>
                 <p>Member since: {userAuthor && new Date(userAuthor.createdOn).toLocaleDateString()}</p>
             </div>
