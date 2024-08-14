@@ -1,27 +1,33 @@
 import { useEffect, useState, useContext, useRef } from 'react';
+import Swal from 'sweetalert2';
 import { AppContext } from '../state/app.context';
-import { getAllBeers, deleteBeer, createBeer, editBeer, rateBeer } from '../services/beer.service';
+import { getAllBeers, deleteBeer, createBeer, editBeer, rateBeer, getBeerRatingByUser } from '../services/beer.service';
 import UserRoleEnum from '../common/role.enum';
 import BeerRating from '../components/BeerRating';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import CreateBeerModal from '../components/CreateBeerModal';
-import './CSS/Beerpedia.css';
 import AddItemButton from '../components/AddItemButton';
+import './CSS/Beerpedia.css';
 
 export default function Beerpedia() {
     const { user, userData } = useContext(AppContext);
     const [beers, setBeers] = useState([]);
+    const [userRatings, setUserRatings] = useState({});
     const [editMode, setEditMode] = useState(null);
     const [editedBeerData, setEditedBeerData] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const fileInputRef = useRef(null);
 
+
     useEffect(() => {
         fetchBeers();
-    }, []);
+    }, [userData, userRatings]);
 
     const fetchBeers = async () => {
+        if (userData && userData.username) {
+            fetchUserRatings();
+        }
         try {
             const fetchedBeers = await getAllBeers();
             setBeers(fetchedBeers);
@@ -30,10 +36,35 @@ export default function Beerpedia() {
         }
     };
 
+    const fetchUserRatings = async () => {
+        try {
+            const ratings = {};
+            for (const beer of beers) {
+                const rating = await getBeerRatingByUser(beer.id, userData.username);
+                if (rating) {
+                    ratings[beer.id] = rating;
+                }
+            }
+            setUserRatings(ratings);
+        } catch (error) {
+            console.error('Error fetching user ratings:', error);
+        }
+    };
+
     const handleDelete = async (beerId) => {
-        if (window.confirm('Are you sure you want to delete this entry?')) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to delete this beer?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        });
+
+        if (result.isConfirmed) {
             try {
                 await deleteBeer(beerId);
+                Swal.fire('Deleted!', 'Beer has been deleted.', 'success');
                 fetchBeers();
             } catch (error) {
                 console.error('Error deleting beer:', error);
@@ -63,11 +94,13 @@ export default function Beerpedia() {
 
     const handleRating = async (beerId, rating) => {
         if (!user || userData.isBanned) {
-            alert('You don`t have permision to vote!');
+            Swal.fire('Permission Denied', 'You do not have permission to rate beers.', 'warning');
             return;
         }
         try {
             await rateBeer(beerId, userData.username, rating);
+            // Swal.fire('Thank you!', 'Your rating has been submitted.', 'success');
+            setUserRatings(prevRatings => ({ ...prevRatings, [beerId]: rating }));
             fetchBeers();
         } catch (error) {
             console.error('Error rating beer:', error);
@@ -91,6 +124,7 @@ export default function Beerpedia() {
 
             await createBeer(validBeerData, beerData.imageFile);
             setIsModalOpen(false);
+            Swal.fire('Success', 'New beer created successfully.', 'success');
             fetchBeers();
         } catch (error) {
             console.error('Error creating beer:', error);
@@ -110,6 +144,7 @@ export default function Beerpedia() {
 
             await editBeer(beerId, updatedData, editedBeerData.imageFile);
             setEditMode(null);
+            Swal.fire('Success', 'Beer updated successfully.', 'success');
             fetchBeers();
         } catch (error) {
             console.error('Error saving beer:', error);
@@ -199,9 +234,9 @@ export default function Beerpedia() {
                                     <p><strong>Rating:</strong> {beer.averageRating.toFixed(1)} 🍺</p>
                                 </>
                             )}
-                            {user && !userData.isBanned && (
+                            {userData && !userData.isBanned && (
                                 <BeerRating
-                                    rating={beer.averageRating}
+                                    rating={userRatings[beer.id] || 0}
                                     onRate={(rating) => handleRating(beer.id, rating)}
                                 />
                             )}

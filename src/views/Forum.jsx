@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/category.service';
 import { getThreadsByCategoryId } from '../services/thread.service';
 import { AppContext } from '../state/app.context';
@@ -9,7 +10,6 @@ import { isUserBanned } from '../services/admin.service';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import './CSS/Forum.css';
-
 
 const THREADS_LIMIT_BY_CATEGORY = 3;
 
@@ -28,7 +28,6 @@ export default function Forum() {
         fetchCategories();
     }, [fetchTrigger]);
 
-
     const fetchCategories = async () => {
         try {
             const fetchedCategories = await getCategories();
@@ -45,16 +44,14 @@ export default function Forum() {
     };
 
     const handleCreateCategory = async () => {
-
         const banned = await isUserBanned(userData.uid);
 
         if (banned) {
-            alert('You are banned from creating threads!');
+            Swal.fire('Permission Denied', 'You are banned from creating categories!', 'warning');
             return;
         }
 
         if (newCategoryTitle.trim()) {
-
             try {
                 const newCategoryId = await createCategory(newCategoryTitle);
                 setCategories([...categories, { id: newCategoryId, title: newCategoryTitle, threads: [] }]);
@@ -80,16 +77,29 @@ export default function Forum() {
     };
 
     const handleDeleteCategory = async (categoryId) => {
-        if (window.confirm('Are you sure you want to delete this category?')) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'This will permanently delete the category.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
             try {
                 await deleteCategory(categoryId);
                 setCategories(categories.filter(category => category.id !== categoryId));
                 setFetchTrigger(!fetchTrigger);
+                Swal.fire('Deleted!', 'The category has been deleted.', 'success');
             } catch (error) {
                 console.error('Error deleting category:', error);
             }
         }
     };
+
 
     return (
         <div className="forum-container">

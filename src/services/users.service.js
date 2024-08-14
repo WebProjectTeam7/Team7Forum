@@ -24,7 +24,7 @@ export const getUserByUsername = async (username) => {
     try {
         const snapshot = await get(userRef);
         if (!snapshot.exists()) {
-            throw new Error('User not found');
+            return null;
         }
         return snapshot.val();
     } catch (error) {

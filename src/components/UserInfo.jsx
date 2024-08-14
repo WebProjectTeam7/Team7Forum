@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import ThreadsByUser from './ThreadsByUser';
 
 const UserInfo = ({ userAuthor }) => {
     const navigate = useNavigate();

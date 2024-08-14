@@ -1,0 +1,71 @@
+/* General Styles for the Select Dropdown */
+select {
+    width: 20%;
+    padding: 5px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    background-color: var(--light-background);
+    color: var(--light-text);
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    cursor: pointer;
+    background-color: #555;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+/* Styling the Dropdown Arrow */
+select::after {
+    content: '▼';
+    position: absolute;
+    right: 10px;
+    pointer-events: none;
+}
+
+/* Focused State */
+select:focus {
+    border-color: var(--highlight-color);
+    outline: none;
+}
+
+/* Option Styles */
+option {
+    padding: 8px;
+    background-color: var(--light-background);
+    color: var(--light-text);
+}
+
+/* Dark Mode */
+body.dark-mode select {
+
+}
+
+body.dark-mode option {
+    background-color: #424242;
+    color: #e0e0e0;
+}
+
+/* Select Dropdown Container Styling */
+.select-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 16px 0;
+}
+
+/* Custom Arrow for the Select */
+.select-container::after {
+    content: '▼';
+    font-size: 12px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--light-text);
+}
+
+body.dark-mode .select-container::after {
+    color: #e0e0e0;
+}

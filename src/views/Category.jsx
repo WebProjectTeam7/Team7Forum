@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { AppContext } from '../state/app.context';
-import { useParams } from 'react-router-dom';
 import { getThreadsByCategoryId, createThread, uploadThreadImages } from '../services/thread.service';
 import { getCategoryById, addThreadIdToCategory } from '../services/category.service';
 import { createOrUpdateThreadTag } from '../services/tag.service';
 import { isUserBanned } from '../services/admin.service';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
-import { MAX_FILE_SIZE, MAX_IMAGES, THREADS_PER_PAGE } from '../common/views.constants';
+import { CONTENT_MAX_LENGTH, CONTENT_MIN_LENGTH, MAX_FILE_SIZE, MAX_IMAGES, THREADS_PER_PAGE } from '../common/views.constants';
 import ThreadItem from '../components/ThreadItem';
 import InfoButton from '../components/InfoButton';
 import Pagination from '../components/Pagination';
@@ -17,6 +18,7 @@ import './CSS/Forum.css';
 export default function Category() {
     const { categoryId } = useParams();
     const { user, userData } = useContext(AppContext);
+    const navigate = useNavigate();
 
     const [threads, setThreads] = useState([]);
     const [category, setCategory] = useState(null);
@@ -93,20 +95,23 @@ export default function Category() {
         if (newThreadTitle.trim() && newThreadContent.trim()) {
             const banned = await isUserBanned(userData.uid);
             if (banned) {
-                alert('You are banned from creating threads!');
+                Swal.fire('Permission Denied', 'You are banned from creating threads!', 'warning');
                 return;
             }
+
             const alertArr = [];
             if (!TITLE_REGEX.test(newThreadTitle)) {
                 alertArr.push('Invalid title length, must be between 3 and 64 characters!');
             }
-            if (!CONTENT_REGEX.test(newThreadContent)) {
+            if (newThreadContent.length < CONTENT_MIN_LENGTH || newThreadContent.length > CONTENT_MAX_LENGTH) {
                 alertArr.push('Invalid content length, must be between 3 and 8192 characters!');
             }
+
             if (alertArr.length > 0) {
-                alert(alertArr.join('\n'));
+                Swal.fire('Invalid Input', alertArr.join('\n'), 'warning');
                 return;
             }
+
             try {
                 const tagsArray = [...new Set(newThreadTags.split(',')
                     .map(tag => tag.toLowerCase().trim())
@@ -138,6 +143,10 @@ export default function Category() {
                 setNewThreadTags('');
                 setAttachedImages([]);
                 setShowCreateThread(false);
+
+                Swal.fire('Success', 'Thread created successfully.', 'success');
+                navigate(`/forum/thread/${newThreadId}`);
+
             } catch (error) {
                 console.error('Error creating thread:', error);
             }

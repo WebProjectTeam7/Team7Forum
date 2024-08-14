@@ -81,6 +81,20 @@ export const getBeerRating = async (beerId) => {
     }
 };
 
+export const getBeerRatingByUser = async (beerId, username) => {
+    try {
+        const beerRef = dbRef(db, `beers/${beerId}/ratings/${username}`);
+        const snapshot = await get(beerRef);
+        if (snapshot.exists()) {
+            return snapshot.val();
+        }
+        return 0;
+    } catch (error) {
+        console.error('Error fetching beer rating by username:', error);
+        throw new Error('Failed to retrieve beer rating by username');
+    }
+};
+
 // UPDATE
 
 export const editBeer = async (beerId, updatedData, newImageFile) => {

@@ -1,16 +1,17 @@
 import { useState, useEffect, useContext } from 'react';
-import { getAllUsers, switchUserRole, deleteUser } from '../services/users.service';
 import { useNavigate } from 'react-router-dom';
-import UserRoleEnum from '../common/role.enum';
-import './CSS/AdminPage.css';
-import DeleteButton from '../components/deletebutton';
-import { AppContext } from '../state/app.context';
+import { getAllUsers, switchUserRole, deleteUser } from '../services/users.service';
 import { banUser, deleteReport, getRemainingBanTime, getReports, unbanUser } from '../services/admin.service';
+import { AppContext } from '../state/app.context';
 import { getThreadById } from '../services/thread.service';
 import { getReplyById } from '../services/reply.service';
 import { format } from 'date-fns';
+import DeleteButton from '../components/deletebutton';
+import UserRoleEnum from '../common/role.enum';
 import banUserImage from '../image/ban-user.png';
 import SuccessModal from './SuccessModal';
+import Swal from 'sweetalert2';
+import './CSS/AdminPage.css';
 
 export default function AdminPage() {
     const [users, setUsers] = useState([]);
@@ -45,21 +46,22 @@ export default function AdminPage() {
     const handleBanUser = async (uid) => {
         const userToBan = users.find(user => user.uid === uid);
         if (userToBan.role === UserRoleEnum.ADMIN) {
-            alert('You cannot ban another admin.');
+            Swal.fire('Error', 'You cannot ban another admin.', 'error');
             return;
         }
 
         const duration = banDuration[uid];
         if (!duration) {
-            alert('Please enter a valid number of days.');
+            Swal.fire('Error', 'Please enter a valid number of days.', 'warning');
             return;
         }
         try {
             await banUser(uid, Number(duration, 10));
             fetchBannedUsers();
             alert('User banned successfully.');
+            Swal.fire('Success', 'User banned successfully.', 'success');
         } catch (e) {
-            alert(e.message);
+            Swal.fire('Error', e.message, 'error');
         }
     };
 
@@ -72,7 +74,7 @@ export default function AdminPage() {
             setTimeout(() => setShowSuccessModal(false), 5000);
             fetchBannedUsers();
         } catch (e) {
-            alert(e.message);
+            Swal.fire('Error', e.message, 'error');
         }
     };
 
@@ -113,22 +115,31 @@ export default function AdminPage() {
 
     const handleDeleteUser = async (uid, role) => {
         if (role === UserRoleEnum.ADMIN) {
-            alert('You cannot delete another admin.');
+            Swal.fire('Error', 'You cannot delete another admin.', 'error');
             return;
         }
         if (uid === userData.uid) {
-            alert('You cannot delete your own account.');
+            Swal.fire('Error', 'You cannot delete your own account.', 'error');
             return;
         }
 
-        if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to delete this user? This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        });
+
+        if (result.isConfirmed) {
             try {
                 await deleteUser(uid);
-                alert('User deleted successfully.');
+                Swal.fire('Deleted!', 'User deleted successfully.', 'success');
                 fetchAllUsers();
                 fetchBannedUsers();
             } catch (e) {
-                alert(e.message);
+                Swal.fire('Error', e.message, 'error');
             }
         }
     };
@@ -146,6 +157,7 @@ export default function AdminPage() {
         try {
             await deleteReport(reportId);
             setReports(reports.filter(report => report.id !== reportId));
+            Swal.fire('Success', 'Report deleted successfully.', 'success');
         } catch (error) {
             console.error('Error deleting report:', error);
         }
@@ -158,14 +170,14 @@ export default function AdminPage() {
                 if (thread) {
                     navigate(`/forum/thread/${targetId}`);
                 } else {
-                    alert('Thread not found');
+                    Swal.fire('Error', 'Thread not found', 'error');
                 }
             } else if (type === 'reply') {
                 const reply = await getReplyById(targetId);
                 if (reply) {
                     navigate(`/forum/thread/${reply.threadId}`);
                 } else {
-                    alert('Reply not found');
+                    Swal.fire('Error', 'Reply not found', 'error');
                 }
             }
         } catch (error) {
@@ -215,7 +227,7 @@ export default function AdminPage() {
                                 <td>{user.email}</td>
                                 <td>{user.firstName}</td>
                                 <td>{user.lastName}</td>
-                                <td>
+                                <td className='role-dropdown'>
                                     <select
                                         value={user.role}
                                         onChange={(e) => handleRoleChange(user.uid, e.target.value)}
@@ -323,7 +335,6 @@ export default function AdminPage() {
                     </table>
                 </div>
             )}
-
         </div>
     );
 }

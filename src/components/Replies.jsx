@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import './CSS/Replies.css';
 import BeerButton from './BeerButton';
 import CustomFileInput from './CustomFileInput';
-
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 export default function Replies({ threadId }) {
     const { userData } = useContext(AppContext);
@@ -32,6 +32,7 @@ export default function Replies({ threadId }) {
             sortReplies(fetchedReplies);
         } catch (error) {
             console.error('Error fetching replies:', error);
+            Swal.fire('Error', 'An error occurred while fetching replies. Please try again later.', 'error'); // Use SweetAlert2 for user alerts
         }
     };
 
@@ -85,15 +86,13 @@ export default function Replies({ threadId }) {
     };
 
     const handleCreateReply = async () => {
-
         const banned = await isUserBanned(userData.uid);
         if (banned) {
-            alert('You are banned from posting replies!');
+            Swal.fire('Access Denied', 'You are banned from posting replies!', 'warning'); // Use SweetAlert2 for warnings
             return;
         }
 
         if (replyContent.trim() || attachedImages.length) {
-
             try {
                 let content = replyContent;
                 let imageUrls = [];
@@ -170,7 +169,7 @@ export default function Replies({ threadId }) {
                     </div>
                 )
             }
-        </div >
+        </div>
     );
 }
 
