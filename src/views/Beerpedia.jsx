@@ -19,14 +19,15 @@ export default function Beerpedia() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const fileInputRef = useRef(null);
 
+
     useEffect(() => {
         fetchBeers();
+    }, [userData, userRatings]);
+
+    const fetchBeers = async () => {
         if (userData && userData.username) {
             fetchUserRatings();
         }
-    }, [userData]);
-
-    const fetchBeers = async () => {
         try {
             const fetchedBeers = await getAllBeers();
             setBeers(fetchedBeers);
