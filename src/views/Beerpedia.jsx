@@ -1,18 +1,19 @@
 import { useEffect, useState, useContext, useRef } from 'react';
 import Swal from 'sweetalert2';
 import { AppContext } from '../state/app.context';
-import { getAllBeers, deleteBeer, createBeer, editBeer, rateBeer } from '../services/beer.service';
+import { getAllBeers, deleteBeer, createBeer, editBeer, rateBeer, getBeerRatingByUser } from '../services/beer.service';
 import UserRoleEnum from '../common/role.enum';
 import BeerRating from '../components/BeerRating';
 import EditButton from '../components/EditButton';
 import DeleteButton from '../components/DeleteButton';
 import CreateBeerModal from '../components/CreateBeerModal';
-import './CSS/Beerpedia.css';
 import AddItemButton from '../components/AddItemButton';
+import './CSS/Beerpedia.css';
 
 export default function Beerpedia() {
     const { user, userData } = useContext(AppContext);
     const [beers, setBeers] = useState([]);
+    const [userRatings, setUserRatings] = useState({});
     const [editMode, setEditMode] = useState(null);
     const [editedBeerData, setEditedBeerData] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +21,10 @@ export default function Beerpedia() {
 
     useEffect(() => {
         fetchBeers();
-    }, []);
+        if (userData && userData.username) {
+            fetchUserRatings();
+        }
+    }, [userData]);
 
     const fetchBeers = async () => {
         try {
@@ -28,6 +32,21 @@ export default function Beerpedia() {
             setBeers(fetchedBeers);
         } catch (error) {
             console.error('Error fetching beers:', error);
+        }
+    };
+
+    const fetchUserRatings = async () => {
+        try {
+            const ratings = {};
+            for (const beer of beers) {
+                const rating = await getBeerRatingByUser(beer.id, userData.username);
+                if (rating) {
+                    ratings[beer.id] = rating;
+                }
+            }
+            setUserRatings(ratings);
+        } catch (error) {
+            console.error('Error fetching user ratings:', error);
         }
     };
 
@@ -79,7 +98,8 @@ export default function Beerpedia() {
         }
         try {
             await rateBeer(beerId, userData.username, rating);
-            Swal.fire('Thank you!', 'Your rating has been submitted.', 'success');
+            // Swal.fire('Thank you!', 'Your rating has been submitted.', 'success');
+            setUserRatings(prevRatings => ({ ...prevRatings, [beerId]: rating }));
             fetchBeers();
         } catch (error) {
             console.error('Error rating beer:', error);
@@ -213,9 +233,9 @@ export default function Beerpedia() {
                                     <p><strong>Rating:</strong> {beer.averageRating.toFixed(1)} 🍺</p>
                                 </>
                             )}
-                            {user && !userData.isBanned && (
+                            {userData && !userData.isBanned && (
                                 <BeerRating
-                                    rating={beer.averageRating}
+                                    rating={userRatings[beer.id] || 0}
                                     onRate={(rating) => handleRating(beer.id, rating)}
                                 />
                             )}
