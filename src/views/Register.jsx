@@ -12,6 +12,7 @@ import { FaEye } from 'react-icons/fa';
 import WelcomeGifNotification from '../components/NotificationAfterRegister';
 import ErrorComponent from '../components/ServerError';
 import './CSS/Modal.css';
+import Swal from 'sweetalert2';
 
 export default function Register() {
     const { setAppState } = useContext(AppContext);
@@ -46,9 +47,6 @@ export default function Register() {
         e.preventDefault();
 
         setLoading(true);
-        setAlertMessage('');
-        setErrorMessage(null);
-        setNoCredentials(false);
 
         const alertArr = [];
 
