@@ -124,6 +124,7 @@
     resize: vertical;
     overflow-y: auto;
     box-sizing: border-box;
+    background-color: #9e9d9d;
 }
 
 .reply-input input[type="file"],

@@ -58,6 +58,8 @@ export default function AdminPage() {
         }
         try {
             await banUser(uid, Number(duration, 10));
+            fetchBannedUsers();
+            alert('User banned successfully.');
             Swal.fire('Success', 'User banned successfully.', 'success');
         } catch (e) {
             Swal.fire('Error', e.message, 'error');
