@@ -7,6 +7,19 @@
     padding: 0;
 }
 
+.report-button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.report-button:hover {
+    background-color: #1b86f8;
+    color: #fff;
+}
+
 .reply-item {
     display: flex;
     flex-direction: column;
@@ -23,7 +36,8 @@
 
 .reply-info {
     flex: 1;
-    max-width: 16.6667%; /* 1/6th of the space */
+    max-width: 16.6667%;
+    /* 1/6th of the space */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,7 +110,8 @@
 .reply-input {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Space between input fields and button */
+    gap: 10px;
+    /* Space between input fields and button */
     margin-top: 20px;
 }
 
@@ -124,11 +139,12 @@
     padding: 10px 15px;
     font-size: 14px;
     color: white;
-    background-color: #007bff;
+    background-color: #e9eff5;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    align-self: flex-start; /* Fixed button width */
+    align-self: flex-start;
+    /* Fixed button width */
 }
 
 /* .reply-input button:hover {
@@ -264,7 +280,8 @@ body.dark-mode .reply-actions button:hover {
 
 body.dark-mode .upvote-button.active,
 body.dark-mode .downvote-button.active {
-    color: #81c784; /* Lighter green for active state */
+    color: #81c784;
+    /* Lighter green for active state */
 }
 
 body.dark-mode .edit-delete-buttons button {
@@ -294,15 +311,15 @@ body.dark-mode .reply-input button:hover {
 }
 
 .images-preview {
-    display: inline-block; 
-    margin: 5px; 
+    display: inline-block;
+    margin: 5px;
 }
 
 .images-preview img {
-    max-width: 250px; 
-    max-height: 250px; 
-    width: auto; 
-    height: auto; 
-    border-radius: 5px; 
+    max-width: 250px;
+    max-height: 250px;
+    width: auto;
+    height: auto;
+    border-radius: 5px;
     object-fit: cover;
 }

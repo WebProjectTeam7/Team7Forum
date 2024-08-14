@@ -7,7 +7,7 @@ import { getCategoryById, addThreadIdToCategory } from '../services/category.ser
 import { createOrUpdateThreadTag } from '../services/tag.service';
 import { isUserBanned } from '../services/admin.service';
 import { CONTENT_REGEX, TITLE_REGEX } from '../common/regex';
-import { MAX_FILE_SIZE, MAX_IMAGES, THREADS_PER_PAGE } from '../common/views.constants';
+import { CONTENT_MAX_LENGTH, CONTENT_MIN_LENGTH, MAX_FILE_SIZE, MAX_IMAGES, THREADS_PER_PAGE } from '../common/views.constants';
 import ThreadItem from '../components/ThreadItem';
 import InfoButton from '../components/InfoButton';
 import Pagination from '../components/Pagination';
@@ -103,9 +103,10 @@ export default function Category() {
             if (!TITLE_REGEX.test(newThreadTitle)) {
                 alertArr.push('Invalid title length, must be between 3 and 64 characters!');
             }
-            // if (!CONTENT_REGEX.test(newThreadContent)) {
-            //     alertArr.push('Invalid content length, must be between 3 and 8192 characters!');
-            // }
+            if (newThreadContent.length < CONTENT_MIN_LENGTH || newThreadContent.length > CONTENT_MAX_LENGTH) {
+                alertArr.push('Invalid content length, must be between 3 and 8192 characters!');
+            }
+
             if (alertArr.length > 0) {
                 Swal.fire('Invalid Input', alertArr.join('\n'), 'warning');
                 return;
