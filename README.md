@@ -41,6 +41,39 @@ Create a Firebase project ([Firebase console - create a project ](https://consol
 
 This command will usually start a local server and you should see output in your terminal indicating that the server is running. You can then open your web browser and navigate to the address provided in the output (often `http://localhost:3000` or a similar URL) to view your application.
 
+**Realtime Databese Rules:**
+
+{
+  "rules": {
+    ".read": "true",
+    ".write": "auth != null",
+    "users": {
+      ".indexOn": ["uid", "username", "handle"],
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "categories": {
+      ".read": "true",
+      ".indexOn": ["createdAt", "id"]
+    },
+    "threads": {
+      ".read": "true",
+      ".write": "true",
+      ".indexOn": ["categoryId", "createdAt", "id", "replyCount", "title", "content", "authorName"] 
+    },
+    "replies": {
+      ".read": "true",
+      ".indexOn": ["createdAt", "id", "threadId", "author"]
+    },
+    "beers": {
+      ".read": "true",
+      ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'moderator')"
+    }
+  }
+}
+
 #### 1.4 Usage
 
 * **Home Page** : Users can see the latest threads and navigate to various sections.
