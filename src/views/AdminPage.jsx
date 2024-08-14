@@ -56,6 +56,7 @@ export default function AdminPage() {
         }
         try {
             await banUser(uid, Number(duration, 10));
+            fetchBannedUsers();
             alert('User banned successfully.');
         } catch (e) {
             alert(e.message);
