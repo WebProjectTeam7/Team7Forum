@@ -6,6 +6,7 @@ import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import { banUser, getRemainingBanTime } from '../services/admin.service';
 import ThreadsByUser from '../components/ThreadsByUser';
+import defaultProfileImg from '/src/image/default-profile.png';
 import Swal from 'sweetalert2';
 
 export default function UserProfile() {
@@ -50,7 +51,7 @@ export default function UserProfile() {
                 <h1>User Profile</h1>
                 {user ? (
                     <div className="user-profile-details">
-                        <img src={user.avatar || '/src/image/default-profile.png'} alt="Author Avatar" className="author-avatar" />
+                        <img src={user.avatar || { defaultProfileImg }} alt="Author Avatar" className="author-avatar" />
                         {user.isBanned && (
                             <div className="user-ban-info">
                                 <span>Ban Time Left: {getRemainingBanTime(user.banEndDate)}</span>

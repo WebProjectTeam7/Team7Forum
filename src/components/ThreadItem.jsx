@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import beerImg from '/src/image/thread-image.jpg';
 import './CSS/ThreadItem.css';
 
 const ThreadItem = ({ thread }) => {
@@ -7,7 +8,7 @@ const ThreadItem = ({ thread }) => {
         <li key={thread.id} className="thread-item">
             <div className="thread-info">
                 <div className="thread-image-container">
-                    <img src="\src\image\thread-image.jpg" alt="Thread" className="thread-image" />
+                    <img src={beerImg} alt="Thread" className="thread-image" />
                 </div>
             </div>
             <div className="thread-content">

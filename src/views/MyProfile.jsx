@@ -4,6 +4,7 @@ import { updateUser, uploadUserAvatar } from '../services/users.service';
 import { getRemainingBanTime } from '../services/admin.service';
 import { MAX_FILE_SIZE } from '../common/views.constants';
 import Swal from 'sweetalert2';
+import defaultProfileImg from '/src/image/default-profile.png';
 import CustomFileInput from '../components/CustomFileInput';
 import BeerButton from '../components/BeerButton';
 import ThreadsByUser from '../components/ThreadsByUser';
@@ -105,7 +106,7 @@ export default function MyProfile() {
                 <div className="profile-field avatar-container">
                     <label>Avatar:</label>
                     <img
-                        src={avatarPreviewUrl || userData.avatar || '/src/image/default-profile.png'}
+                        src={avatarPreviewUrl || userData.avatar || { defaultProfileImg }}
                         alt="Avatar"
                         className="avatar-img"
                     />

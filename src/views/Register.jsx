@@ -106,7 +106,7 @@ export default function Register() {
             setTimeout(() => {
                 setShowGift(false);
                 navigate('/');
-            }, 6000);
+            }, 2000);
         } catch (error) {
             Swal.fire({
                 icon: 'error',
