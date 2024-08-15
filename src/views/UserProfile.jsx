@@ -1,12 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { getDefaultAvatarUrl, getUserAvatarUrl, getUserByUsername } from '../services/users.service';
+import { getUserByUsername } from '../services/users.service';
 import './CSS/UserProfile.css';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
 import { banUser, getRemainingBanTime } from '../services/admin.service';
 import ThreadsByUser from '../components/ThreadsByUser';
-import defaultProfileImg from '/src/image/default-profile.png';
 import Swal from 'sweetalert2';
 
 export default function UserProfile() {
@@ -14,7 +13,6 @@ export default function UserProfile() {
     const { username } = useParams();
     const [banDuration, setBanDuration] = useState('');
     const { userData } = useContext(AppContext);
-    const [avatarUrl, setAvatarUrl] = useState('');
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -24,12 +22,6 @@ export default function UserProfile() {
                     throw new Error('User not found');
                 }
                 setUser(data);
-                let avatar = await getUserAvatarUrl(userData.uid);
-                if (!avatar) {
-                    avatar = await getDefaultAvatarUrl();
-                }
-
-                setAvatarUrl(avatar);
             } catch (error) {
                 console.error(error.message);
             }
@@ -58,7 +50,7 @@ export default function UserProfile() {
                 <h1>User Profile</h1>
                 {user ? (
                     <div className="user-profile-details">
-                        <img src={user.avatar || { defaultProfileImg }} alt="Author Avatar" className="author-avatar" />
+                        <img src={user.avatar || '/src/image/default-profile.png'} alt="Author Avatar" className="author-avatar" />
                         {user.isBanned && (
                             <div className="user-ban-info">
                                 <span>Ban Time Left: {getRemainingBanTime(user.banEndDate)}</span>

@@ -2,22 +2,8 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import beerImg from '../image/thread-image.jpg';
 import './CSS/ThreadItem.css';
-import { getThreadImageUrl } from '../services/users.service';
-import { useEffect, useState } from 'react';
 
 const ThreadItem = ({ thread }) => {
-    // const [imageUrl, setImageUrl] = useState('');
-
-    // useEffect(() => {
-    //     const fetchImageUrl = async () => {
-    //         const url = await getThreadImageUrl();
-    //         if (url) {
-    //             setImageUrl(url);
-    //         }
-    //     };
-
-    //     fetchImageUrl();
-    // }, []);
 
     return (
         <li key={thread.id} className="thread-item">
