@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import beerImg from '/src/image/thread-image.jpg';
+import beerImg from '../image/thread-image.jpg';
 import './CSS/ThreadItem.css';
-// import { getThreadImageUrl } from '../services/users.service';
-// import { useEffect, useState } from 'react';
+import { getThreadImageUrl } from '../services/users.service';
+import { useEffect, useState } from 'react';
 
 const ThreadItem = ({ thread }) => {
     // const [imageUrl, setImageUrl] = useState('');
