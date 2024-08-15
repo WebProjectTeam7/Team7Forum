@@ -216,7 +216,7 @@ export default function Register() {
                     <button>Register</button>
                 </form>
 
-                <WelcomeGifNotification show={showGift} onClose={handleCloseNotification} />
+                {/* <WelcomeGifNotification show={showGift} onClose={handleCloseNotification} /> */}
             </div>
         </>
     );
