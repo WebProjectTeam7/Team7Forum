@@ -157,3 +157,39 @@ export const deleteUser = async (uid) => {
         throw new Error('Failed to delete user: ' + error.message);
     }
 };
+
+// AVATAR
+export const getDefaultAvatarUrl = async () => {
+    try {
+        const defaultAvatarRef = storageRef(storage, 'gs://forum-eebfb.appspot.com/default-profile2.png');
+        const downloadURL = await getDownloadURL(defaultAvatarRef);
+        return downloadURL;
+    } catch (error) {
+        console.error('Error fetching default avatar:', error);
+        return null;
+    }
+};
+
+export const getUserAvatarUrl = async (uid) => {
+    try {
+        const avatarRef = storageRef(storage, `avatars/${uid}`);
+        const downloadURL = await getDownloadURL(avatarRef);
+        return downloadURL;
+    } catch (error) {
+        console.error('Error fetching user avatar:', error);
+        return null;
+    }
+};
+
+// Threads image
+
+export const getThreadImageUrl = async () => {
+    try {
+        const imageRef = storageRef(storage, 'gs://forum-eebfb.appspot.com/thread-image.jpg');
+        const downloadURL = await getDownloadURL(imageRef);
+        return downloadURL;
+    } catch (error) {
+        console.error('Error fetching thread image:', error);
+        return null;
+    }
+};

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { getUserByUsername } from '../services/users.service';
+import { getDefaultAvatarUrl, getUserAvatarUrl, getUserByUsername } from '../services/users.service';
 import './CSS/UserProfile.css';
 import { AppContext } from '../state/app.context';
 import UserRoleEnum from '../common/role.enum';
@@ -14,6 +14,7 @@ export default function UserProfile() {
     const { username } = useParams();
     const [banDuration, setBanDuration] = useState('');
     const { userData } = useContext(AppContext);
+    const [avatarUrl, setAvatarUrl] = useState('');
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -23,6 +24,12 @@ export default function UserProfile() {
                     throw new Error('User not found');
                 }
                 setUser(data);
+                let avatar = await getUserAvatarUrl(userData.uid);
+                if (!avatar) {
+                    avatar = await getDefaultAvatarUrl();
+                }
+
+                setAvatarUrl(avatar);
             } catch (error) {
                 console.error(error.message);
             }

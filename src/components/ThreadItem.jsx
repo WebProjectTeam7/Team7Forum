@@ -2,13 +2,33 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import beerImg from '/src/image/thread-image.jpg';
 import './CSS/ThreadItem.css';
+import { getThreadImageUrl } from '../services/users.service';
+import { useEffect, useState } from 'react';
 
 const ThreadItem = ({ thread }) => {
+    const [imageUrl, setImageUrl] = useState('');
+
+    useEffect(() => {
+        const fetchImageUrl = async () => {
+            const url = await getThreadImageUrl();
+            if (url) {
+                setImageUrl(url);
+            }
+        };
+
+        fetchImageUrl();
+    }, []);
+
     return (
         <li key={thread.id} className="thread-item">
             <div className="thread-info">
                 <div className="thread-image-container">
                     <img src={beerImg} alt="Thread" className="thread-image" />
+                    {imageUrl ? (
+                        <img src={imageUrl} alt="Thread" className="thread-image" />
+                    ) : (
+                        <div className="thread-image-placeholder">Loading...</div>
+                    )}
                 </div>
             </div>
             <div className="thread-content">
@@ -20,8 +40,8 @@ const ThreadItem = ({ thread }) => {
                     <span>Author: {thread.authorName}</span>
                     <span>Created on: {new Date(thread.createdAt).toLocaleDateString()}</span>
                     <span>Replies: {thread.replyCount || 0}</span>
-                    <span>Upvotes: {thread.upvotes && thread.upvotes.length || 0}</span>
-                    <span>Downvotes: {thread.downvotes && thread.downvotes.length || 0}</span>
+                    <span>Upvotes: {thread.upvotes?.length || 0}</span>
+                    <span>Downvotes: {thread.downvotes?.length || 0}</span>
                     <span>Views: {thread.views || 0}</span>
                 </div>
             </div>
